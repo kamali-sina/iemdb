@@ -4,23 +4,49 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Date;
 
 public class User {
-    private final String email;
-    private final String password;
-    private final String nickname;
-    private final String name;
-    private final Date birthDate;
+    private String email;
+    private String password;
+    private String nickname;
+    private String name;
+    private String birthDate;
 
-    @JsonCreator
-    public User(
-            @JsonProperty("email") String email,
-            @JsonProperty("password") String password,
-            @JsonProperty("nickname") String nickname,
-            @JsonProperty("name") String name,
-            @JsonProperty("birthDate") Date birthDate) {
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
         this.nickname = nickname;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
         this.name = name;
+    }
+
+    public String getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(String birthDate) {
         this.birthDate = birthDate;
     }
 

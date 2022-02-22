@@ -4,17 +4,31 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Date;
 
 public class Vote {
-    private final String userEmail;
-    private final String commentId;
-    private final int vote;
+    private String userEmail;
+    private String commentId;
+    private int vote;
 
-    @JsonCreator
-    public Vote(
-            @JsonProperty("userEmail") String userEmail,
-            @JsonProperty("commentId") String commentId,
-            @JsonProperty("vote") int vote) {
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
         this.userEmail = userEmail;
+    }
+
+    public String getCommentId() {
+        return commentId;
+    }
+
+    public void setCommentId(String commentId) {
         this.commentId = commentId;
+    }
+
+    public int getVote() {
+        return vote;
+    }
+
+    public void setVote(int vote) {
         this.vote = vote;
     }
 
