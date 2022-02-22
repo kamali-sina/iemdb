@@ -5,20 +5,40 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import java.util.Date;
 
 public class Actor {
-    private final int id;
-    private final String name;
-    private final Date birthDate;
-    private final String nationality;
+    private int id;
+    private String name;
+    private String birthDate;
+    private String nationality;
 
-    @JsonCreator
-    public Actor(
-            @JsonProperty("id") int id,
-            @JsonProperty("name") String name,
-            @JsonProperty("birthDate") Date birthDate,
-            @JsonProperty("nationality") String nationality) {
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
         this.name = name;
+    }
+
+    public String getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(String birthDate) {
         this.birthDate = birthDate;
+    }
+
+    public String getNationality() {
+        return nationality;
+    }
+
+    public void setNationality(String nationality) {
         this.nationality = nationality;
     }
 
