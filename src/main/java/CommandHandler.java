@@ -1,7 +1,5 @@
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import java.util.ArrayList;
 
 public class CommandHandler {
@@ -9,7 +7,7 @@ public class CommandHandler {
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     public static ArrayList<String> handleCommand(ActorManager actorManager, MovieManager movieManager,
-        UserManager userManager, String name, String data) throws Exception {
+                                                  UserManager userManager, String name, String data) throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         ArrayList<String> results = new ArrayList<>();
 
@@ -25,7 +23,7 @@ public class CommandHandler {
                 // TODO: Add list of ratings as attribute.
                 // TODO: Add ratingCount attribute.
                 // TODO: Add list of comments as attribute.
-                // TODO: Movie should be added to some list.
+                MovieManager.addMovie(movie);
                 break;
             case "addUser":
                 User new_user = objectMapper.readValue(data, User.class);
@@ -43,7 +41,7 @@ public class CommandHandler {
                 Rating rating = objectMapper.readValue(data, Rating.class);
                 // TODO: Rating should be added to corresponding movie.
                 // TODO: Check rating value to be between 1 and 10
-                    // TODO: If value was wrong the corresponding error message must be shown.
+                // TODO: If value was wrong the corresponding error message must be shown.
                 // TODO: Recalculate movie's average rating
                 // TODO: Check if user has rated the movie before, replace rating and update average rating
                 // TODO: If the movie did not exist the corresponding error message must be shown.
