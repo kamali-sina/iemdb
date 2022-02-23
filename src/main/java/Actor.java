@@ -5,16 +5,16 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import java.util.Date;
 
 public class Actor {
-    private int id;
+    private Integer id;
     private String name;
     private String birthDate;
     private String nationality;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

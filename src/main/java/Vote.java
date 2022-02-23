@@ -6,7 +6,7 @@ import java.util.Date;
 public class Vote {
     private String userEmail;
     private String commentId;
-    private int vote;
+    private Integer vote;
 
     public String getUserEmail() {
         return userEmail;
@@ -24,11 +24,11 @@ public class Vote {
         this.commentId = commentId;
     }
 
-    public int getVote() {
+    public Integer getVote() {
         return vote;
     }
 
-    public void setVote(int vote) {
+    public void setVote(Integer vote) {
         this.vote = vote;
     }
 
