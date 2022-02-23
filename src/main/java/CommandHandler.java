@@ -1,10 +1,18 @@
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.util.ArrayList;
+
 public class CommandHandler {
     private static final String EMPTY_STRING = "";
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    public static void handleCommand(String name, String data) throws Exception {
+    public static ArrayList<String> handleCommand(ActorManager actorManager, MovieManager movieManager,
+        UserManager userManager, String name, String data) throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
+        ArrayList<String> results = new ArrayList<>();
+
         switch (name) {
             case EMPTY_STRING:
                 break;
@@ -13,16 +21,33 @@ public class CommandHandler {
                 new_actor.printData();
                 break;
             case "addMovie":
-                // code block
+                Movie movie = objectMapper.readValue(data, Movie.class);
+                // TODO: Add list of ratings as attribute.
+                // TODO: Add ratingCount attribute.
+                // TODO: Add list of comments as attribute.
+                // TODO: Movie should be added to some list.
                 break;
             case "addUser":
                 User new_user = objectMapper.readValue(data, User.class);
                 new_user.printData();
                 break;
             case "addComment":
-                // code block
+                Comment comment = objectMapper.readValue(data, Comment.class);
+                // TODO: Comment should be added to corresponding movie.
+                // java.util.UUID.randomUUID(); TODO: ADD unique ID for each comment.
+                // TODO: Add date and time for each comment.
+                // TODO: If the movie did not exist the corresponding error message must be shown.
+                // TODO: If the user did not exist the corresponding error message must be shown.
+                break;
             case "rateMovie":
-                // code block
+                Rating rating = objectMapper.readValue(data, Rating.class);
+                // TODO: Rating should be added to corresponding movie.
+                // TODO: Check rating value to be between 1 and 10
+                    // TODO: If value was wrong the corresponding error message must be shown.
+                // TODO: Recalculate movie's average rating
+                // TODO: Check if user has rated the movie before, replace rating and update average rating
+                // TODO: If the movie did not exist the corresponding error message must be shown.
+                // TODO: If the actor did not exist the corresponding error message must be shown.
                 break;
             case "voteComment":
                 // code block
@@ -48,5 +73,7 @@ public class CommandHandler {
             default:
                 throw new Exception("Command not found");
         }
+
+        return results;
     }
 }
