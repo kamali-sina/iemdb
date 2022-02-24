@@ -1,5 +1,7 @@
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import exception.CommandException;
+import exception.ErrorType;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -74,19 +76,19 @@ public class User {
         return Period.between(dateOfBirth, currentDate).getYears();
     }
 
-    public void addToWatchList(Movie movie) {
+    public void addToWatchList(Movie movie) throws CommandException {
         if (getAge() < movie.getAgeLimit()) {
-            // TODO: throw exception
+            throw new CommandException(ErrorType.AgeLimitError);
         }
         if (watchList.containsKey(movie.getId())) {
-            // TODO: throw exception
+            throw new CommandException(ErrorType.MovieAlreadyExists);
         }
         watchList.put(movie.getId(), movie);
     }
 
-    public void removeFromWatchList(Movie movie) {
-        if (watchList.containsKey(movie.getId())) {
-            // TODO: throw exception
+    public void removeFromWatchList(Movie movie) throws CommandException {
+        if (!watchList.containsKey(movie.getId())) {
+            throw new CommandException(ErrorType.MovieNotFound);
         }
         watchList.remove(movie.getId());
     }
