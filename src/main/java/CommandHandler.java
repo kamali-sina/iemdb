@@ -19,40 +19,36 @@ public class CommandHandler {
                     break;
                 case "addActor":
                     Actor new_actor = objectMapper.readValue(data, Actor.class);
-                    ActorManager.addActor(new_actor);
+                    results.add(ActorManager.addActor(new_actor));
                     break;
                 case "addMovie":
                     Movie movie = objectMapper.readValue(data, Movie.class);
-                    // TODO: If the actors did not exist the corresponding error message must be shown and movie should not be added.
-                    MovieManager.addMovie(movie);
+                    results.add(MovieManager.addMovie(movie));
                     break;
                 case "addUser":
                     User new_user = objectMapper.readValue(data, User.class);
-                    UserManager.addUser(new_user);
+                    results.add(UserManager.addUser(new_user));
                     break;
                 case "addComment":
                     Comment comment = objectMapper.readValue(data, Comment.class);
-                    // TODO: If the user did not exist the corresponding error message must be shown.
-                    MovieManager.addComment(comment);
+                    results.add(MovieManager.addComment(comment));
                     break;
                 case "rateMovie":
                     Rating rating = objectMapper.readValue(data, Rating.class);
-                    MovieManager.addRating(rating);
-                    // TODO: Check rating value to be between 1 and 10
-                    // TODO: If value was wrong the corresponding error message must be shown.
-                    // TODO: If the user did not exist the corresponding error message must be shown.
-                    MovieManager.addRating(rating);
+                    results.add(MovieManager.addRating(rating));
                     break;
                 case "voteComment":
+                    Vote vote = objectMapper.readValue(data, Vote.class);
+                    // TODO: Add vote
                     // code block
                     break;
                 case "addToWatchList":
                     WatchList watchListItem = objectMapper.readValue(data, WatchList.class);
-                    UserManager.addToWatchList(watchListItem);
+                    results.add(UserManager.addToWatchList(watchListItem));
                     break;
                 case "removeFromWatchList":
                     WatchList watchListItemToRemove = objectMapper.readValue(data, WatchList.class);
-                    UserManager.removeFromWatchList(watchListItemToRemove);
+                    results.add(UserManager.removeFromWatchList(watchListItemToRemove));
                     break;
                 case "getMoviesList":
                     // code block
@@ -72,8 +68,9 @@ public class CommandHandler {
         } catch (CommandException commandException) {
             results.add("false");
             results.add(commandException.getMessage());
+            return results;
         }
-
+        results.add(0, "true");
         return results;
     }
 }
