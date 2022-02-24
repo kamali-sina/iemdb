@@ -24,15 +24,15 @@ public class ErrorMessages {
     public HashMap<String, String> messages = new HashMap<>();
 
     public ErrorMessages() {
-        messages.put("UserNotFound", ErrorMessages.UserNotFound);
-        messages.put("MovieNotFound", ErrorMessages.MovieNotFound);
-        messages.put("ActorNotFound", ErrorMessages.ActorNotFound);
-        messages.put("CommentNotFound", ErrorMessages.CommentNotFound);
-        messages.put("MovieAlreadyExists", ErrorMessages.MovieAlreadyExists);
-        messages.put("AgeLimitError", ErrorMessages.AgeLimitError);
-        messages.put("InvalidCommand", ErrorMessages.InvalidCommand);
-        messages.put("InvalidRateScore", ErrorMessages.InvalidRateScore);
-        messages.put("InvalidVoteValue", ErrorMessages.InvalidVoteValue);
-        messages.put("UserAlreadyExists", ErrorMessages.UserAlreadyExists);
+        messages.put(ErrorType.UserNotFound.name(), ErrorMessages.UserNotFound);
+        messages.put(ErrorType.MovieNotFound.name(), ErrorMessages.MovieNotFound);
+        messages.put(ErrorType.ActorNotFound.name(), ErrorMessages.ActorNotFound);
+        messages.put(ErrorType.CommentNotFound.name(), ErrorMessages.CommentNotFound);
+        messages.put(ErrorType.MovieAlreadyExists.name(), ErrorMessages.MovieAlreadyExists);
+        messages.put(ErrorType.AgeLimitError.name(), ErrorMessages.AgeLimitError);
+        messages.put(ErrorType.InvalidCommand.name(), ErrorMessages.InvalidCommand);
+        messages.put(ErrorType.InvalidRateScore.name(), ErrorMessages.InvalidRateScore);
+        messages.put(ErrorType.InvalidVoteValue.name(), ErrorMessages.InvalidVoteValue);
+        messages.put(ErrorType.UserAlreadyExists.name(), ErrorMessages.UserAlreadyExists);
     }
 }
