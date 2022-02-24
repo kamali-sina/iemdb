@@ -232,7 +232,7 @@ public class Movie {
         jsonGenerator.writeStringField("releaseDate", this.getReleaseDate());
         jsonGenerator.writeStringField("director", this.getDirector());
         jsonGenerator.writeFieldName("writers");
-        jsonGenerator.writeArray(this.getWriters().toArray(new String[0]), 0, this.getGenres().size());
+        jsonGenerator.writeArray(this.getWriters().toArray(new String[0]), 0, this.getWriters().size());
         jsonGenerator.writeFieldName("genres");
         jsonGenerator.writeArray(this.getGenres().toArray(new String[0]), 0, this.getGenres().size());
 
