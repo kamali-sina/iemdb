@@ -1,4 +1,7 @@
 public class Rating {
+    public static final Integer minScore = 1;
+    public static final Integer maxScore = 10;
+
     private String userEmail;
     private Integer movieId;
     private Integer score;
