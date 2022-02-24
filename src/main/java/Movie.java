@@ -208,7 +208,11 @@ public class Movie {
         jsonGenerator.writeStringField("director", this.getDirector());
         jsonGenerator.writeFieldName("genres");
         jsonGenerator.writeArray(this.getGenres().toArray(new String[0]), 0, this.getGenres().size());
-        jsonGenerator.writeNumberField("rating", this.calculateAverageRating());
+        if (this.ratingCount == 0) {
+            jsonGenerator.writeNullField("rating");
+        } else {
+            jsonGenerator.writeNumberField("rating", this.calculateAverageRating());
+        }
 
         jsonGenerator.writeEndObject();
         jsonGenerator.close();
@@ -237,8 +241,13 @@ public class Movie {
             jsonGenerator.writeRaw(ActorManager.getActor(actorId).getSerializedActorSummary());
         }
         jsonGenerator.writeEndArray();
-        
-        jsonGenerator.writeNumberField("rating", this.calculateAverageRating());
+
+        if (this.ratingCount == 0) {
+            jsonGenerator.writeNullField("rating");
+        } else {
+            jsonGenerator.writeNumberField("rating", this.calculateAverageRating());
+        }
+
         jsonGenerator.writeNumberField("duration", this.getDuration());
         jsonGenerator.writeNumberField("ageLimit", this.getAgeLimit());
 
