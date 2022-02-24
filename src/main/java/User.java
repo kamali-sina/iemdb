@@ -1,11 +1,17 @@
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import exception.CommandException;
 import exception.ErrorType;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -65,9 +71,21 @@ public class User {
         System.out.println(this.birthDate);
     }
 
-    public String getSerializedWatchlist() {
-        //TODO: complete this
-        return null;
+    public String getSerializedWatchlist() throws IOException {
+        JsonFactory factory = new JsonFactory();
+        StringWriter jsonObjectWriter = new StringWriter();
+        JsonGenerator jsonGenerator = factory.createGenerator(jsonObjectWriter);
+
+        jsonGenerator.writeStartObject();
+        jsonGenerator.writeArrayFieldStart("WatchList");
+        Collection<Movie> movies = watchList.values();
+        for (Movie movie: movies) {
+            //TODO:
+        }
+        jsonGenerator.writeEndArray();
+        jsonGenerator.writeEndObject();
+        jsonGenerator.close();
+        return jsonObjectWriter.toString();
     }
 
     public int getAge() {
