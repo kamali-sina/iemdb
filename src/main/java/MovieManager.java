@@ -20,14 +20,14 @@ public class MovieManager {
     }
 
     public static String addMovie(Movie movie) throws CommandException {
-        String response = "movie added successfully";
+        String response = "\"movie added successfully\"";
 
         for (Integer actorId : movie.getCast()) {
             ActorManager.getActor(actorId);
         }
 
         if (MovieManager.movies.containsKey(movie.getId())) {
-            response = "movie updated successfully";
+            response = "\"movie updated successfully\"";
         }
 
         MovieManager.movies.put(movie.getId(), movie);
@@ -39,7 +39,7 @@ public class MovieManager {
         Movie movie = getMovie(comment.getMovieId());
 
         Integer commentId = movie.addComment(comment);
-        return "comment with id " + commentId.toString() + " added successfully";
+        return "\"comment with id " + commentId.toString() + " added successfully\"";
     }
 
     public static String addRating(Rating rating) throws CommandException {
@@ -47,7 +47,7 @@ public class MovieManager {
         Movie movie = getMovie(rating.getMovieId());
 
         movie.addRating(rating, movie);
-        return "movie rated successfully";
+        return "\"movie rated successfully\"";
     }
 
     public static String getMoviesList() throws IOException {

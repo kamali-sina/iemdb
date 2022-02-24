@@ -19,9 +19,9 @@ public class ActorManager {
     }
 
     public static String addActor(Actor actor) {
-        String response = "actor added successfully";
+        String response = "\"actor added successfully\"";
         if (ActorManager.doesActorExist(actor.getId())) {
-            response = "actor updated successfully";
+            response = "\"actor updated successfully\"";
         }
         ActorManager.actors.put(actor.getId(), actor);
         return response;

@@ -26,7 +26,7 @@ public class UserManager {
         }
 
         UserManager.users.put(user.getEmail(), user);
-         return  "user added successfully";
+         return  "\"user added successfully\"";
     }
 
     public static String addToWatchList(WatchList watchList) throws CommandException {
@@ -34,7 +34,7 @@ public class UserManager {
         Movie movie = MovieManager.getMovie(watchList.getMovieId());
 
         user.addToWatchList(movie);
-        return "movie added to watchlist successfully";
+        return "\"movie added to watchlist successfully\"";
     }
 
     public static String removeFromWatchList(WatchList watchList) throws CommandException {
@@ -42,7 +42,7 @@ public class UserManager {
         Movie movie = MovieManager.getMovie(watchList.getMovieId());
 
         user.removeFromWatchList(movie);
-        return "movie removed from watchlist successfully";
+        return "\"movie removed from watchlist successfully\"";
     }
 
     public static String addVote(Vote vote) throws CommandException {
