@@ -1,3 +1,7 @@
+import exception.CommandException;
+import exception.ErrorType;
+
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -10,12 +14,13 @@ public class Movie {
     private ArrayList<String> writers;
     private ArrayList<String> genres;
     private ArrayList<Integer> cast;
-    private Float imdbRate;
+    private Double imdbRate;
     private Integer duration;
     private Integer ageLimit;
     private HashMap<String, Rating> ratings = new HashMap<>();
     private Integer ratingCount = 0;
     private HashMap<String, ArrayList<Comment>> comments = new HashMap<>();
+    private Double averageRating;
 
     public Integer getId() {
         return id;
@@ -81,11 +86,11 @@ public class Movie {
         this.cast = cast;
     }
 
-    public Float getImdbRate() {
+    public Double getImdbRate() {
         return imdbRate;
     }
 
-    public void setImdbRate(Float imdbRate) {
+    public void setImdbRate(Double imdbRate) {
         this.imdbRate = imdbRate;
     }
 
@@ -129,9 +134,17 @@ public class Movie {
         this.comments = comments;
     }
 
-    public void addComment(Comment comment) {
-        // java.util.UUID.randomUUID(); TODO: ADD unique ID for each comment.
-        // TODO: Add date and time for each comment.
+    public Double getAverageRatingRate() {
+        return averageRating;
+    }
+
+    public void setAverageRating(Double averageRating) {
+        this.averageRating = averageRating;
+    }
+
+    public Integer addComment(Comment comment) {
+        comment.setId(Comment.getCount());
+        comment.setDate(LocalDate.now());
 
         ArrayList<Comment> userComments;
         // Retrieve user comments
@@ -147,13 +160,35 @@ public class Movie {
 
         // Update user comments
         this.comments.put(comment.getUserEmail(), userComments);
+        return comment.getId();
     }
 
-    public void addRating(Rating rating) {
+    public void addRating(Rating rating, Movie movie) throws CommandException {
         if (!this.ratings.containsKey(rating.getUserEmail())) {
             this.ratingCount += 1;
         }
+
+        Integer ratingScore = rating.getScore();
+        if (!(Rating.minScore <= ratingScore && ratingScore <= Rating.maxScore)) {
+            throw new CommandException(ErrorType.InvalidRateScore);
+        }
+
         this.ratings.put(rating.getUserEmail(), rating);
-        // TODO: Update movie's average rating
+        movie.calculateAverageRating();
+    }
+
+    private static double round (double value, int precision) {
+        int scale = (int) Math.pow(10, precision);
+        return (double) Math.round(value * scale) / scale;
+    }
+
+    public Double calculateAverageRating() {
+        Double averageRating = 0.0;
+        for (Rating rating : this.ratings.values()) {
+            averageRating += rating.getScore();
+        }
+        averageRating /= this.ratings.values().size();
+        this.averageRating = round(averageRating, 1);
+        return this.averageRating;
     }
 }
