@@ -1,6 +1,11 @@
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
 import exception.CommandException;
 import exception.ErrorType;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.Collection;
 import java.util.HashMap;
 
 public class MovieManager {
@@ -43,5 +48,43 @@ public class MovieManager {
 
         movie.addRating(rating, movie);
         return "movie rated successfully";
+    }
+
+    public static String getMoviesList() throws IOException {
+        JsonFactory factory = new JsonFactory();
+        StringWriter jsonObjectWriter = new StringWriter();
+        JsonGenerator jsonGenerator = factory.createGenerator(jsonObjectWriter);
+
+        jsonGenerator.writeStartObject();
+        jsonGenerator.writeArrayFieldStart("MoviesList");
+        Collection<Movie> allMovies = MovieManager.movies.values();
+        for (Movie movie: allMovies) {
+            //TODO: get summery
+        }
+        jsonGenerator.writeEndArray();
+        jsonGenerator.writeEndObject();
+        jsonGenerator.close();
+        return jsonObjectWriter.toString();
+    }
+
+    public static String getMoviesByGenre() throws IOException {
+        String genre = ""; //TODO: get this
+        JsonFactory factory = new JsonFactory();
+        StringWriter jsonObjectWriter = new StringWriter();
+        JsonGenerator jsonGenerator = factory.createGenerator(jsonObjectWriter);
+
+        jsonGenerator.writeStartObject();
+        jsonGenerator.writeArrayFieldStart("MoviesListByGenre");
+        Collection<Movie> allMovies = MovieManager.movies.values();
+        for (Movie movie: allMovies) {
+            if (movie.getGenres().contains(genre)) {
+                //TODO: get summery
+//                jsonGenerator.writeRawValue();
+            }
+        }
+        jsonGenerator.writeEndArray();
+        jsonGenerator.writeEndObject();
+        jsonGenerator.close();
+        return jsonObjectWriter.toString();
     }
 }

@@ -50,7 +50,7 @@ public class CommandHandler {
                     results.add(UserManager.removeFromWatchList(watchListItemToRemove));
                     break;
                 case "getMoviesList":
-                    // code block
+                    results.add(MovieManager.getMoviesList());
                     break;
                 case "getMovieById":
                     // code block
@@ -59,7 +59,8 @@ public class CommandHandler {
                     // code block
                     break;
                 case "getWatchList":
-                    // code block
+                    ShowWatchListInput showWatchListInput = objectMapper.readValue(data, ShowWatchListInput.class);
+                    results.add(UserManager.getWatchList(showWatchListInput));
                     break;
                 default:
                     throw new CommandException(ErrorType.InvalidCommand);
