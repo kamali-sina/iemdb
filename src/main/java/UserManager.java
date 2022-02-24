@@ -60,7 +60,7 @@ public class UserManager {
         throw new CommandException(ErrorType.CommentNotFound);
     }
 
-    public static String getWatchList(ShowWatchListInput showWatchListInput) throws CommandException, IOException {
+    public static String getWatchList(GetWatchListInput showWatchListInput) throws CommandException, IOException {
         User user = UserManager.getUser(showWatchListInput.getUserEmail());
         return user.getSerializedWatchlist();
     }

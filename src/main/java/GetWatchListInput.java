@@ -1,4 +1,4 @@
-public class ShowWatchListInput {
+public class GetWatchListInput {
     private String userEmail;
 
     public String getUserEmail() {

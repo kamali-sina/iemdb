@@ -14,58 +14,56 @@ public class CommandHandler {
         ArrayList<String> results = new ArrayList<>();
 
         try {
-            switch (name) {
-                case EMPTY_STRING:
-                    break;
-                case "addActor":
-                    Actor new_actor = objectMapper.readValue(data, Actor.class);
+            switch (CommandName) {
+                case "addActor" -> {
+                    Actor new_actor = objectMapper.readValue(CommandData, Actor.class);
                     results.add(ActorManager.addActor(new_actor));
-                    break;
-                case "addMovie":
-                    Movie movie = objectMapper.readValue(data, Movie.class);
+                }
+                case "addMovie" -> {
+                    Movie movie = objectMapper.readValue(CommandData, Movie.class);
                     results.add(MovieManager.addMovie(movie));
-                    break;
-                case "addUser":
-                    User new_user = objectMapper.readValue(data, User.class);
+                }
+                case "addUser" -> {
+                    User new_user = objectMapper.readValue(CommandData, User.class);
                     results.add(UserManager.addUser(new_user));
-                    break;
-                case "addComment":
-                    Comment comment = objectMapper.readValue(data, Comment.class);
+                }
+                case "addComment" -> {
+                    Comment comment = objectMapper.readValue(CommandData, Comment.class);
                     results.add(MovieManager.addComment(comment));
-                    break;
-                case "rateMovie":
-                    Rating rating = objectMapper.readValue(data, Rating.class);
+                }
+                case "rateMovie" -> {
+                    Rating rating = objectMapper.readValue(CommandData, Rating.class);
                     results.add(MovieManager.addRating(rating));
-                    break;
-                case "voteComment":
-                    Vote vote = objectMapper.readValue(data, Vote.class);
+                }
+                case "voteComment" -> {
+                    Vote vote = objectMapper.readValue(CommandData, Vote.class);
                     results.add(UserManager.addVote(vote));
-                    break;
-                case "addToWatchList":
-                    WatchList watchListItem = objectMapper.readValue(data, WatchList.class);
+                }
+                case "addToWatchList" -> {
+                    WatchList watchListItem = objectMapper.readValue(CommandData, WatchList.class);
                     results.add(UserManager.addToWatchList(watchListItem));
-                    break;
-                case "removeFromWatchList":
-                    WatchList watchListItemToRemove = objectMapper.readValue(data, WatchList.class);
+                }
+                case "removeFromWatchList" -> {
+                    WatchList watchListItemToRemove = objectMapper.readValue(CommandData, WatchList.class);
                     results.add(UserManager.removeFromWatchList(watchListItemToRemove));
-                    break;
-                case "getMoviesList":
-                    results.add(MovieManager.getMoviesList());
-                    break;
-                case "getMovieById":
-                    // code block
-                    break;
-                case "getMoviesByGenre":
-                    // code block
-                    break;
-                case "getWatchList":
-                    ShowWatchListInput showWatchListInput = objectMapper.readValue(data, ShowWatchListInput.class);
-                    results.add(UserManager.getWatchList(showWatchListInput));
-                    break;
-                default:
-                    throw new CommandException(ErrorType.InvalidCommand);
+                }
+                case "getMoviesList" -> results.add(MovieManager.getMoviesList());
+                case "getMovieById" -> {
+                    GetMovieByIdInput getMovieByIdInput = objectMapper.readValue(CommandData, GetMovieByIdInput.class);
+                    results.add(MovieManager.getMovieById(getMovieByIdInput));
+                }
+                case "getMoviesByGenre" -> {
+                    GetMoviesByGenreInput getMoviesByGenreInput =
+                            objectMapper.readValue(CommandData, GetMoviesByGenreInput.class);
+                    results.add(MovieManager.getMoviesByGenre(getMoviesByGenreInput));
+                }
+                case "getWatchList" -> {
+                    GetWatchListInput getWatchListInput = objectMapper.readValue(CommandData, GetWatchListInput.class);
+                    results.add(UserManager.getWatchList(getWatchListInput));
+                }
+                default -> throw new CommandException(ErrorType.InvalidCommand);
             }
-        } catch (CommandException commandException) {
+        } catch (Exception exception) {
             results.add("false");
             results.add(commandException.getMessage());
             return results;
