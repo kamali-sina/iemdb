@@ -4,6 +4,7 @@ import exception.ErrorType;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class UserManager {
     static final HashMap<String, User> users = new HashMap<>();
@@ -49,12 +50,9 @@ public class UserManager {
         UserManager.getUser(vote.getUserEmail());
 
         for (Movie movie : MovieManager.movies.values()) {
-            for (ArrayList<Comment> userComments : movie.getComments().values()) {
-                for (Comment comment : userComments) {
-                    if (comment.getId() == Integer.parseInt(vote.getCommentId())) {
-                        return comment.addVote(vote);
-                    }
-                }
+            Comment comment = movie.findComment(vote.getCommentId());
+            if (comment != null) {
+                return comment.addVote(vote);
             }
         }
         throw new CommandException(ErrorType.CommentNotFound);
