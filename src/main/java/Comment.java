@@ -16,7 +16,7 @@ public class Comment {
     private String text;
     private Integer id;
     private LocalDate date;
-    private HashMap<String, Vote> votes;
+    private HashMap<String, Vote> votes = new HashMap<>();
     private Integer numberOfLikes = 0;
     private Integer numberOfDislikes = 0;
 
