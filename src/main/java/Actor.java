@@ -1,7 +1,11 @@
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.Date;
 
 public class Actor {
@@ -47,5 +51,20 @@ public class Actor {
         System.out.println(this.name);
         System.out.println(this.birthDate);
         System.out.println(this.nationality);
+    }
+
+    public String getSerializedActorSummary() throws IOException {
+        JsonFactory factory = new JsonFactory();
+        StringWriter jsonObjectWriter = new StringWriter();
+        JsonGenerator jsonGenerator = factory.createGenerator(jsonObjectWriter);
+
+        jsonGenerator.writeStartObject();
+
+        jsonGenerator.writeNumberField("actorId", this.getId());
+        jsonGenerator.writeStringField("name", this.getName());
+
+        jsonGenerator.writeEndObject();
+        jsonGenerator.close();
+        return jsonObjectWriter.toString();
     }
 }
