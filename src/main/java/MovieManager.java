@@ -67,8 +67,13 @@ public class MovieManager {
         return jsonObjectWriter.toString();
     }
 
-    public static String getMoviesByGenre() throws IOException {
-        String genre = ""; //TODO: get this
+    public static String getMovieById(GetMovieByIdInput getMovieByIdInput) throws IOException, CommandException {
+        Integer movieId = getMovieByIdInput.getMovieId();
+        return MovieManager.getMovie(movieId).getSerializedMovieWithDetails();
+    }
+
+    public static String getMoviesByGenre(GetMoviesByGenreInput getMoviesByGenreInput) throws IOException {
+        String genre = getMoviesByGenreInput.getGenre();
         JsonFactory factory = new JsonFactory();
         StringWriter jsonObjectWriter = new StringWriter();
         JsonGenerator jsonGenerator = factory.createGenerator(jsonObjectWriter);
