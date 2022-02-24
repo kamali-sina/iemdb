@@ -19,7 +19,7 @@ public class CommandHandler {
                     break;
                 case "addActor":
                     Actor new_actor = objectMapper.readValue(data, Actor.class);
-                    new_actor.printData();
+                    ActorManager.addActor(new_actor);
                     break;
                 case "addMovie":
                     Movie movie = objectMapper.readValue(data, Movie.class);
@@ -28,7 +28,7 @@ public class CommandHandler {
                     break;
                 case "addUser":
                     User new_user = objectMapper.readValue(data, User.class);
-                    new_user.printData();
+                    UserManager.addUser(new_user);
                     break;
                 case "addComment":
                     Comment comment = objectMapper.readValue(data, Comment.class);
@@ -47,10 +47,12 @@ public class CommandHandler {
                     // code block
                     break;
                 case "addToWatchList":
-                    // code block
+                    WatchList watchListItem = objectMapper.readValue(data, WatchList.class);
+                    UserManager.addToWatchList(watchListItem);
                     break;
                 case "removeFromWatchList":
-                    // code block
+                    WatchList watchListItemToRemove = objectMapper.readValue(data, WatchList.class);
+                    UserManager.removeFromWatchList(watchListItemToRemove);
                     break;
                 case "getMoviesList":
                     // code block
@@ -71,6 +73,7 @@ public class CommandHandler {
             results.add("false");
             results.add(commandException.getMessage());
         }
+
         return results;
     }
 }
