@@ -62,7 +62,7 @@ public class CommandHandler {
             }
         } catch (Exception exception) {
             results.add("false");
-            results.add(commandException.getMessage());
+            results.add(exception.getMessage());
             return results;
         }
         results.add(0, "true");
