@@ -5,6 +5,7 @@ import exception.ErrorType;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
@@ -46,7 +47,7 @@ public class MovieManager {
         UserManager.getUser(rating.getUserEmail());
         Movie movie = getMovie(rating.getMovieId());
 
-        movie.addRating(rating, movie);
+        movie.addRating(rating);
         return "\"movie rated successfully\"";
     }
 
@@ -72,23 +73,31 @@ public class MovieManager {
         return MovieManager.getMovie(movieId).getSerializedMovieWithDetails();
     }
 
-    public static String getMoviesByGenre(GetMoviesByGenreInput getMoviesByGenreInput) throws IOException {
-        String genre = getMoviesByGenreInput.getGenre();
+    public static String serializeMoviesListByGenre(ArrayList<Movie> movies) throws IOException {
         JsonFactory factory = new JsonFactory();
         StringWriter jsonObjectWriter = new StringWriter();
         JsonGenerator jsonGenerator = factory.createGenerator(jsonObjectWriter);
 
         jsonGenerator.writeStartObject();
         jsonGenerator.writeArrayFieldStart("MoviesListByGenre");
-        Collection<Movie> allMovies = MovieManager.movies.values();
-        for (Movie movie: allMovies) {
-            if (movie.getGenres().contains(genre)) {
-                jsonGenerator.writeRawValue(movie.getSerializedMovieSummary());
-            }
+        for (Movie movie : movies) {
+            jsonGenerator.writeRawValue(movie.getSerializedMovieSummary());
         }
         jsonGenerator.writeEndArray();
         jsonGenerator.writeEndObject();
         jsonGenerator.close();
         return jsonObjectWriter.toString();
+    }
+
+    public static String getMoviesByGenre(GetMoviesByGenreInput getMoviesByGenreInput) throws IOException {
+        String genre = getMoviesByGenreInput.getGenre();
+
+        ArrayList<Movie> moviesByGenre = new ArrayList<>();
+        for (Movie movie: MovieManager.movies.values()) {
+            if (movie.getGenres().contains(genre)) {
+                moviesByGenre.add(movie);
+            }
+        }
+        return serializeMoviesListByGenre(moviesByGenre);
     }
 }
