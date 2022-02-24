@@ -1,9 +1,6 @@
 import java.util.ArrayList;
 
 public class IEMDB {
-    private static final ActorManager actorManager = new ActorManager();
-    private static final MovieManager movieManager = new MovieManager();
-    private static final UserManager userManager = new UserManager();
 
     public static void main(String[] args) {
         try {
@@ -13,7 +10,7 @@ public class IEMDB {
                 String commandData = commandArgs.get(1);
 
                 ArrayList<String> results =
-                        CommandHandler.handleCommand(actorManager, movieManager, userManager, commandName, commandData);
+                        CommandHandler.handleCommand(commandName, commandData);
                 OutputHandler.handleOutput(results);
             }
         } catch (Exception exception) {
