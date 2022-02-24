@@ -1,6 +1,10 @@
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
 import exception.CommandException;
 import exception.ErrorType;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.time.LocalDate;
 import java.util.HashMap;
 
@@ -117,5 +121,23 @@ public class Comment {
                 numberOfDislikes -= newValue;
             }
         }
+    }
+
+    public String getSerializedCommentWithDetails() throws IOException {
+        JsonFactory factory = new JsonFactory();
+        StringWriter jsonObjectWriter = new StringWriter();
+        JsonGenerator jsonGenerator = factory.createGenerator(jsonObjectWriter);
+
+        jsonGenerator.writeStartObject();
+
+        jsonGenerator.writeNumberField("commentId", this.getId());
+        jsonGenerator.writeStringField("userEmail", this.getUserEmail());
+        jsonGenerator.writeStringField("text", this.getText());
+        jsonGenerator.writeNumberField("like", this.getNumberOfLikes());
+        jsonGenerator.writeNumberField("dislike", this.getNumberOfDislikes());
+
+        jsonGenerator.writeEndObject();
+        jsonGenerator.close();
+        return jsonObjectWriter.toString();
     }
 }
