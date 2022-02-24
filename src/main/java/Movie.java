@@ -8,6 +8,7 @@ import java.io.StringWriter;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class Movie {
     private Integer id;
@@ -262,5 +263,16 @@ public class Movie {
         jsonGenerator.writeEndObject();
         jsonGenerator.close();
         return jsonObjectWriter.toString();
+    }
+
+    public Comment findComment(Integer commentId) {
+        for (ArrayList<Comment> userComments : this.getComments().values()) {
+            for (Comment comment : userComments) {
+                if (Objects.equals(comment.getId(), commentId)) {
+                    return comment;
+                }
+            }
+        }
+        return null;
     }
 }
