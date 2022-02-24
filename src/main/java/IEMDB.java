@@ -14,7 +14,7 @@ public class IEMDB {
 
                 ArrayList<String> results =
                         CommandHandler.handleCommand(actorManager, movieManager, userManager, commandName, commandData);
-                // outputHandler.handleOutput(results);
+                OutputHandler.handleOutput(results);
             }
         } catch (Exception exception) {
             System.out.println(exception.getMessage());
