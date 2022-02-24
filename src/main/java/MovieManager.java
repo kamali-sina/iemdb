@@ -19,4 +19,10 @@ public class MovieManager {
         movie.addComment(comment);
         // return "comment with id " + comment.getCommentId().toString() + " added successfully";
     }
+
+    public static void addRating(Rating rating) {
+        // TODO: If the movie did not exist the corresponding error message must be shown.
+        Movie movie = getMovie(rating.getMovieId());
+        movie.addRating(rating);
+    }
 }

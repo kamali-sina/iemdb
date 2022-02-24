@@ -34,13 +34,11 @@ public class CommandHandler {
                 break;
             case "rateMovie":
                 Rating rating = objectMapper.readValue(data, Rating.class);
-                // TODO: Rating should be added to corresponding movie.
+                MovieManager.addRating(rating);
                 // TODO: Check rating value to be between 1 and 10
                 // TODO: If value was wrong the corresponding error message must be shown.
-                // TODO: Recalculate movie's average rating
-                // TODO: Check if user has rated the movie before, replace rating and update average rating
-                // TODO: If the movie did not exist the corresponding error message must be shown.
-                // TODO: If the actor did not exist the corresponding error message must be shown.
+                // TODO: If the user did not exist the corresponding error message must be shown.
+                MovieManager.addRating(rating);
                 break;
             case "voteComment":
                 // code block
