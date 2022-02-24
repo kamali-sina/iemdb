@@ -5,7 +5,7 @@ import java.util.Date;
 
 public class Vote {
     private String userEmail;
-    private String commentId;
+    private Integer commentId;
     private Integer vote;
 
     public String getUserEmail() {
@@ -16,11 +16,11 @@ public class Vote {
         this.userEmail = userEmail;
     }
 
-    public String getCommentId() {
+    public Integer getCommentId() {
         return commentId;
     }
 
-    public void setCommentId(String commentId) {
+    public void setCommentId(Integer commentId) {
         this.commentId = commentId;
     }
 
