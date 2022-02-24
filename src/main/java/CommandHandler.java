@@ -29,11 +29,8 @@ public class CommandHandler {
                 break;
             case "addComment":
                 Comment comment = objectMapper.readValue(data, Comment.class);
-                // TODO: Comment should be added to corresponding movie.
-                // java.util.UUID.randomUUID(); TODO: ADD unique ID for each comment.
-                // TODO: Add date and time for each comment.
-                // TODO: If the movie did not exist the corresponding error message must be shown.
                 // TODO: If the user did not exist the corresponding error message must be shown.
+                MovieManager.addComment(comment);
                 break;
             case "rateMovie":
                 Rating rating = objectMapper.readValue(data, Rating.class);

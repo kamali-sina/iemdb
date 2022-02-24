@@ -12,4 +12,11 @@ public class MovieManager {
         // TODO: Add response
         // return "movie added successfully";
     }
+
+    public static void addComment(Comment comment) {
+        // TODO: If the movie did not exist the corresponding error message must be shown.
+        Movie movie = getMovie(comment.getMovieId());
+        movie.addComment(comment);
+        // return "comment with id " + comment.getCommentId().toString() + " added successfully";
+    }
 }
