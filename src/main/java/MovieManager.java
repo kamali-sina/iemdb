@@ -9,5 +9,7 @@ public class MovieManager {
 
     public static void addMovie(Movie movie) {
         MovieManager.movies.put(movie.getId(), movie);
+        // TODO: Add response
+        // return "movie added successfully";
     }
 }

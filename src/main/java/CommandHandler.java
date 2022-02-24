@@ -20,9 +20,7 @@ public class CommandHandler {
                 break;
             case "addMovie":
                 Movie movie = objectMapper.readValue(data, Movie.class);
-                // TODO: Add list of ratings as attribute.
-                // TODO: Add ratingCount attribute.
-                // TODO: Add list of comments as attribute.
+                // TODO: If the actors did not exist the corresponding error message must be shown and movie should not be added.
                 MovieManager.addMovie(movie);
                 break;
             case "addUser":
