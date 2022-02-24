@@ -97,13 +97,14 @@ public class Comment {
         if (!((-1 <= voteValue) && (voteValue <= 1))) {
             throw new CommandException(ErrorType.InvalidVoteValue);
         }
-
         if (votes.containsKey(vote.getUserEmail())) {
             this.updateVotes(votes.get(vote.getUserEmail()).getVote(), vote.getVote());
+            this.votes.put(vote.getUserEmail(), vote);
+            return "\"comment vote updated successfully.\"";
         }
         this.votes.put(vote.getUserEmail(), vote);
         this.updateVotes(0, vote.getVote());
-        return "comment voted successfully";
+        return "\"comment voted successfully.\"";
     }
 
     public void updateVotes(Integer previousValue, Integer newValue) {
