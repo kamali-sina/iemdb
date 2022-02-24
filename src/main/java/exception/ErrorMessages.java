@@ -12,6 +12,7 @@ public class ErrorMessages {
     private static final String InvalidCommand = "Command does not have valid structure.";
     private static final String InvalidRateScore = "Rating does not have valid value";
     private static final String InvalidVoteValue = "Vote does not have valid value.";
+    private static final String UserAlreadyExists = "User with this email address already exists.";
 
     public HashMap<String, String> messages = new HashMap<>();
 
@@ -25,5 +26,6 @@ public class ErrorMessages {
         messages.put("InvalidCommand", ErrorMessages.InvalidCommand);
         messages.put("InvalidRateScore", ErrorMessages.InvalidRateScore);
         messages.put("InvalidVoteValue", ErrorMessages.InvalidVoteValue);
+        messages.put("UserAlreadyExists", ErrorMessages.UserAlreadyExists);
     }
 }
