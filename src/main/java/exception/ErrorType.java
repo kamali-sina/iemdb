@@ -9,5 +9,6 @@ public enum ErrorType {
     AgeLimitError,
     InvalidCommand,
     InvalidRateScore,
-    InvalidVoteValue
+    InvalidVoteValue,
+    UserAlreadyExists,
 }
