@@ -1,6 +1,7 @@
 import exception.CommandException;
 import exception.ErrorType;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class UserManager {
@@ -41,5 +42,20 @@ public class UserManager {
 
         user.removeFromWatchList(movie);
         return "movie removed from watchlist successfully";
+    }
+
+    public static String addVote(Vote vote) throws CommandException {
+        UserManager.getUser(vote.getUserEmail());
+
+        for (Movie movie : MovieManager.movies.values()) {
+            for (ArrayList<Comment> userComments : movie.getComments().values()) {
+                for (Comment comment : userComments) {
+                    if (comment.getId() == Integer.parseInt(vote.getCommentId())) {
+                        return comment.addVote(vote);
+                    }
+                }
+            }
+        }
+        throw new CommandException(ErrorType.CommentNotFound);
     }
 }

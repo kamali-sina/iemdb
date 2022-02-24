@@ -39,8 +39,7 @@ public class CommandHandler {
                     break;
                 case "voteComment":
                     Vote vote = objectMapper.readValue(data, Vote.class);
-                    // TODO: Add vote
-                    // code block
+                    results.add(UserManager.addVote(vote));
                     break;
                 case "addToWatchList":
                     WatchList watchListItem = objectMapper.readValue(data, WatchList.class);
