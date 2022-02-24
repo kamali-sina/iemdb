@@ -167,7 +167,7 @@ public class Movie {
         return comment.getId();
     }
 
-    public void addRating(Rating rating, Movie movie) throws CommandException {
+    public void addRating(Rating rating) throws CommandException {
         if (!this.ratings.containsKey(rating.getUserEmail())) {
             this.ratingCount += 1;
         }
@@ -178,7 +178,7 @@ public class Movie {
         }
 
         this.ratings.put(rating.getUserEmail(), rating);
-        movie.calculateAverageRating();
+        this.calculateAverageRating();
     }
 
     private static double round (double value, int precision) {
