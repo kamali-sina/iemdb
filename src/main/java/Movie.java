@@ -238,7 +238,7 @@ public class Movie {
 
         jsonGenerator.writeArrayFieldStart("cast");
         for (Integer actorId : this.getCast()) {
-            jsonGenerator.writeRaw(ActorManager.getActor(actorId).getSerializedActorSummary());
+            jsonGenerator.writeRawValue(ActorManager.getActor(actorId).getSerializedActorSummary());
         }
         jsonGenerator.writeEndArray();
 
@@ -254,7 +254,7 @@ public class Movie {
         jsonGenerator.writeArrayFieldStart("comments");
         for (ArrayList<Comment> userComments : this.getComments().values()) {
             for (Comment comment : userComments) {
-                jsonGenerator.writeRaw(comment.getSerializedCommentWithDetails());
+                jsonGenerator.writeRawValue(comment.getSerializedCommentWithDetails());
             }
         }
         jsonGenerator.writeEndArray();
