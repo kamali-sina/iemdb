@@ -3,9 +3,9 @@ package exception;
 import java.util.HashMap;
 
 public class ErrorMessages {
-    private static final String UserNotFound = "No user with this id found.";
-    private static final String MovieNotFound = "No movie with this id found.";
-    private static final String ActorNotFound = "No actor with this id found.";
+    private static final String UserNotFound = "User does not exist.";
+    private static final String MovieNotFound = "Movie does not exist.";
+    private static final String ActorNotFound = "Actor does not exist.";
     private static final String CommentNotFound = "No comment with this id found.";
     private static final String MovieAlreadyExists = "Movie is already added to watch list.";
     private static final String AgeLimitError = "User's age does not meet requirements.";
