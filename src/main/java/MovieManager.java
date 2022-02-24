@@ -59,7 +59,7 @@ public class MovieManager {
         jsonGenerator.writeArrayFieldStart("MoviesList");
         Collection<Movie> allMovies = MovieManager.movies.values();
         for (Movie movie: allMovies) {
-            //TODO: get summery
+            jsonGenerator.writeRawValue(movie.getSerializedMovieSummary());
         }
         jsonGenerator.writeEndArray();
         jsonGenerator.writeEndObject();
@@ -78,8 +78,7 @@ public class MovieManager {
         Collection<Movie> allMovies = MovieManager.movies.values();
         for (Movie movie: allMovies) {
             if (movie.getGenres().contains(genre)) {
-                //TODO: get summery
-//                jsonGenerator.writeRawValue();
+                jsonGenerator.writeRawValue(movie.getSerializedMovieSummary());
             }
         }
         jsonGenerator.writeEndArray();
