@@ -80,7 +80,7 @@ public class User {
         jsonGenerator.writeArrayFieldStart("WatchList");
         Collection<Movie> movies = watchList.values();
         for (Movie movie: movies) {
-            //TODO:
+            jsonGenerator.writeRawValue(movie.getSerializedMovieSummary());
         }
         jsonGenerator.writeEndArray();
         jsonGenerator.writeEndObject();
