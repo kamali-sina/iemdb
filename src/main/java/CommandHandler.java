@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import exception.*;
 
 public class CommandHandler {
-    private static final String EMPTY_STRING = "";
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     public static ArrayList<String> handleCommand(String CommandName, String CommandData) throws Exception {
