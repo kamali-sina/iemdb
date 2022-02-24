@@ -1,12 +1,15 @@
+import exception.CommandException;
+import exception.ErrorType;
+
 import java.util.HashMap;
 
 public class ActorManager {
     static final HashMap<Integer, Actor> actors = new HashMap<>();
 
-    public static Actor getActor(Integer actorId) {
+    public static Actor getActor(Integer actorId) throws CommandException {
         Actor actor = ActorManager.actors.get(actorId);
         if (actor == null) {
-//            TODO: throw
+            throw new CommandException(ErrorType.ActorNotFound);
         }
         return actor;
     }
