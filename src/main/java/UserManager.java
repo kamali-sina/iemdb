@@ -1,6 +1,7 @@
 import exception.CommandException;
 import exception.ErrorType;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -57,5 +58,10 @@ public class UserManager {
             }
         }
         throw new CommandException(ErrorType.CommentNotFound);
+    }
+
+    public static String getWatchList(ShowWatchListInput showWatchListInput) throws CommandException, IOException {
+        User user = UserManager.getUser(showWatchListInput.getUserEmail());
+        return user.getSerializedWatchlist();
     }
 }
