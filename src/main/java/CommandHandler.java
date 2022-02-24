@@ -8,9 +8,7 @@ public class CommandHandler {
     private static final String EMPTY_STRING = "";
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    public static ArrayList<String> handleCommand(ActorManager actorManager, MovieManager movieManager,
-                                                  UserManager userManager, String name, String data) throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
+    public static ArrayList<String> handleCommand(String CommandName, String CommandData) throws Exception {
         ArrayList<String> results = new ArrayList<>();
 
         try {
