@@ -13,8 +13,8 @@ public class Rating {
 
     @JsonCreator
     public Rating(@JsonProperty("userEmail") String userEmail,
-                @JsonProperty("movieId") Integer movieId,
-                @JsonProperty("score") Integer score) throws CommandException {
+                  @JsonProperty("movieId") Integer movieId,
+                  @JsonProperty("score") Integer score) throws CommandException {
         if (userEmail == null ||
                 movieId == null ||
                 score == null) {
