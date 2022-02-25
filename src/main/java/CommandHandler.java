@@ -1,31 +1,29 @@
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DatabindException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import exception.CommandException;
+import exception.ErrorType;
 
 import java.util.ArrayList;
-
-import exception.*;
 
 public class CommandHandler {
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    public static ArrayList<String> handleCommand(String CommandName, String CommandData) throws Exception {
+    public static ArrayList<String> handleCommand(String CommandName, String CommandData) {
         ArrayList<String> results = new ArrayList<>();
 
         try {
             switch (CommandName) {
                 case "addActor" -> {
-                    Actor new_actor = objectMapper.readValue(CommandData, Actor.class);
-                    results.add(ActorManager.addActor(new_actor));
+                    Actor actor = objectMapper.readValue(CommandData, Actor.class);
+                    results.add(ActorManager.addActor(actor));
                 }
                 case "addMovie" -> {
                     Movie movie = objectMapper.readValue(CommandData, Movie.class);
                     results.add(MovieManager.addMovie(movie));
                 }
                 case "addUser" -> {
-                    User new_user = objectMapper.readValue(CommandData, User.class);
-                    results.add(UserManager.addUser(new_user));
+                    User user = objectMapper.readValue(CommandData, User.class);
+                    results.add(UserManager.addUser(user));
                 }
                 case "addComment" -> {
                     Comment comment = objectMapper.readValue(CommandData, Comment.class);
