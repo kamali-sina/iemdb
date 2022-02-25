@@ -93,6 +93,17 @@ class MovieManagerTest {
         assertEquals(expectedMoviesInAdventureGenre, movies);
     }
 
+    @Test
+    @DisplayName("Should throw an exception if movie which is being rated does not exist")
+    public void shouldThrowAnExceptionIfMovieWhichIsBeingRatedDoesNotExist() {
+        Rating rating = new Rating();
+        rating.setUserEmail("saman@ut.ac.ir");
+        rating.setMovieId(-1);
+        rating.setScore(5);
+
+        assertThrows(CommandException.class, () -> MovieManager.addRating(rating));
+    }
+
     @AfterEach
     public void tearDown() {
         MovieManager.movies.clear();
