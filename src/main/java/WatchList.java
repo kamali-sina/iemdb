@@ -9,7 +9,7 @@ public class WatchList {
 
     @JsonCreator
     public WatchList(@JsonProperty("movieId") Integer movieId,
-                @JsonProperty("userEmail") String userEmail) throws CommandException {
+                     @JsonProperty("userEmail") String userEmail) throws CommandException {
         if (movieId == null ||
                 userEmail == null) {
             throw new CommandException(ErrorType.InvalidCommand);
