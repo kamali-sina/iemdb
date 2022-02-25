@@ -13,7 +13,7 @@ public class MovieManager {
     static final HashMap<Integer, Movie> movies = new HashMap<>();
 
     public static Movie getMovie(Integer movieId) throws CommandException {
-        Movie movie =  MovieManager.movies.get(movieId);
+        Movie movie = MovieManager.movies.get(movieId);
         if (movie == null) {
             throw new CommandException(ErrorType.MovieNotFound);
         }
@@ -59,7 +59,7 @@ public class MovieManager {
         jsonGenerator.writeStartObject();
         jsonGenerator.writeArrayFieldStart("MoviesList");
         Collection<Movie> allMovies = MovieManager.movies.values();
-        for (Movie movie: allMovies) {
+        for (Movie movie : allMovies) {
             jsonGenerator.writeRawValue(movie.getSerializedMovieSummary());
         }
         jsonGenerator.writeEndArray();
@@ -93,7 +93,7 @@ public class MovieManager {
         String genre = getMoviesByGenreInput.getGenre();
 
         ArrayList<Movie> moviesByGenre = new ArrayList<>();
-        for (Movie movie: MovieManager.movies.values()) {
+        for (Movie movie : MovieManager.movies.values()) {
             if (movie.getGenres().contains(genre)) {
                 moviesByGenre.add(movie);
             }
