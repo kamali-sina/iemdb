@@ -1,4 +1,6 @@
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DatabindException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
@@ -61,7 +63,7 @@ public class CommandHandler {
                 }
                 default -> throw new CommandException(ErrorType.InvalidCommand);
             }
-        } catch (DatabindException databindException) {
+        } catch (JsonProcessingException jsonProcessingException) {
             results.add("false");
             results.add(new CommandException(ErrorType.InvalidCommand).getMessage());
             return results;
