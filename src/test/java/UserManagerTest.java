@@ -15,18 +15,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class UserManagerTest {
     @BeforeEach
     public void setUp() throws CommandException {
-        User young_user = new User();
-        young_user.setEmail("young@ut.ir");
-        young_user.setNickname("young");
-        young_user.setPassword("young pass");
-        young_user.setBirthDate("2010-01-01");
+        User young_user = new User("young@ut.ir", "young pass", "young", "Jane Doe"
+                , "2010-01-01");
         UserManager.addUser(young_user);
 
-        User old_user = new User();
-        old_user.setEmail("old@ut.ir");
-        old_user.setNickname("old");
-        old_user.setPassword("old pass");
-        old_user.setBirthDate("1980-01-01");
+        User old_user = new User("old@ut.ir", "old pass", "old", "John Doe"
+                , "2010-01-01");
         UserManager.addUser(old_user);
 
 
