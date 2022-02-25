@@ -4,7 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -31,10 +30,7 @@ class MovieTest {
         Movie movie = MovieManager.movies.get(1);
         Integer ratingCountBeforeUserVote = movie.getRatingCount();
 
-        Rating rating = new Rating();
-        rating.setUserEmail("saman@ut.ac.ir");
-        rating.setMovieId(1);
-        rating.setScore(10);
+        Rating rating = new Rating("saman@ut.ac.ir", 1, 10);
 
         movie.addRating(rating);
 
@@ -46,10 +42,7 @@ class MovieTest {
     public void shouldNotIncreaseRatingCountIfUserHasRatedTheMovieBefore() throws CommandException {
         Movie movie = MovieManager.movies.get(1);
 
-        Rating rating = new Rating();
-        rating.setUserEmail("saman@ut.ac.ir");
-        rating.setMovieId(1);
-        rating.setScore(10);
+        Rating rating = new Rating("saman@ut.ac.ir", 1, 10);
 
         movie.addRating(rating);
         Integer ratingCountBeforeUserVote = movie.getRatingCount();
@@ -60,15 +53,12 @@ class MovieTest {
 
     @Test
     @DisplayName("Should throw an exception if rating score is not between acceptable min and max score")
-    public void ShouldThrowAExceptionIfRatingScoreIsNotBetweenAcceptableMinAndMaxScore() {
+    public void ShouldThrowAExceptionIfRatingScoreIsNotBetweenAcceptableMinAndMaxScore() throws CommandException {
         Movie movie = MovieManager.movies.get(1);
 
-        Rating rating = new Rating();
-        rating.setUserEmail("saman@ut.ac.ir");
-        rating.setMovieId(1);
-        rating.setScore(-1);
+        Rating rating = new Rating("saman@ut.ac.ir", 1, -1);
 
-        assertThrows(CommandException.class, () -> {movie.addRating(rating);});
+        assertThrows(CommandException.class, () -> movie.addRating(rating));
     }
 
     @Test
@@ -77,15 +67,9 @@ class MovieTest {
         Movie movie = MovieManager.movies.get(1);
         Integer ratingCountBeforeUserVote = movie.getRatingCount();
 
-        Rating samanRating = new Rating();
-        samanRating.setUserEmail("saman@ut.ac.ir");
-        samanRating.setMovieId(1);
-        samanRating.setScore(10);
+        Rating samanRating = new Rating("saman@ut.ac.ir", 1, 10);
 
-        Rating saraRating = new Rating();
-        saraRating.setUserEmail("sara@ut.ac.ir");
-        saraRating.setMovieId(1);
-        saraRating.setScore(7);
+        Rating saraRating = new Rating("sara@ut.ac.ir", 1, 7);
 
         movie.addRating(samanRating);
         movie.addRating(saraRating);

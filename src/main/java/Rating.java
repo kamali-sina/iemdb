@@ -1,3 +1,8 @@
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import exception.CommandException;
+import exception.ErrorType;
+
 public class Rating {
     public static final Integer minScore = 1;
     public static final Integer maxScore = 10;
@@ -5,6 +10,20 @@ public class Rating {
     private String userEmail;
     private Integer movieId;
     private Integer score;
+
+    @JsonCreator
+    public Rating(@JsonProperty("userEmail") String userEmail,
+                @JsonProperty("movieId") Integer movieId,
+                @JsonProperty("score") Integer score) throws CommandException {
+        if (userEmail == null ||
+                movieId == null ||
+                score == null) {
+            throw new CommandException(ErrorType.InvalidCommand);
+        }
+        this.userEmail = userEmail;
+        this.movieId = movieId;
+        this.score = score;
+    }
 
     public String getUserEmail() {
         return userEmail;
