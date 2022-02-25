@@ -11,11 +11,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class MovieTest {
     private static void createMovie(Integer movieId, String movieName) throws CommandException {
-        Movie movie = new Movie();
-        movie.setId(movieId);
-        movie.setName(movieName);
-        movie.setGenres(new ArrayList<>());
-        movie.setCast(new ArrayList<>());
+        Movie movie = new Movie(movieId, movieName,
+                "", "2010-01-01",
+                "", new ArrayList<>(), new ArrayList<>(),
+                new ArrayList<>(), 8.2, 150, 10);
         MovieManager.addMovie(movie);
     }
 

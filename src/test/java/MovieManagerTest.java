@@ -1,22 +1,25 @@
 import exception.CommandException;
-import org.junit.jupiter.api.*;
-
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class MovieManagerTest {
     private static void createMovie(Integer movieId, String movieName, ArrayList<String> genres) throws CommandException {
-        Movie movie = new Movie();
-        movie.setId(movieId);
-        movie.setName(movieName);
-        movie.setGenres(genres);
-        movie.setCast(new ArrayList<>());
+        Movie movie = new Movie(movieId, movieName,
+                "", "2010-01-01",
+                "", new ArrayList<>(), genres,
+                new ArrayList<>(), 8.2, 150, 10);
         MovieManager.addMovie(movie);
     }
 
@@ -39,9 +42,8 @@ class MovieManagerTest {
     @ParameterizedTest(name = "find movie(s) by {0} genre")
     @MethodSource("provideMovies")
     @DisplayName("Should return movies by genre")
-    public void shouldReturnMoviesByGenre(String genre, ArrayList<Movie> movies) throws IOException {
-        GetMoviesByGenreInput getMoviesByGenreInput = new GetMoviesByGenreInput();
-        getMoviesByGenreInput.setGenre(genre);
+    public void shouldReturnMoviesByGenre(String genre, ArrayList<Movie> movies) throws IOException, CommandException {
+        GetMoviesByGenreInput getMoviesByGenreInput = new GetMoviesByGenreInput(genre);
 
         assertEquals(MovieManager.serializeMoviesListByGenre(movies), MovieManager.getMoviesByGenre(getMoviesByGenreInput));
     }
@@ -82,9 +84,8 @@ class MovieManagerTest {
 
     @Test
     @DisplayName("Should return movies in drama genre when no movies exist in that genre")
-    public void shouldReturnMoviesInDramaGenreWhenNoMoviesExistInThatGenre() throws IOException {
-        GetMoviesByGenreInput getMoviesByGenreInput = new GetMoviesByGenreInput();
-        getMoviesByGenreInput.setGenre("drama");
+    public void shouldReturnMoviesInDramaGenreWhenNoMoviesExistInThatGenre() throws IOException, CommandException {
+        GetMoviesByGenreInput getMoviesByGenreInput = new GetMoviesByGenreInput("drama");
 
         String movies = MovieManager.getMoviesByGenre(getMoviesByGenreInput);
 

@@ -34,23 +34,19 @@ class UserManagerTest {
 
         Comment comment3 = new Comment(young_user.getEmail(), 3, "very very bad movie");
 
-        Movie avengers = new Movie();
-        avengers.setId(1);
-        avengers.setName("Avengers");
-        avengers.setGenres(new ArrayList<>());
-        avengers.setCast(new ArrayList<>());
-        avengers.setAgeLimit(5);
+        Movie avengers = new Movie(1, "Avengers",
+                "", "2010-01-01",
+                "", new ArrayList<>(), new ArrayList<>(),
+                new ArrayList<>(), 8.2, 150, 5);
         avengers.setComments(new HashMap<>());
         avengers.addComment(comment1);
         avengers.addComment(comment2);
         MovieManager.addMovie(avengers);
 
-        Movie lordOfTheRings = new Movie();
-        lordOfTheRings.setId(2);
-        lordOfTheRings.setName("Lord of The Rings");
-        lordOfTheRings.setGenres(new ArrayList<>());
-        lordOfTheRings.setAgeLimit(18);
-        lordOfTheRings.setCast(new ArrayList<>());
+        Movie lordOfTheRings = new Movie(2, "Lord of The Rings",
+                "", "2010-01-01",
+                "", new ArrayList<>(), new ArrayList<>(),
+                new ArrayList<>(), 8.2, 150, 18);
         lordOfTheRings.setComments(new HashMap<>());
         lordOfTheRings.addComment(comment3);
         MovieManager.addMovie(lordOfTheRings);
