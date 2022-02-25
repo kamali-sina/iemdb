@@ -28,20 +28,11 @@ class UserManagerTest {
         UserManager.addUser(old_user);
 
 
-        Comment comment1 = new Comment();
-        comment1.setId(1);
-        comment1.setUserEmail(young_user.getEmail());
-        comment1.setText("I no like movie");
+        Comment comment1 = new Comment(young_user.getEmail(),1, "I no like movie");
 
-        Comment comment2 = new Comment();
-        comment2.setId(2);
-        comment2.setUserEmail(old_user.getEmail());
-        comment2.setText("good movie");
+        Comment comment2 = new Comment(old_user.getEmail(), 2, "good movie");
 
-        Comment comment3 = new Comment();
-        comment3.setId(3);
-        comment3.setUserEmail(young_user.getEmail());
-        comment3.setText("very very bad movie");
+        Comment comment3 = new Comment(young_user.getEmail(), 3, "very very bad movie");
 
         Movie avengers = new Movie();
         avengers.setId(1);
