@@ -1,3 +1,4 @@
+import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
@@ -60,6 +61,10 @@ public class CommandHandler {
                 }
                 default -> throw new CommandException(ErrorType.InvalidCommand);
             }
+        } catch (DatabindException databindException) {
+            results.add("false");
+            results.add(new CommandException(ErrorType.InvalidCommand).getMessage());
+            return results;
         } catch (Exception exception) {
             results.add("false");
             results.add(exception.getMessage());
