@@ -104,6 +104,17 @@ class MovieManagerTest {
         assertThrows(CommandException.class, () -> MovieManager.addRating(rating));
     }
 
+    @Test
+    @DisplayName("Should throw an exception if user who is rating movie does not exist")
+    public void shouldThrowAnExceptionIfUserWhoIsRatingMovieDoesNotExist() {
+        Rating rating = new Rating();
+        rating.setUserEmail("john@ut.ac.ir");
+        rating.setMovieId(1);
+        rating.setScore(5);
+
+        assertThrows(CommandException.class, () -> MovieManager.addRating(rating));
+    }
+
     @AfterEach
     public void tearDown() {
         MovieManager.movies.clear();
