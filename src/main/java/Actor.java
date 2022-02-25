@@ -1,18 +1,44 @@
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
+import exception.CommandException;
+import exception.ErrorType;
 
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Date;
 
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+
 public class Actor {
+
     private Integer id;
+
     private String name;
+
     private String birthDate;
+
     private String nationality;
+
+    @JsonCreator
+    public Actor(@JsonProperty("id") Integer id,
+                 @JsonProperty("name") String name,
+                 @JsonProperty("birthDate") String birthDate,
+                 @JsonProperty("nationality") String nationality) throws CommandException {
+        if (id == null ||
+            name == null ||
+            birthDate == null ||
+            nationality == null) {
+            throw new CommandException(ErrorType.InvalidCommand);
+        }
+        this.id = id;
+        this.name = name;
+        this.birthDate = birthDate;
+        this.nationality = nationality;
+    }
 
     public Integer getId() {
         return id;

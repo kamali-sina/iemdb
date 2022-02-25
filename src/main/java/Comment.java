@@ -1,3 +1,5 @@
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import exception.CommandException;
@@ -19,6 +21,20 @@ public class Comment {
     private HashMap<String, Vote> votes = new HashMap<>();
     private Integer numberOfLikes = 0;
     private Integer numberOfDislikes = 0;
+
+    @JsonCreator
+    public Comment(@JsonProperty("userEmail") String userEmail,
+                   @JsonProperty("movieId") Integer movieId,
+                   @JsonProperty("text") String text) throws CommandException {
+        if (userEmail == null ||
+            movieId == null ||
+            text == null) {
+            throw new CommandException(ErrorType.InvalidCommand);
+        }
+        this.userEmail = userEmail;
+        this.movieId = movieId;
+        this.text = text;
+    }
 
     public static Integer getCount() {
         return count++;
