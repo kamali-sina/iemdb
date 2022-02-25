@@ -214,13 +214,13 @@ public class Movie {
     }
 
     public void addRating(Rating rating) throws CommandException {
-        if (!this.ratings.containsKey(rating.getUserEmail())) {
-            this.ratingCount += 1;
-        }
-
         Integer ratingScore = rating.getScore();
         if (!(Rating.minScore <= ratingScore && ratingScore <= Rating.maxScore)) {
             throw new CommandException(ErrorType.InvalidRateScore);
+        }
+
+        if (!this.ratings.containsKey(rating.getUserEmail())) {
+            this.ratingCount += 1;
         }
 
         this.ratings.put(rating.getUserEmail(), rating);
