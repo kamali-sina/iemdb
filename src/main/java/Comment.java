@@ -27,8 +27,8 @@ public class Comment {
                    @JsonProperty("movieId") Integer movieId,
                    @JsonProperty("text") String text) throws CommandException {
         if (userEmail == null ||
-            movieId == null ||
-            text == null) {
+                movieId == null ||
+                text == null) {
             throw new CommandException(ErrorType.InvalidCommand);
         }
         this.userEmail = userEmail;
