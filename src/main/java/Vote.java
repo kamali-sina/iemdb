@@ -1,5 +1,7 @@
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import exception.CommandException;
+import exception.ErrorType;
 
 import java.util.Date;
 
@@ -7,6 +9,20 @@ public class Vote {
     private String userEmail;
     private Integer commentId;
     private Integer vote;
+
+    @JsonCreator
+    public Vote(@JsonProperty("userEmail") String userEmail,
+                 @JsonProperty("commentId") Integer commentId,
+                 @JsonProperty("vote") Integer vote) throws CommandException {
+        if (userEmail == null ||
+                commentId == null ||
+                vote == null) {
+            throw new CommandException(ErrorType.InvalidCommand);
+        }
+        this.userEmail = userEmail;
+        this.commentId = commentId;
+        this.vote = vote;
+    }
 
     public String getUserEmail() {
         return userEmail;
