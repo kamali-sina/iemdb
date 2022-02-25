@@ -1,3 +1,5 @@
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import exception.CommandException;
@@ -26,6 +28,44 @@ public class Movie {
     private Integer ratingCount = 0;
     private HashMap<String, ArrayList<Comment>> comments = new HashMap<>();
     private Double averageRating;
+
+    @JsonCreator
+    public Movie(@JsonProperty("id") Integer id,
+                 @JsonProperty("name") String name,
+                 @JsonProperty("summary") String summary,
+                 @JsonProperty("releaseDate") String releaseDate,
+                 @JsonProperty("director") String director,
+                 @JsonProperty("writers") ArrayList<String> writers,
+                 @JsonProperty("genres") ArrayList<String> genres,
+                 @JsonProperty("cast") ArrayList<Integer> cast,
+                 @JsonProperty("imdbRate") Double imdbRate,
+                 @JsonProperty("duration") Integer duration,
+                 @JsonProperty("ageLimit") Integer ageLimit) throws CommandException {
+        if (id == null ||
+                name == null ||
+                summary == null ||
+                releaseDate == null ||
+                director == null ||
+                writers == null ||
+                genres == null ||
+                cast == null ||
+                imdbRate == null ||
+                duration == null ||
+                ageLimit == null) {
+            throw new CommandException(ErrorType.InvalidCommand);
+        }
+        this.id = id;
+        this.name = name;
+        this.summary = summary;
+        this.releaseDate = releaseDate;
+        this.director = director;
+        this.writers = writers;
+        this.genres = genres;
+        this.cast = cast;
+        this.imdbRate = imdbRate;
+        this.duration = duration;
+        this.ageLimit = ageLimit;
+    }
 
     public Integer getId() {
         return id;
@@ -182,7 +222,7 @@ public class Movie {
         this.calculateAverageRating();
     }
 
-    private static double round (double value, int precision) {
+    private static double round(double value, int precision) {
         int scale = (int) Math.pow(10, precision);
         return (double) Math.round(value * scale) / scale;
     }
