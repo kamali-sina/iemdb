@@ -67,6 +67,11 @@ public class Movie {
         this.ageLimit = ageLimit;
     }
 
+    private static double round(double value, int precision) {
+        int scale = (int) Math.pow(10, precision);
+        return (double) Math.round(value * scale) / scale;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -220,11 +225,6 @@ public class Movie {
 
         this.ratings.put(rating.getUserEmail(), rating);
         this.calculateAverageRating();
-    }
-
-    private static double round(double value, int precision) {
-        int scale = (int) Math.pow(10, precision);
-        return (double) Math.round(value * scale) / scale;
     }
 
     public Double calculateAverageRating() {
