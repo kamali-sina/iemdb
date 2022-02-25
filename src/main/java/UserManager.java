@@ -2,9 +2,7 @@ import exception.CommandException;
 import exception.ErrorType;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Objects;
 
 public class UserManager {
     static final HashMap<String, User> users = new HashMap<>();
@@ -27,7 +25,7 @@ public class UserManager {
         }
 
         UserManager.users.put(user.getEmail(), user);
-         return  "\"user added successfully\"";
+        return "\"user added successfully\"";
     }
 
     public static String addToWatchList(WatchList watchList) throws CommandException {
