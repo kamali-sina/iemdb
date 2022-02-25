@@ -23,6 +23,26 @@ public class User {
     private String birthDate;
     private HashMap<Integer, Movie> watchList = new HashMap<>();
 
+    @JsonCreator
+    public User(@JsonProperty("email") String email,
+                 @JsonProperty("password") String password,
+                 @JsonProperty("nickname") String nickname,
+                 @JsonProperty("name") String name,
+                 @JsonProperty("birthDate") String birthDate) throws CommandException {
+        if (email == null ||
+                password == null ||
+                nickname == null ||
+                name == null ||
+                birthDate == null) {
+            throw new CommandException(ErrorType.InvalidCommand);
+        }
+        this.email = email;
+        this.password = password;
+        this.nickname = nickname;
+        this.name = name;
+        this.birthDate = birthDate;
+    }
+
     public String getEmail() {
         return email;
     }
