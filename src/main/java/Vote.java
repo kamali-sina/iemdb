@@ -3,8 +3,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import exception.CommandException;
 import exception.ErrorType;
 
-import java.util.Date;
-
 public class Vote {
     private String userEmail;
     private Integer commentId;
@@ -12,8 +10,8 @@ public class Vote {
 
     @JsonCreator
     public Vote(@JsonProperty("userEmail") String userEmail,
-                 @JsonProperty("commentId") Integer commentId,
-                 @JsonProperty("vote") Integer vote) throws CommandException {
+                @JsonProperty("commentId") Integer commentId,
+                @JsonProperty("vote") Integer vote) throws CommandException {
         if (userEmail == null ||
                 commentId == null ||
                 vote == null) {
