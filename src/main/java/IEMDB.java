@@ -1,3 +1,4 @@
+import app.Application;
 import handler.CommandHandler;
 import handler.InputHandler;
 import handler.OutputHandler;
@@ -9,6 +10,7 @@ public class IEMDB {
     public static void main(String[] args) {
         try {
             while (true) {
+                Application.initialize();
                 ArrayList<String> commandArgs = InputHandler.handleInput();
                 String commandName = commandArgs.get(0);
                 String commandData = commandArgs.get(1);
