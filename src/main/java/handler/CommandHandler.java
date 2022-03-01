@@ -1,9 +1,17 @@
+package handler;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import exception.CommandException;
 import exception.ErrorType;
+import manager.ActorManager;
+import manager.MovieManager;
+import manager.UserManager;
 
 import java.util.ArrayList;
+
+import main.*;
+import input.*;
 
 public class CommandHandler {
     private static final ObjectMapper objectMapper = new ObjectMapper();

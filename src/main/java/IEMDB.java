@@ -1,3 +1,7 @@
+import handler.CommandHandler;
+import handler.InputHandler;
+import handler.OutputHandler;
+
 import java.util.ArrayList;
 
 public class IEMDB {

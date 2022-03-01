@@ -1,3 +1,5 @@
+package main;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonFactory;
@@ -94,7 +96,7 @@ public class User {
         JsonGenerator jsonGenerator = factory.createGenerator(jsonObjectWriter);
 
         jsonGenerator.writeStartObject();
-        jsonGenerator.writeArrayFieldStart("WatchList");
+        jsonGenerator.writeArrayFieldStart("main.WatchList");
         Collection<Movie> movies = watchList.values();
         for (Movie movie : movies) {
             jsonGenerator.writeRawValue(movie.getSerializedMovieSummary());

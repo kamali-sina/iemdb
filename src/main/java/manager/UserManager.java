@@ -1,11 +1,16 @@
+package manager;
+
 import exception.CommandException;
 import exception.ErrorType;
 
 import java.io.IOException;
 import java.util.HashMap;
 
+import main.*;
+import input.*;
+
 public class UserManager {
-    static final HashMap<String, User> users = new HashMap<>();
+    public static final HashMap<String, User> users = new HashMap<>();
 
     public static User getUser(String userEmail) throws CommandException {
         User user = UserManager.users.get(userEmail);

@@ -1,10 +1,14 @@
+package manager;
+
 import exception.CommandException;
 import exception.ErrorType;
 
 import java.util.HashMap;
 
+import main.Actor;
+
 public class ActorManager {
-    static final HashMap<Integer, Actor> actors = new HashMap<>();
+    public static final HashMap<Integer, Actor> actors = new HashMap<>();
 
     public static Actor getActor(Integer actorId) throws CommandException {
         Actor actor = ActorManager.actors.get(actorId);

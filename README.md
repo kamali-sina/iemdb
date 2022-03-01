@@ -1,6 +1,6 @@
 # Iemdb
 
-Movie information management system.
+main.Movie information management system.
 
 ## Getting started
 

@@ -1,5 +1,9 @@
+package handler;
+
 import java.io.IOException;
 import java.util.ArrayList;
+
+import output.Output;
 
 public class OutputHandler {
     public static void handleOutput(ArrayList<String> results) throws IOException {

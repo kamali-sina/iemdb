@@ -1,9 +1,12 @@
+package main;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import exception.CommandException;
 import exception.ErrorType;
+import manager.ActorManager;
 
 import java.io.IOException;
 import java.io.StringWriter;

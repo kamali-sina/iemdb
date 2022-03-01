@@ -1,3 +1,5 @@
+package manager;
+
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import exception.CommandException;
@@ -9,8 +11,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
+import main.*;
+import input.*;
+
 public class MovieManager {
-    static final HashMap<Integer, Movie> movies = new HashMap<>();
+    public static final HashMap<Integer, Movie> movies = new HashMap<>();
 
     public static Movie getMovie(Integer movieId) throws CommandException {
         Movie movie = MovieManager.movies.get(movieId);
