@@ -8,9 +8,9 @@ import java.util.ArrayList;
 public class IEMDB {
 
     public static void main(String[] args) {
+        Application.initialize();
         try {
             while (true) {
-                Application.initialize();
                 ArrayList<String> commandArgs = InputHandler.handleInput();
                 String commandName = commandArgs.get(0);
                 String commandData = commandArgs.get(1);
