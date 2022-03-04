@@ -2,12 +2,14 @@ import app.Application;
 import handler.CommandHandler;
 import handler.InputHandler;
 import handler.OutputHandler;
+import input.DataReader;
 
 import java.util.ArrayList;
 
 public class IEMDB {
 
     public static void main(String[] args) {
+        DataReader.readDataFromUrl("http://138.197.181.131:5000");
         Application.initialize();
         try {
             while (true) {
