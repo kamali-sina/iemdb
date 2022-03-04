@@ -111,6 +111,19 @@ public class MovieManager {
                 moviesByGenre.add(movie);
             }
         }
-        return serializeMoviesListByGenre(moviesByGenre);
+
+        return moviesByGenre;
+    }
+
+    public static ArrayList<Movie> getMoviesByReleaseYear(Integer startYear, Integer endYear) {
+        ArrayList<Movie> movies = new ArrayList<>();
+        for (Movie movie : MovieManager.movies.values()) {
+            Integer year = movie.getReleaseYear();
+            if (startYear <= year && year <= endYear) {
+                movies.add(movie);
+            }
+        }
+
+        return movies;
     }
 }
