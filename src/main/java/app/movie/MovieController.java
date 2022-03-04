@@ -71,55 +71,62 @@ public class MovieController {
         return htmlString;
     }
 
-    public static Handler fetchAllMovies = ctx -> {
-        try {
-            File input = new File("src/main/resources/templates/movies.html");
-            Document doc = Jsoup.parse(input, "UTF-8");
-            String htmlString = doc.html();
+    public static String getMoviesHtmlString(ArrayList<Movie> moviesList) throws IOException, CommandException {
+        File input = new File("src/main/resources/templates/movies.html");
+        Document doc = Jsoup.parse(input, "UTF-8");
+        String htmlString = doc.html();
 
-            String movieTableLine = "<tr>\n" +
-                    "            <td>$name</td>\n" +
-                    "            <td>$summary</td> \n" +
-                    "            <td>$releaseDate</td>\n" +
-                    "            <td>$director</td>\n" +
-                    "            <td>$writers</td>\n" +
-                    "            <td>$genres</td>\n" +
-                    "            <td>$cast</td>\n" +
-                    "            <td>$imdbRate</td>\n" +
-                    "            <td>$rating</td>\n" +
-                    "            <td>$duration</td>\n" +
-                    "            <td>$ageLimit</td>\n" +
-                    "            <td><a href=\"/movies/$ID\">Link</a></td>\n" +
-                    "        </tr>";
+        String movieTableLine = "<tr>\n" +
+                "            <td>$name</td>\n" +
+                "            <td>$summary</td> \n" +
+                "            <td>$releaseDate</td>\n" +
+                "            <td>$director</td>\n" +
+                "            <td>$writers</td>\n" +
+                "            <td>$genres</td>\n" +
+                "            <td>$cast</td>\n" +
+                "            <td>$imdbRate</td>\n" +
+                "            <td>$rating</td>\n" +
+                "            <td>$duration</td>\n" +
+                "            <td>$ageLimit</td>\n" +
+                "            <td><a href=\"/movies/$ID\">Link</a></td>\n" +
+                "        </tr>";
 
-            String movies = "";
+        String movies = "";
 
-            for (Movie movie : MovieManager.movies.values()) {
-                movies += movieTableLine;
-                movies = movies.replace("$name", movie.getName());
-                movies = movies.replace("$summary", movie.getSummary());
-                movies = movies.replace("$releaseDate", movie.getReleaseDate());
-                movies = movies.replace("$director", movie.getDirector());
-                movies = movies.replace("$writers", movie.getWriters().toString());
-                movies = movies.replace("$genres", movie.getGenres().toString());
+        for (Movie movie : moviesList) {
+            movies += movieTableLine;
+            movies = movies.replace("$name", movie.getName());
+            movies = movies.replace("$summary", movie.getSummary());
+            movies = movies.replace("$releaseDate", movie.getReleaseDate());
+            movies = movies.replace("$director", movie.getDirector());
+            movies = movies.replace("$writers", movie.getWriters().toString());
+            movies = movies.replace("$genres", movie.getGenres().toString());
 
-                String cast = "";
+            String cast = "";
 
-                for (Integer actorId : movie.getCast()) {
-                    cast += ActorManager.getActor(actorId).getName();
-                    cast += ", ";
-                }
-
-                movies = movies.replace("$cast", cast);
-                movies = movies.replace("$imdbRate", movie.getImdbRate().toString());
-                movies = movies.replace("$rating", String.valueOf(movie.getAverageRatingRate()));
-                movies = movies.replace("$duration", movie.getDuration().toString());
-                movies = movies.replace("$ageLimit", movie.getAgeLimit().toString());
-                movies = movies.replace("$ageLimit", movie.getAgeLimit().toString());
-                movies = movies.replace("$ID", movie.getId().toString());
+            for (Integer actorId : movie.getCast()) {
+                cast += ActorManager.getActor(actorId).getName();
+                cast += ", ";
             }
 
-            htmlString = htmlString.replace("$movies", movies);
+            movies = movies.replace("$cast", cast);
+            movies = movies.replace("$imdbRate", movie.getImdbRate().toString());
+            movies = movies.replace("$rating", String.valueOf(movie.getAverageRatingRate()));
+            movies = movies.replace("$duration", movie.getDuration().toString());
+            movies = movies.replace("$ageLimit", movie.getAgeLimit().toString());
+            movies = movies.replace("$ageLimit", movie.getAgeLimit().toString());
+            movies = movies.replace("$ID", movie.getId().toString());
+        }
+
+        htmlString = htmlString.replace("$movies", movies);
+
+        return htmlString;
+    }
+
+    public static Handler fetchAllMovies = ctx -> {
+        try {
+            ArrayList<Movie> moviesList = new ArrayList<>(MovieManager.movies.values());
+            String htmlString = MovieController.getMoviesHtmlString(moviesList);
 
             ctx.html(htmlString);
         } catch (Exception exception) {
@@ -159,7 +166,7 @@ public class MovieController {
             Rating rating = new Rating(userEmail.get(), movieId.get(), rate.get());
 
             // TODO: add template rendering
-            ctx.result("Hello Movie Controller");
+            ctx.result("Movie rated successfully");
             MovieManager.addRating(rating);
         } catch (Exception exception) {
             throw new BadRequestResponse();
@@ -172,28 +179,28 @@ public class MovieController {
             Validator<Integer> endYear = ctx.pathParamAsClass("end_year", Integer.class);
             startYear.check(year -> 0 <= year, "Start year should be greater than 0");
             endYear.check(year -> 0 <= year, "End year should be greater than 0");
-            endYear.check(year -> year <= startYear.get(), "End year should be greater than Start year");
+            endYear.check(year -> startYear.get() <= year , "End year should be greater than Start year");
 
-            ArrayList<Movie> movies = MovieManager.getMoviesByReleaseYear(startYear.get(), endYear.get());
+            ArrayList<Movie> moviesList = MovieManager.getMoviesByReleaseYear(startYear.get(), endYear.get());
+            String htmlString = MovieController.getMoviesHtmlString(moviesList);
 
-            // TODO: add template rendering
-            ctx.result("Hello Movie Controller");
+            ctx.html(htmlString);
         } catch (Exception exception) {
             throw new BadRequestResponse();
         }
     };
 
     public static Handler fetchMoviesByGenre = ctx -> {
-//        String genre = ctx.pathParamAsClass("genre", String.class);
         try {
             Validator<String> genre = ctx.pathParamAsClass("genre", String.class);
 
             GetMoviesByGenreInput getMoviesByGenreInput = new GetMoviesByGenreInput(genre.get());
             ArrayList<Movie> moviesByGenre = MovieManager.getMoviesByGenre(getMoviesByGenreInput);
 
-            // TODO: add template rendering
-            ctx.result("Hello Movie Controller " + moviesByGenre.size());
+            String htmlString = MovieController.getMoviesHtmlString(moviesByGenre);
+            ctx.html(htmlString);
         } catch (Exception exception) {
+            System.out.println(exception.getMessage());
             throw new BadRequestResponse();
         }
     };
