@@ -42,10 +42,11 @@ public class MovieController {
         htmlString = htmlString.replace("$genres", movie.getGenres().toString());
 
         String cast = "";
-
+        String delimiter = "";
         for (Integer actorId : movie.getCast()) {
+            cast += delimiter;
             cast += ActorManager.getActor(actorId).getName();
-            cast += ", ";
+            delimiter = ", ";
         }
 
         htmlString = htmlString.replace("$cast", cast);
