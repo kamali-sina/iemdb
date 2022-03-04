@@ -145,14 +145,56 @@ public class MovieController {
     };
 
     public static Handler handleRatingMovie = ctx -> {
-        ctx.result("Hello Movie Controller");
+        try {
+            Validator<String> userEmail = ctx.pathParamAsClass("user_id", String.class);
+            UserManager.getUser(userEmail.get());
+
+            Validator<Integer> movieId = ctx.pathParamAsClass("movie_id", Integer.class);
+            movieId.check(id -> 1 <= id, "Movie ID should be greater than 0");
+            MovieManager.getMovie(movieId.get());
+
+            Validator<Integer> rate = ctx.pathParamAsClass("rate", Integer.class);
+            rate.check(score -> 0 <= score && score <= 10, "rating score should be between 0 and 10");
+
+            Rating rating = new Rating(userEmail.get(), movieId.get(), rate.get());
+
+            // TODO: add template rendering
+            ctx.result("Hello Movie Controller");
+            MovieManager.addRating(rating);
+        } catch (Exception exception) {
+            throw new BadRequestResponse();
+        }
     };
 
-    public static Handler fetchMoviesByReleaseYaer = ctx -> {
-        ctx.result("Hello Movie Controller");
+    public static Handler fetchMoviesByReleaseYear = ctx -> {
+        try {
+            Validator<Integer> startYear = ctx.pathParamAsClass("start_year", Integer.class);
+            Validator<Integer> endYear = ctx.pathParamAsClass("end_year", Integer.class);
+            startYear.check(year -> 0 <= year, "Start year should be greater than 0");
+            endYear.check(year -> 0 <= year, "End year should be greater than 0");
+            endYear.check(year -> year <= startYear.get(), "End year should be greater than Start year");
+
+            ArrayList<Movie> movies = MovieManager.getMoviesByReleaseYear(startYear.get(), endYear.get());
+
+            // TODO: add template rendering
+            ctx.result("Hello Movie Controller");
+        } catch (Exception exception) {
+            throw new BadRequestResponse();
+        }
     };
 
     public static Handler fetchMoviesByGenre = ctx -> {
-        ctx.result("Hello Movie Controller");
+//        String genre = ctx.pathParamAsClass("genre", String.class);
+        try {
+            Validator<String> genre = ctx.pathParamAsClass("genre", String.class);
+
+            GetMoviesByGenreInput getMoviesByGenreInput = new GetMoviesByGenreInput(genre.get());
+            ArrayList<Movie> moviesByGenre = MovieManager.getMoviesByGenre(getMoviesByGenreInput);
+
+            // TODO: add template rendering
+            ctx.result("Hello Movie Controller " + moviesByGenre.size());
+        } catch (Exception exception) {
+            throw new BadRequestResponse();
+        }
     };
 }
