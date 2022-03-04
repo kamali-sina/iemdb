@@ -72,7 +72,59 @@ public class MovieController {
     }
 
     public static Handler fetchAllMovies = ctx -> {
-        ctx.result("Hello Movie Controller");
+        try {
+            File input = new File("src/main/resources/templates/movies.html");
+            Document doc = Jsoup.parse(input, "UTF-8");
+            String htmlString = doc.html();
+
+            String movieTableLine = "<tr>\n" +
+                    "            <td>$name</td>\n" +
+                    "            <td>$summary</td> \n" +
+                    "            <td>$releaseDate</td>\n" +
+                    "            <td>$director</td>\n" +
+                    "            <td>$writers</td>\n" +
+                    "            <td>$genres</td>\n" +
+                    "            <td>$cast</td>\n" +
+                    "            <td>$imdbRate</td>\n" +
+                    "            <td>$rating</td>\n" +
+                    "            <td>$duration</td>\n" +
+                    "            <td>$ageLimit</td>\n" +
+                    "            <td><a href=\"/movies/$ID\">Link</a></td>\n" +
+                    "        </tr>";
+
+            String movies = "";
+
+            for (Movie movie : MovieManager.movies.values()) {
+                movies += movieTableLine;
+                movies = movies.replace("$name", movie.getName());
+                movies = movies.replace("$summary", movie.getSummary());
+                movies = movies.replace("$releaseDate", movie.getReleaseDate());
+                movies = movies.replace("$director", movie.getDirector());
+                movies = movies.replace("$writers", movie.getWriters().toString());
+                movies = movies.replace("$genres", movie.getGenres().toString());
+
+                String cast = "";
+
+                for (Integer actorId : movie.getCast()) {
+                    cast += ActorManager.getActor(actorId).getName();
+                    cast += ", ";
+                }
+
+                movies = movies.replace("$cast", cast);
+                movies = movies.replace("$imdbRate", movie.getImdbRate().toString());
+                movies = movies.replace("$rating", String.valueOf(movie.getAverageRatingRate()));
+                movies = movies.replace("$duration", movie.getDuration().toString());
+                movies = movies.replace("$ageLimit", movie.getAgeLimit().toString());
+                movies = movies.replace("$ageLimit", movie.getAgeLimit().toString());
+                movies = movies.replace("$ID", movie.getId().toString());
+            }
+
+            htmlString = htmlString.replace("$movies", movies);
+
+            ctx.html(htmlString);
+        } catch (Exception exception) {
+            throw new NotFoundResponse();
+        }
     };
 
     public static Handler fetchMovieById = ctx -> {
