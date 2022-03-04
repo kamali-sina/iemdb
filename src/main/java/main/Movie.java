@@ -11,6 +11,7 @@ import manager.ActorManager;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
@@ -317,5 +318,11 @@ public class Movie {
             }
         }
         return null;
+    }
+
+    public Integer getReleaseYear() {
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate date = LocalDate.parse(this.getReleaseDate(), format);
+        return date.getYear();
     }
 }
