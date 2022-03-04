@@ -1,5 +1,6 @@
 import exception.CommandException;
 import exception.ErrorType;
+import input.GetWatchListInput;
 import main.*;
 import manager.MovieManager;
 import manager.UserManager;
@@ -8,11 +9,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 class UserManagerTest {
     @BeforeEach
@@ -22,7 +24,7 @@ class UserManagerTest {
         UserManager.addUser(young_user);
 
         User old_user = new User("old@ut.ir", "old pass", "old", "John Doe"
-                , "2010-01-01");
+                , "1990-01-01");
         UserManager.addUser(old_user);
 
 
@@ -170,6 +172,34 @@ class UserManagerTest {
         String expectedResponse = new CommandException(ErrorType.UserNotFound).getMessage();
 
         assertEquals(expectedResponse, exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("should return complete watch list when watch list is not empty")
+    public void shouldReturnCompleteWatchListWhenWatchListIsNotEmpty() throws CommandException, IOException {
+        String userEmail = "old@ut.ir";
+        WatchListItem watchListItem = new WatchListItem(1, userEmail);
+
+        String response = UserManager.addToWatchList(watchListItem);
+        watchListItem.setMovieId(2);
+
+        response = UserManager.addToWatchList(watchListItem);
+
+        Collection<Movie> watchList = UserManager.getUser(userEmail).getWatchList().values();
+
+        assertEquals(2, watchList.size());
+        assertTrue(watchList.contains(MovieManager.getMovie(1)));
+        assertTrue(watchList.contains(MovieManager.getMovie(2)));
+    }
+
+    @Test
+    @DisplayName("should return empty array when watch list is empty")
+    public void shouldReturnEmptyArrayWhenUserHasEmptyWatchlist() throws CommandException, IOException {
+        String userEmail = "old@ut.ir";
+
+        Collection<Movie> watchList = UserManager.getUser(userEmail).getWatchList().values();
+
+        assertEquals(0, watchList.size());
     }
 
     @AfterEach
