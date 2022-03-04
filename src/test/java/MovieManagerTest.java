@@ -2,7 +2,9 @@ import exception.CommandException;
 import input.GetMoviesByGenreInput;
 import main.Movie;
 import main.Rating;
+import main.User;
 import manager.MovieManager;
+import manager.UserManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,8 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 class MovieManagerTest {
     private static void createMovie(Integer movieId, String movieName, ArrayList<String> genres) throws CommandException {
@@ -41,6 +42,14 @@ class MovieManagerTest {
 
         createMovie(0, "Avengers", avengersMovieGenres);
         createMovie(1, "Lord of The Rings", lordOfTheRingsMovieGenres);
+
+        User young_user = new User("young@ut.ir", "young pass", "young", "Jane Doe"
+                , "2010-01-01");
+        UserManager.addUser(young_user);
+
+        User old_user = new User("old@ut.ir", "old pass", "old", "John Doe"
+                , "2010-01-01");
+        UserManager.addUser(old_user);
     }
 
     @ParameterizedTest(name = "find movie(s) by {0} genre")
@@ -118,8 +127,63 @@ class MovieManagerTest {
         assertThrows(CommandException.class, () -> MovieManager.addRating(rating));
     }
 
+    @Test
+    @DisplayName("Should return null for average rating when a movie is not rated")
+    public void shouldReturnNullForAverageRatingWhenAMovieIsNotRated() throws CommandException {
+        Integer movieId = 1;
+
+        assertNull(MovieManager.getMovie(movieId).getAverageRatingRate());
+    }
+
+    @Test
+    @DisplayName("Should return correct average rating when a movie is rated")
+    public void shouldReturnCorrectAverageRatingWhenAMovieIsRated() throws CommandException {
+        Integer movieId = 1;
+        Double score = 8.0;
+
+        Rating rating = new Rating("young@ut.ir", movieId, score.intValue());
+        MovieManager.addRating(rating);
+
+        assertEquals(MovieManager.getMovie(movieId).getAverageRatingRate(), score);
+    }
+
+    @Test
+    @DisplayName("Should return correct average rating when a movie is rated by multiple users")
+    public void shouldReturnCorrectAverageRatingWhenAMovieIsRatedByMultipleUsers() throws CommandException {
+        Integer movieId = 1;
+
+        Double youngUserRatingScore = 3.0;
+        Rating youngUserRating = new Rating("young@ut.ir", movieId, youngUserRatingScore.intValue());
+        MovieManager.addRating(youngUserRating);
+
+        Double oldUserRatingScore = 9.0;
+        Rating oldUserRating = new Rating("old@ut.ir", movieId, oldUserRatingScore.intValue());
+        MovieManager.addRating(oldUserRating);
+
+        Double averageScore = (youngUserRatingScore + oldUserRatingScore) / 2;
+
+        assertEquals(MovieManager.getMovie(movieId).getAverageRatingRate(), averageScore);
+    }
+
+    @Test
+    @DisplayName("Should return correct average rating when a movie is rated again by user")
+    public void shouldReturnCorrectAverageRatingWhenAMovieIsRatedAgainByAUser() throws CommandException {
+        Integer movieId = 1;
+        Double firstScore = 8.0;
+        Double secondScore = 6.0;
+
+        Rating firstRating = new Rating("young@ut.ir", movieId, firstScore.intValue());
+        MovieManager.addRating(firstRating);
+
+        Rating secondRating = new Rating("young@ut.ir", movieId, secondScore.intValue());
+        MovieManager.addRating(secondRating);
+
+        assertEquals(MovieManager.getMovie(movieId).getAverageRatingRate(), secondScore);
+    }
+
     @AfterEach
     public void tearDown() {
         MovieManager.movies.clear();
+        UserManager.users.clear();
     }
 }
