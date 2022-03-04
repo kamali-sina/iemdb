@@ -20,9 +20,9 @@ import java.util.Collection;
 import static org.junit.jupiter.api.Assertions.*;
 
 class MovieManagerTest {
-    private static void createMovie(Integer movieId, String movieName, ArrayList<String> genres) throws CommandException {
+    private static void createMovie(Integer movieId, String movieName, ArrayList<String> genres, Integer releaseYear) throws CommandException {
         Movie movie = new Movie(movieId, movieName,
-                "", "2010-01-01",
+                "", releaseYear.toString() + "-01-01",
                 "", new ArrayList<>(), genres,
                 new ArrayList<>(), 8.2, 150, 10);
         MovieManager.addMovie(movie);
@@ -40,8 +40,8 @@ class MovieManagerTest {
         lordOfTheRingsMovieGenres.add("Adventure");
         lordOfTheRingsMovieGenres.add("Fantasy");
 
-        createMovie(0, "Avengers", avengersMovieGenres);
-        createMovie(1, "Lord of The Rings", lordOfTheRingsMovieGenres);
+        createMovie(0, "Avengers", avengersMovieGenres, 2012);
+        createMovie(1, "Lord of The Rings", lordOfTheRingsMovieGenres, 2001);
 
         User young_user = new User("young@ut.ir", "young pass", "young", "Jane Doe"
                 , "2010-01-01");
@@ -79,8 +79,8 @@ class MovieManagerTest {
         lordOfTheRingsMovieGenres.add("Adventure");
         lordOfTheRingsMovieGenres.add("Fantasy");
 
-        createMovie(0, "Avengers", avengersMovieGenres);
-        createMovie(1, "Lord of The Rings", lordOfTheRingsMovieGenres);
+        createMovie(0, "Avengers", avengersMovieGenres, 2012);
+        createMovie(1, "Lord of The Rings", lordOfTheRingsMovieGenres, 2001);
 
         for (Movie movie : MovieManager.movies.values()) {
             if (movie.getGenres().contains("Superhero")) {
@@ -179,6 +179,22 @@ class MovieManagerTest {
         MovieManager.addRating(secondRating);
 
         assertEquals(MovieManager.getMovie(movieId).getAverageRatingRate(), secondScore);
+    }
+
+    @Test
+    @DisplayName("Should return correct number of movies between provided years")
+    public void shouldReturnCorrectNumberOfMoviesBetweenProvidedYears() {
+        ArrayList<Movie> movieList = MovieManager.getMoviesByReleaseYear(2000, 2013);
+
+        assertEquals(movieList.size(), 2);
+    }
+
+    @Test
+    @DisplayName("Should return no movies between provided years")
+    public void shouldReturnNoMoviesBetweenProvidedYears() {
+        ArrayList<Movie> movieList = MovieManager.getMoviesByReleaseYear(1800, 1900);
+
+        assertEquals(movieList.size(), 0);
     }
 
     @AfterEach
