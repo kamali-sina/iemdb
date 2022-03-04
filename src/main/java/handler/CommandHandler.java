@@ -61,7 +61,8 @@ public class CommandHandler {
                 case "getMoviesByGenre" -> {
                     GetMoviesByGenreInput getMoviesByGenreInput =
                             objectMapper.readValue(CommandData, GetMoviesByGenreInput.class);
-                    results.add(MovieManager.getMoviesByGenre(getMoviesByGenreInput));
+                    ArrayList<Movie> moviesByGenre = MovieManager.getMoviesByGenre(getMoviesByGenreInput);
+                    results.add(MovieManager.serializeMoviesListByGenre(moviesByGenre));
                 }
                 case "getWatchList" -> {
                     GetWatchListInput getWatchListInput = objectMapper.readValue(CommandData, GetWatchListInput.class);
