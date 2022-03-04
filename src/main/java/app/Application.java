@@ -20,7 +20,7 @@ public class Application {
             app.get("watchList/{user_id}/{movie_id}", UserController.handleAddMovieToWatchList);
             app.get("rateMovie/{user_id}/{movie_id}/{rate}", MovieController.handleRatingMovie);
             app.get("voteComment/{user_id}/{comment_id}/{vote}", UserController.handleVotingComment);
-            app.get("movies/search/{start_year}/{end_year}", MovieController.fetchMoviesByReleaseYaer);
+            app.get("movies/search/{start_year}/{end_year}", MovieController.fetchMoviesByReleaseYear);
             app.get("movies/search/{genre}", MovieController.fetchMoviesByGenre);
         });
     }
