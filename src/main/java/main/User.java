@@ -82,6 +82,14 @@ public class User {
         this.birthDate = birthDate;
     }
 
+    public HashMap<Integer, Movie> getWatchList() {
+        return watchList;
+    }
+
+    public void setWatchList(HashMap<Integer, Movie> watchList) {
+        this.watchList = watchList;
+    }
+
     public void printData() {
         System.out.println(this.email);
         System.out.println(this.password);
