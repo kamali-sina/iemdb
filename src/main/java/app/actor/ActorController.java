@@ -26,9 +26,9 @@ public class ActorController {
 
             ctx.html(htmlString);
         } catch (ValidationException validationException) {
-            throw new BadRequestResponse();
+            ctx.redirect("/forbidden");
         } catch (Exception exception) {
-            throw new NotFoundResponse();
+            ctx.redirect("/notFound");
         }
     };
 

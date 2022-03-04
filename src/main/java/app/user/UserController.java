@@ -1,10 +1,10 @@
 package app.user;
 
+import exception.CommandException;
+import exception.ErrorType;
 import io.javalin.core.validation.ValidationException;
 import io.javalin.core.validation.Validator;
-import io.javalin.http.BadRequestResponse;
-import io.javalin.http.Handler;
-import io.javalin.http.NotFoundResponse;
+import io.javalin.http.*;
 import main.*;
 import manager.UserManager;
 import org.jsoup.Jsoup;
@@ -12,6 +12,7 @@ import org.jsoup.nodes.Document;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class UserController {
     public static String getWatchListHtmlString(User user) throws IOException {
@@ -63,8 +64,7 @@ public class UserController {
 
             ctx.html(htmlString);
         } catch (Exception exception) {
-            System.out.println(exception.getMessage());
-            throw new NotFoundResponse();
+            ctx.redirect("/notFound");
         }
     };
 
@@ -72,16 +72,24 @@ public class UserController {
         try {
             Validator<String> userId = ctx.pathParamAsClass("user_id", String.class);
             Validator<Integer> movieId = ctx.pathParamAsClass("movie_id", Integer.class);
-            WatchList watchListItem = new WatchList(movieId.get(), userId.get());
+            WatchListItem watchListItem = new WatchListItem(movieId.get(), userId.get());
 
             UserManager.addToWatchList(watchListItem);
 
-            // TODO: Add template rendering
-            ctx.result("successfully added to watchlist!");
-        } catch (ValidationException validationException){
-            throw new BadRequestResponse();
+            ctx.redirect("/success");
+        } catch (CommandException commandException) {
+            ArrayList<ErrorType> forbiddenErrorTypes = new ArrayList<>();
+            forbiddenErrorTypes.add(ErrorType.AgeLimitError);
+            forbiddenErrorTypes.add(ErrorType.MovieAlreadyExists);
+            if (forbiddenErrorTypes.contains(commandException.getErrorType())) {
+                ctx.redirect("/forbidden");
+            } else {
+                ctx.redirect("/notFound");
+            }
+        } catch (ValidationException validationException) {
+            ctx.redirect("/forbidden");
         } catch (Exception exception) {
-            throw new NotFoundResponse(); //TODO: should we give not found when movie is duplicate?
+            ctx.redirect("/notFound");
         }
     };
 
@@ -89,16 +97,15 @@ public class UserController {
         try {
             Validator<String> userId = ctx.pathParamAsClass("user_id", String.class);
             Validator<Integer> movieId = ctx.pathParamAsClass("movie_id", Integer.class);
-            WatchList watchListItem = new WatchList(movieId.get(), userId.get());
+            WatchListItem watchListItem = new WatchListItem(movieId.get(), userId.get());
 
             UserManager.removeFromWatchList(watchListItem);
 
-            // TODO: Add template rendering
-            ctx.result("successfully removed from watchlist!");
+            ctx.redirect("/success");
         } catch (ValidationException validationException){
-            throw new BadRequestResponse();
+            ctx.redirect("/forbidden");
         } catch (Exception exception) {
-            throw new NotFoundResponse(); //TODO: should we give not found when movie is duplicate?
+            ctx.redirect("/notFound");
         }
     };
 
@@ -108,15 +115,15 @@ public class UserController {
             Validator<Integer> commentId = ctx.pathParamAsClass("comment_id", Integer.class);
             Validator<Integer> vote = ctx.pathParamAsClass("vote", Integer.class);
 
+            vote.check(score -> -1 <= score && score <= 1, "Vote value should be between 1 and -1");
             Vote usersVote = new Vote(userId.get(), commentId.get(), vote.get());
             UserManager.addVote(usersVote);
 
-            // TODO: add template rendering
-            ctx.result("successfully voted comment!");
+            ctx.redirect("/success");
         } catch (ValidationException validationException){
-            throw new BadRequestResponse();
+            ctx.redirect("/forbidden");
         } catch (Exception exception) {
-            throw new NotFoundResponse(); //TODO: should we give not found when movie is duplicate?
+            ctx.redirect("/notFound");
         }
     };
 }

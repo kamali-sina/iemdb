@@ -131,7 +131,7 @@ public class MovieController {
 
             ctx.html(htmlString);
         } catch (Exception exception) {
-            throw new NotFoundResponse();
+            ctx.redirect("/notFound");
         }
     };
 
@@ -145,10 +145,9 @@ public class MovieController {
 
             ctx.html(htmlString);
         } catch (ValidationException validationException) {
-            throw new BadRequestResponse();
+            ctx.redirect("/forbidden");
         } catch (Exception exception) {
-            System.out.println(exception.getMessage());
-            throw new NotFoundResponse();
+            ctx.redirect("/notFound");
         }
     };
 
@@ -166,11 +165,10 @@ public class MovieController {
 
             Rating rating = new Rating(userEmail.get(), movieId.get(), rate.get());
 
-            // TODO: add template rendering
-            ctx.result("Movie rated successfully");
+            ctx.redirect("/success");
             MovieManager.addRating(rating);
         } catch (Exception exception) {
-            throw new BadRequestResponse();
+            ctx.redirect("/forbidden");
         }
     };
 
@@ -187,7 +185,7 @@ public class MovieController {
 
             ctx.html(htmlString);
         } catch (Exception exception) {
-            throw new BadRequestResponse();
+            ctx.redirect("/forbidden");
         }
     };
 
@@ -201,8 +199,7 @@ public class MovieController {
             String htmlString = MovieController.getMoviesHtmlString(moviesByGenre);
             ctx.html(htmlString);
         } catch (Exception exception) {
-            System.out.println(exception.getMessage());
-            throw new BadRequestResponse();
+            ctx.redirect("/forbidden");
         }
     };
 }
