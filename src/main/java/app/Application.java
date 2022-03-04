@@ -2,6 +2,7 @@ package app;
 
 import app.actor.ActorController;
 import app.movie.MovieController;
+import app.status.StatusController;
 import app.user.UserController;
 import io.javalin.Javalin;
 
@@ -23,6 +24,9 @@ public class Application {
             app.get("voteComment/{user_id}/{comment_id}/{vote}", UserController.handleVotingComment);
             app.get("movies/search/{start_year}/{end_year}", MovieController.fetchMoviesByReleaseYear);
             app.get("movies/search/{genre}", MovieController.fetchMoviesByGenre);
+            app.get("forbidden", StatusController.forbiddenHandler);
+            app.get("notFound", StatusController.notFoundHandler);
+            app.get("success", StatusController.successHandler);
         });
     }
 }
