@@ -102,7 +102,7 @@ public class MovieManager {
         return jsonObjectWriter.toString();
     }
 
-    public static String getMoviesByGenre(GetMoviesByGenreInput getMoviesByGenreInput) throws IOException {
+    public static ArrayList<Movie> getMoviesByGenre(GetMoviesByGenreInput getMoviesByGenreInput) {
         String genre = getMoviesByGenreInput.getGenre();
 
         ArrayList<Movie> moviesByGenre = new ArrayList<>();
