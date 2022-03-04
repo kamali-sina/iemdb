@@ -5,13 +5,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import exception.CommandException;
 import exception.ErrorType;
 
-public class WatchList {
+public class WatchListItem {
     private Integer movieId;
     private String userEmail;
 
     @JsonCreator
-    public WatchList(@JsonProperty("movieId") Integer movieId,
-                     @JsonProperty("userEmail") String userEmail) throws CommandException {
+    public WatchListItem(@JsonProperty("movieId") Integer movieId,
+                         @JsonProperty("userEmail") String userEmail) throws CommandException {
         if (movieId == null ||
                 userEmail == null) {
             throw new CommandException(ErrorType.InvalidCommand);

@@ -41,17 +41,17 @@ public class UserManager {
         return "\"users added successfully\"";
     }
 
-    public static String addToWatchList(WatchList watchList) throws CommandException {
-        User user = getUser(watchList.getUserEmail());
-        Movie movie = MovieManager.getMovie(watchList.getMovieId());
+    public static String addToWatchList(WatchListItem watchListItem) throws CommandException {
+        User user = getUser(watchListItem.getUserEmail());
+        Movie movie = MovieManager.getMovie(watchListItem.getMovieId());
 
         user.addToWatchList(movie);
         return "\"movie added to watchlist successfully\"";
     }
 
-    public static String removeFromWatchList(WatchList watchList) throws CommandException {
-        User user = getUser(watchList.getUserEmail());
-        Movie movie = MovieManager.getMovie(watchList.getMovieId());
+    public static String removeFromWatchList(WatchListItem watchListItem) throws CommandException {
+        User user = getUser(watchListItem.getUserEmail());
+        Movie movie = MovieManager.getMovie(watchListItem.getMovieId());
 
         user.removeFromWatchList(movie);
         return "\"movie removed from watchlist successfully\"";

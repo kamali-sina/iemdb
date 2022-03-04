@@ -56,6 +56,13 @@ public class MovieManager {
         return "\"comment with id " + commentId.toString() + " added successfully\"";
     }
 
+    public static String addComments(List<Comment> comments) throws CommandException {
+        for (Comment comment : comments) {
+            MovieManager.addComment(comment);
+        }
+        return "\"comments added successfully\"";
+    }
+
     public static String addRating(Rating rating) throws CommandException {
         UserManager.getUser(rating.getUserEmail());
         Movie movie = getMovie(rating.getMovieId());

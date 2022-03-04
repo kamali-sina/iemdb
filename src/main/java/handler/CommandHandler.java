@@ -46,11 +46,11 @@ public class CommandHandler {
                     results.add(UserManager.addVote(vote));
                 }
                 case "addToWatchList" -> {
-                    WatchList watchListItem = objectMapper.readValue(CommandData, WatchList.class);
+                    WatchListItem watchListItem = objectMapper.readValue(CommandData, WatchListItem.class);
                     results.add(UserManager.addToWatchList(watchListItem));
                 }
                 case "removeFromWatchList" -> {
-                    WatchList watchListItemToRemove = objectMapper.readValue(CommandData, WatchList.class);
+                    WatchListItem watchListItemToRemove = objectMapper.readValue(CommandData, WatchListItem.class);
                     results.add(UserManager.removeFromWatchList(watchListItemToRemove));
                 }
                 case "getMoviesList" -> results.add(MovieManager.getMoviesList());

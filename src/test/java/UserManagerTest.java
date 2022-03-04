@@ -53,7 +53,7 @@ class UserManagerTest {
     @Test
     @DisplayName("should add to watch list when given a valid watch list input")
     public void shouldAddToWatchListWhenGivenAValidWatchListInput() throws CommandException {
-        WatchList watchListItem = new WatchList(1, "young@ut.ir");
+        WatchListItem watchListItem = new WatchListItem(1, "young@ut.ir");
 
         String response = UserManager.addToWatchList(watchListItem);
 
@@ -65,7 +65,7 @@ class UserManagerTest {
     @Test
     @DisplayName("should throw age limit error when user age does not meet age limit")
     public void ShouldThrowAgeLimitErrorWhenUserAgeDoesNotMeetAgeLimit() throws CommandException {
-        WatchList watchListItem = new WatchList(2, "young@ut.ir");
+        WatchListItem watchListItem = new WatchListItem(2, "young@ut.ir");
 
         Exception exception = assertThrows(CommandException.class, () -> UserManager.addToWatchList(watchListItem));
 
@@ -77,7 +77,7 @@ class UserManagerTest {
     @Test
     @DisplayName("should throw user not found when watch list's user email is not available")
     public void ShouldThrowUserNotFoundWhenWatchListsUserEmailIsNotValid() throws CommandException {
-        WatchList watchListItem = new WatchList(2, "notAva@ut.ir");
+        WatchListItem watchListItem = new WatchListItem(2, "notAva@ut.ir");
 
         Exception exception = assertThrows(CommandException.class, () -> UserManager.addToWatchList(watchListItem));
 
@@ -89,7 +89,7 @@ class UserManagerTest {
     @Test
     @DisplayName("should throw movie not found when watch list's movie is not available")
     public void shouldThrowMovieNotFoundWhenWatchListsMovieIsNotAvailable() throws CommandException {
-        WatchList watchListItem = new WatchList(3, "young@ut.ir");
+        WatchListItem watchListItem = new WatchListItem(3, "young@ut.ir");
 
         Exception exception = assertThrows(CommandException.class, () -> UserManager.addToWatchList(watchListItem));
 
