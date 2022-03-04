@@ -126,4 +126,15 @@ public class MovieManager {
 
         return movies;
     }
+
+    public static ArrayList<Movie> getActorMovies(Integer actorId) {
+        ArrayList<Movie> movies = new ArrayList<>();
+        for (Movie movie : MovieManager.movies.values()) {
+            if (movie.getCast().contains(actorId)) {
+                movies.add(movie);
+            }
+        }
+
+        return movies;
+    }
 }
