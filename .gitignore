@@ -9,6 +9,7 @@
 
 #intelliJ folder
 .idea
+target/
 *.iml
 
 # Mobile Tools for Java (J2ME)
