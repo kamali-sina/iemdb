@@ -5,6 +5,7 @@ import exception.ErrorType;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 
 import main.*;
 import input.*;
@@ -31,6 +32,13 @@ public class UserManager {
 
         UserManager.users.put(user.getEmail(), user);
         return "\"user added successfully\"";
+    }
+
+    public static String addUsers(List<User> users) throws CommandException {
+        for (User user : users) {
+            UserManager.addUser(user);
+        }
+        return "\"users added successfully\"";
     }
 
     public static String addToWatchList(WatchList watchList) throws CommandException {

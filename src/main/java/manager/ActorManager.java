@@ -4,8 +4,10 @@ import exception.CommandException;
 import exception.ErrorType;
 
 import java.util.HashMap;
+import java.util.List;
 
 import main.Actor;
+import main.User;
 
 public class ActorManager {
     public static final HashMap<Integer, Actor> actors = new HashMap<>();
@@ -29,5 +31,12 @@ public class ActorManager {
         }
         ActorManager.actors.put(actor.getId(), actor);
         return response;
+    }
+
+    public static String addActors(List<Actor> actors) throws CommandException {
+        for (Actor actor : actors) {
+            ActorManager.addActor(actor);
+        }
+        return "\"actors added successfully\"";
     }
 }

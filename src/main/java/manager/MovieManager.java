@@ -10,6 +10,7 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 
 import main.*;
 import input.*;
@@ -38,6 +39,13 @@ public class MovieManager {
 
         MovieManager.movies.put(movie.getId(), movie);
         return response;
+    }
+
+    public static String addMovies(List<Movie> movies) throws CommandException {
+        for (Movie movie : movies) {
+            MovieManager.addMovie(movie);
+        }
+        return "\"movies added successfully\"";
     }
 
     public static String addComment(Comment comment) throws CommandException {
