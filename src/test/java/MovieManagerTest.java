@@ -49,7 +49,10 @@ class MovieManagerTest {
     public void shouldReturnMoviesByGenre(String genre, ArrayList<Movie> movies) throws IOException, CommandException {
         GetMoviesByGenreInput getMoviesByGenreInput = new GetMoviesByGenreInput(genre);
 
-        assertEquals(MovieManager.serializeMoviesListByGenre(movies), MovieManager.getMoviesByGenre(getMoviesByGenreInput));
+        ArrayList<Movie> moviesByGenre = MovieManager.getMoviesByGenre(getMoviesByGenreInput);
+        String moviesListByGenre = MovieManager.serializeMoviesListByGenre(moviesByGenre);
+
+        assertEquals(MovieManager.serializeMoviesListByGenre(movies), moviesListByGenre);
     }
 
     public static Collection<Object[]> provideMovies() throws CommandException {
@@ -91,7 +94,8 @@ class MovieManagerTest {
     public void shouldReturnMoviesInDramaGenreWhenNoMoviesExistInThatGenre() throws IOException, CommandException {
         GetMoviesByGenreInput getMoviesByGenreInput = new GetMoviesByGenreInput("drama");
 
-        String movies = MovieManager.getMoviesByGenre(getMoviesByGenreInput);
+        ArrayList<Movie> moviesByGenre = MovieManager.getMoviesByGenre(getMoviesByGenreInput);
+        String movies = MovieManager.serializeMoviesListByGenre(moviesByGenre);
 
         String expectedMoviesInAdventureGenre = "{\"MoviesListByGenre\":[]}";
 
