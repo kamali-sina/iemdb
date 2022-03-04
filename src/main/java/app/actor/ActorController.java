@@ -50,17 +50,17 @@ public class ActorController {
         ArrayList<Movie> actorMovies = MovieManager.getActorMovies(actor.getId());
         htmlString = htmlString.replace("$tma", String.valueOf(actorMovies.size()));
 
-        StringBuilder movies = new StringBuilder();
+        String movies = "";
 
         for (Movie movie : actorMovies) {
-            movies.append(movieTableLine);
-            movies = new StringBuilder(movies.toString().replace("$name", movie.getName()));
-            movies = new StringBuilder(movies.toString().replace("$imdbRating", String.valueOf(movie.getImdbRate())));
-            movies = new StringBuilder(movies.toString().replace("$rating", String.valueOf(movie.getAverageRatingRate())));
-            movies = new StringBuilder(movies.toString().replace("$ID", String.valueOf(movie.getId())));
+            movies += movieTableLine;
+            movies = movies.replace("$name", movie.getName());
+            movies = movies.replace("$imdbRating", String.valueOf(movie.getImdbRate()));
+            movies = movies.replace("$rating", String.valueOf(movie.getAverageRatingRate()));
+            movies = movies.replace("$ID", String.valueOf(movie.getId()));
         }
 
-        htmlString = htmlString.replace("$movies", movies.toString());
+        htmlString = htmlString.replace("$movies", movies);
         return htmlString;
     }
 }
