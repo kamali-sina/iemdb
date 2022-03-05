@@ -19,6 +19,100 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class MovieController {
+    public static Handler fetchAllMovies = ctx -> {
+        try {
+            ArrayList<Movie> moviesList = new ArrayList<>(MovieManager.movies.values());
+            String htmlString = MovieController.getMoviesHtmlString(moviesList);
+
+            ctx.html(htmlString);
+        } catch (Exception exception) {
+            ctx.redirect("/notFound");
+        }
+    };
+    public static Handler fetchMovieById = ctx -> {
+        try {
+            Validator<Integer> movieId = ctx.pathParamAsClass("movie_id", Integer.class);
+            movieId.check(id -> 1 <= id, "Movie ID should be greater than 0");
+            Movie movie = MovieManager.getMovie(movieId.get());
+
+            String htmlString = MovieController.getMovieHtmlString(movie);
+
+            ctx.html(htmlString);
+        } catch (ValidationException validationException) {
+            ctx.redirect("/forbidden");
+        } catch (Exception exception) {
+            ctx.redirect("/notFound");
+        }
+    };
+    public static Handler handleRatingMovie = ctx -> {
+        try {
+            Validator<String> userEmail = ctx.pathParamAsClass("user_id", String.class);
+            UserManager.getUser(userEmail.get());
+
+            Validator<Integer> movieId = ctx.pathParamAsClass("movie_id", Integer.class);
+            movieId.check(id -> 1 <= id, "Movie ID should be greater than 0");
+            MovieManager.getMovie(movieId.get());
+
+            Validator<Integer> rate = ctx.pathParamAsClass("rate", Integer.class);
+            rate.check(score -> 0 <= score && score <= 10, "rating score should be between 0 and 10");
+
+            Rating rating = new Rating(userEmail.get(), movieId.get(), rate.get());
+
+            ctx.redirect("/success");
+            MovieManager.addRating(rating);
+        } catch (Exception exception) {
+            ctx.redirect("/forbidden");
+        }
+    };
+    public static Handler handleRatingMovieByPost = ctx -> {
+        try {
+            Validator<String> userEmail = ctx.formParamAsClass("user_id", String.class);
+            UserManager.getUser(userEmail.get());
+            Validator<Integer> movieId = ctx.pathParamAsClass("movie_id", Integer.class);
+            movieId.check(id -> 1 <= id, "Movie ID should be greater than 0");
+            MovieManager.getMovie(movieId.get());
+
+            Validator<Integer> rate = ctx.formParamAsClass("quantity", Integer.class);
+            rate.check(score -> 0 <= score && score <= 10, "rating score should be between 0 and 10");
+
+            Rating rating = new Rating(userEmail.get(), movieId.get(), rate.get());
+
+            ctx.redirect("/success");
+            MovieManager.addRating(rating);
+        } catch (Exception exception) {
+            ctx.redirect("/forbidden");
+        }
+    };
+    public static Handler fetchMoviesByReleaseYear = ctx -> {
+        try {
+            Validator<Integer> startYear = ctx.pathParamAsClass("start_year", Integer.class);
+            Validator<Integer> endYear = ctx.pathParamAsClass("end_year", Integer.class);
+            startYear.check(year -> 0 <= year, "Start year should be greater than 0");
+            endYear.check(year -> 0 <= year, "End year should be greater than 0");
+            endYear.check(year -> startYear.get() <= year, "End year should be greater than Start year");
+
+            ArrayList<Movie> moviesList = MovieManager.getMoviesByReleaseYear(startYear.get(), endYear.get());
+            String htmlString = MovieController.getMoviesHtmlString(moviesList);
+
+            ctx.html(htmlString);
+        } catch (Exception exception) {
+            ctx.redirect("/forbidden");
+        }
+    };
+    public static Handler fetchMoviesByGenre = ctx -> {
+        try {
+            Validator<String> genre = ctx.pathParamAsClass("genre", String.class);
+
+            GetMoviesByGenreInput getMoviesByGenreInput = new GetMoviesByGenreInput(genre.get());
+            ArrayList<Movie> moviesByGenre = MovieManager.getMoviesByGenre(getMoviesByGenreInput);
+
+            String htmlString = MovieController.getMoviesHtmlString(moviesByGenre);
+            ctx.html(htmlString);
+        } catch (Exception exception) {
+            ctx.redirect("/forbidden");
+        }
+    };
+
     public static String getMovieHtmlString(Movie movie) throws IOException, CommandException {
 
         File input = new File("src/main/resources/templates/movie.html");
@@ -138,103 +232,4 @@ public class MovieController {
 
         return htmlString;
     }
-
-    public static Handler fetchAllMovies = ctx -> {
-        try {
-            ArrayList<Movie> moviesList = new ArrayList<>(MovieManager.movies.values());
-            String htmlString = MovieController.getMoviesHtmlString(moviesList);
-
-            ctx.html(htmlString);
-        } catch (Exception exception) {
-            ctx.redirect("/notFound");
-        }
-    };
-
-    public static Handler fetchMovieById = ctx -> {
-        try {
-            Validator<Integer> movieId = ctx.pathParamAsClass("movie_id", Integer.class);
-            movieId.check(id -> 1 <= id, "Movie ID should be greater than 0");
-            Movie movie = MovieManager.getMovie(movieId.get());
-
-            String htmlString = MovieController.getMovieHtmlString(movie);
-
-            ctx.html(htmlString);
-        } catch (ValidationException validationException) {
-            ctx.redirect("/forbidden");
-        } catch (Exception exception) {
-            ctx.redirect("/notFound");
-        }
-    };
-
-    public static Handler handleRatingMovie = ctx -> {
-        try {
-            Validator<String> userEmail = ctx.pathParamAsClass("user_id", String.class);
-            UserManager.getUser(userEmail.get());
-
-            Validator<Integer> movieId = ctx.pathParamAsClass("movie_id", Integer.class);
-            movieId.check(id -> 1 <= id, "Movie ID should be greater than 0");
-            MovieManager.getMovie(movieId.get());
-
-            Validator<Integer> rate = ctx.pathParamAsClass("rate", Integer.class);
-            rate.check(score -> 0 <= score && score <= 10, "rating score should be between 0 and 10");
-
-            Rating rating = new Rating(userEmail.get(), movieId.get(), rate.get());
-
-            ctx.redirect("/success");
-            MovieManager.addRating(rating);
-        } catch (Exception exception) {
-            ctx.redirect("/forbidden");
-        }
-    };
-
-    public static Handler handleRatingMovieByPost = ctx -> {
-        try {
-            Validator<String> userEmail = ctx.formParamAsClass("user_id", String.class);
-            UserManager.getUser(userEmail.get());
-            Validator<Integer> movieId = ctx.pathParamAsClass("movie_id", Integer.class);
-            movieId.check(id -> 1 <= id, "Movie ID should be greater than 0");
-            MovieManager.getMovie(movieId.get());
-
-            Validator<Integer> rate = ctx.formParamAsClass("quantity", Integer.class);
-            rate.check(score -> 0 <= score && score <= 10, "rating score should be between 0 and 10");
-
-            Rating rating = new Rating(userEmail.get(), movieId.get(), rate.get());
-
-            ctx.redirect("/success");
-            MovieManager.addRating(rating);
-        } catch (Exception exception) {
-            ctx.redirect("/forbidden");
-        }
-    };
-
-    public static Handler fetchMoviesByReleaseYear = ctx -> {
-        try {
-            Validator<Integer> startYear = ctx.pathParamAsClass("start_year", Integer.class);
-            Validator<Integer> endYear = ctx.pathParamAsClass("end_year", Integer.class);
-            startYear.check(year -> 0 <= year, "Start year should be greater than 0");
-            endYear.check(year -> 0 <= year, "End year should be greater than 0");
-            endYear.check(year -> startYear.get() <= year , "End year should be greater than Start year");
-
-            ArrayList<Movie> moviesList = MovieManager.getMoviesByReleaseYear(startYear.get(), endYear.get());
-            String htmlString = MovieController.getMoviesHtmlString(moviesList);
-
-            ctx.html(htmlString);
-        } catch (Exception exception) {
-            ctx.redirect("/forbidden");
-        }
-    };
-
-    public static Handler fetchMoviesByGenre = ctx -> {
-        try {
-            Validator<String> genre = ctx.pathParamAsClass("genre", String.class);
-
-            GetMoviesByGenreInput getMoviesByGenreInput = new GetMoviesByGenreInput(genre.get());
-            ArrayList<Movie> moviesByGenre = MovieManager.getMoviesByGenre(getMoviesByGenreInput);
-
-            String htmlString = MovieController.getMoviesHtmlString(moviesByGenre);
-            ctx.html(htmlString);
-        } catch (Exception exception) {
-            ctx.redirect("/forbidden");
-        }
-    };
 }
