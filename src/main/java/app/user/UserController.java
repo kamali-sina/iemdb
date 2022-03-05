@@ -6,6 +6,7 @@ import io.javalin.core.validation.ValidationException;
 import io.javalin.core.validation.Validator;
 import io.javalin.http.*;
 import main.*;
+import manager.MovieManager;
 import manager.UserManager;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -121,6 +122,49 @@ public class UserController {
 
             ctx.redirect("/success");
         } catch (ValidationException validationException){
+            ctx.redirect("/forbidden");
+        } catch (Exception exception) {
+            ctx.redirect("/notFound");
+        }
+    };
+
+    public static Handler handleVotingCommentByPost = ctx -> {
+        try {
+            Validator<String> userId = ctx.formParamAsClass("user_id", String.class);
+            Validator<Integer> commentId = ctx.pathParamAsClass("comment_id", Integer.class);
+            Validator<Integer> vote = ctx.pathParamAsClass("vote", Integer.class);
+
+            vote.check(score -> -1 <= score && score <= 1, "Vote value should be between 1 and -1");
+            Vote usersVote = new Vote(userId.get(), commentId.get(), vote.get());
+            UserManager.addVote(usersVote);
+
+            ctx.redirect("/success");
+        } catch (ValidationException validationException){
+            ctx.redirect("/forbidden");
+        } catch (Exception exception) {
+            ctx.redirect("/notFound");
+        }
+    };
+
+    public static Handler handleAddMovieToWatchListPost = ctx -> {
+        try {
+            Validator<String> userId = ctx.formParamAsClass("user_id", String.class);
+            Validator<Integer> movieId = ctx.pathParamAsClass("movie_id", Integer.class);
+            WatchListItem watchListItem = new WatchListItem(movieId.get(), userId.get());
+
+            UserManager.addToWatchList(watchListItem);
+
+            ctx.redirect("/success");
+        } catch (CommandException commandException) {
+            ArrayList<ErrorType> forbiddenErrorTypes = new ArrayList<>();
+            forbiddenErrorTypes.add(ErrorType.AgeLimitError);
+            forbiddenErrorTypes.add(ErrorType.MovieAlreadyExists);
+            if (forbiddenErrorTypes.contains(commandException.getErrorType())) {
+                ctx.redirect("/forbidden");
+            } else {
+                ctx.redirect("/notFound");
+            }
+        } catch (ValidationException validationException) {
             ctx.redirect("/forbidden");
         } catch (Exception exception) {
             ctx.redirect("/notFound");
