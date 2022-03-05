@@ -27,7 +27,9 @@ public class Application {
             app.get("forbidden", StatusController.forbiddenHandler);
             app.get("notFound", StatusController.notFoundHandler);
             app.get("success", StatusController.successHandler);
-            app.post("/api/rateMovie", MovieController.handleRatingMovieByButton);
+            app.post("/api/addToWatchList/{movie_id}", UserController.handleAddMovieToWatchListPost);
+            app.post("/api/rateMovie/{movie_id}", MovieController.handleRatingMovieByPost);
+            app.post("/api/voteComment/{comment_id}/{vote}", UserController.handleVotingCommentByPost);
         });
     }
 }
