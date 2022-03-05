@@ -4,9 +4,7 @@ import exception.CommandException;
 import input.GetMoviesByGenreInput;
 import io.javalin.core.validation.ValidationException;
 import io.javalin.core.validation.Validator;
-import io.javalin.http.BadRequestResponse;
 import io.javalin.http.Handler;
-import io.javalin.http.NotFoundResponse;
 import main.Comment;
 import main.Movie;
 import main.Rating;
@@ -31,8 +29,22 @@ public class MovieController {
                 "        <td>$name</td>\n" +
                 "        <td>$comment</td>\n" +
                 "        <td>$like</td>\n" +
-                "        <td>$disLike</td>\n" +
-                "      </tr>\n";
+                "        <td>$disLike</td>\n";
+        String commentTableLineAddOn = "<td>\n" +
+                "          <form action=\"/api/voteComment/$ID/1\" method=\"POST\">\n" +
+                "            <label>ID:</label>\n" +
+                "            <input type=\"text\" name=\"user_id\" value=\"\"/>" +
+                "            <button type=\"submit\">like</button>\n" +
+                "          </form>\n" +
+                "        </td>\n" +
+                "        <td>\n" +
+                "          <form action=\"/api/voteComment/$ID/-1\" method=\"POST\">\n" +
+                "            <label>ID:</label>\n" +
+                "            <input type=\"text\" name=\"user_id\" value=\"\"/>" +
+                "            <button type=\"submit\">dislike</button>\n" +
+                "          </form>\n" +
+                "        </td>\n" +
+                "      </tr>";
 
         htmlString = htmlString.replace("$name", movie.getName());
         htmlString = htmlString.replace("$summary", movie.getSummary());
@@ -40,6 +52,7 @@ public class MovieController {
         htmlString = htmlString.replace("$director", movie.getDirector());
         htmlString = htmlString.replace("$writers", movie.getWriters().toString());
         htmlString = htmlString.replace("$genres", movie.getGenres().toString());
+        htmlString = htmlString.replace("$ID", movie.getId().toString());
 
         String cast = "";
         String delimiter = "";
@@ -64,6 +77,8 @@ public class MovieController {
                 comments = comments.replace("$comment", comment.getText());
                 comments = comments.replace("$like", comment.getNumberOfLikes().toString());
                 comments = comments.replace("$disLike", comment.getNumberOfDislikes().toString());
+                comments += commentTableLineAddOn;
+                comments = comments.replace("$ID", comment.getId().toString());
             }
         }
 
@@ -172,11 +187,10 @@ public class MovieController {
         }
     };
 
-    public static Handler handleRatingMovieByButton = ctx -> {
+    public static Handler handleRatingMovieByPost = ctx -> {
         try {
             Validator<String> userEmail = ctx.formParamAsClass("user_id", String.class);
             UserManager.getUser(userEmail.get());
-
             Validator<Integer> movieId = ctx.pathParamAsClass("movie_id", Integer.class);
             movieId.check(id -> 1 <= id, "Movie ID should be greater than 0");
             MovieManager.getMovie(movieId.get());
