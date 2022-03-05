@@ -172,6 +172,27 @@ public class MovieController {
         }
     };
 
+    public static Handler handleRatingMovieByButton = ctx -> {
+        try {
+            Validator<String> userEmail = ctx.formParamAsClass("user_id", String.class);
+            UserManager.getUser(userEmail.get());
+
+            Validator<Integer> movieId = ctx.pathParamAsClass("movie_id", Integer.class);
+            movieId.check(id -> 1 <= id, "Movie ID should be greater than 0");
+            MovieManager.getMovie(movieId.get());
+
+            Validator<Integer> rate = ctx.formParamAsClass("quantity", Integer.class);
+            rate.check(score -> 0 <= score && score <= 10, "rating score should be between 0 and 10");
+
+            Rating rating = new Rating(userEmail.get(), movieId.get(), rate.get());
+
+            ctx.redirect("/success");
+            MovieManager.addRating(rating);
+        } catch (Exception exception) {
+            ctx.redirect("/forbidden");
+        }
+    };
+
     public static Handler fetchMoviesByReleaseYear = ctx -> {
         try {
             Validator<Integer> startYear = ctx.pathParamAsClass("start_year", Integer.class);
