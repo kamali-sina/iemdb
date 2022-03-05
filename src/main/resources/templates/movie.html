@@ -29,15 +29,17 @@
       <li id="ageLimit">ageLimit: $ageLimit</li>
     </ul>
 
-    <form action="/api/rateMovie" method="POST">
+    <form action="/api/rateMovie/$ID" method="POST">
       <label>Your ID:</label>
-      <input type="text" name="user_id" value="" id="user_id"/>
+      <input type="text" name="user_id" value=""/>
       <label>Rate(between 1 and 10):</label>
       <input type="number" id="quantity" name="quantity" min="1" max="10">
       <button type="submit">rate</button>
     </form>
     <br>
-    <form action="" method="POST">
+    <form action="/api/addToWatchList/$ID" method="POST">
+      <label>Your ID:</label>
+      <input type="text" name="user_id" value=""/>
       <button type="submit">Add to WatchList</button>
     </form>
     <br/>
