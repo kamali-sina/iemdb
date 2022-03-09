@@ -12,6 +12,19 @@ import input.*;
 
 public class UserManager {
     public static final HashMap<String, User> users = new HashMap<>();
+    public static User loggedInUser = null;
+
+    public static User getLoggedInUser() {
+        return loggedInUser;
+    }
+
+    public static void logInUser(User user) {
+        loggedInUser = user;
+    }
+
+    public static void logOutUser() {
+        loggedInUser = null;
+    }
 
     public static User getUser(String userEmail) throws CommandException {
         User user = UserManager.users.get(userEmail);
