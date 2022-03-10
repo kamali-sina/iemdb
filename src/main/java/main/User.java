@@ -6,15 +6,16 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import exception.CommandException;
 import exception.ErrorType;
+import manager.MovieManager;
 
 import java.io.IOException;
 import java.io.StringWriter;
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.Collection;
-import java.util.HashMap;
+import java.util.*;
 
 public class User {
+    public static final int RECOMMENDATION_COUNT = 3;
     private String email;
     private String password;
     private String nickname;
@@ -136,5 +137,39 @@ public class User {
             throw new CommandException(ErrorType.MovieNotFound);
         }
         watchList.remove(movie.getId());
+    }
+
+    private Double getMovieGenreSimilarity(Movie movie) {
+        Double score = movie.getImdbRate();
+        for (Movie watchlist_movie : watchList.values()) {
+            score += MovieManager.countNumberOfSameGenres(movie, watchlist_movie);
+        }
+        return score;
+    }
+
+    private Double getMovieRecommendationScore(Movie movie) {
+        Double score = movie.getImdbRate();
+        if (movie.getAverageRatingRate() != null) {
+            score += movie.getAverageRatingRate();
+        }
+        score += 3 * getMovieGenreSimilarity(movie);
+        return score;
+    }
+
+    public List<Movie> getWatchlistRecommendations() {
+        ArrayList<Movie> movies_not_in_watchlist = new ArrayList<>();
+        for (Movie movie : MovieManager.movies.values()) {
+            if (!watchList.containsValue(movie)) {
+                movies_not_in_watchlist.add(movie);
+            }
+        }
+        for (Movie movie : movies_not_in_watchlist) {
+            movie.setRecommendationScore(getMovieRecommendationScore(movie));
+        }
+        movies_not_in_watchlist.sort(Comparator.comparing(Movie::getRecommendationScore).reversed());
+        if (movies_not_in_watchlist.size() < RECOMMENDATION_COUNT) {
+            return  movies_not_in_watchlist;
+        }
+        return movies_not_in_watchlist.subList(0, RECOMMENDATION_COUNT);
     }
 }
