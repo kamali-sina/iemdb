@@ -2,6 +2,7 @@ package com.iemdb;
 
 import exception.CommandException;
 import main.User;
+import manager.ErrorManager;
 import manager.UserManager;
 
 import javax.servlet.*;
@@ -24,7 +25,7 @@ public class LoginServlet extends HttpServlet {
             UserManager.logInUser(user);
             response.sendRedirect("/");
         } catch (CommandException commandException) {
-            request.getRequestDispatcher("/jsps/404.jsp").forward(request, response);
+            ErrorManager.error(request, response, commandException.getMessage());
         }
     }
 }

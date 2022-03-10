@@ -2,6 +2,7 @@ package com.iemdb;
 
 import exception.CommandException;
 import main.*;
+import manager.ErrorManager;
 import manager.MovieManager;
 import manager.UserManager;
 
@@ -38,7 +39,7 @@ public class MovieServlet extends HttpServlet {
                     Rating rating = new Rating(UserManager.getLoggedInUser().getEmail(), movieId, quantity);
                     MovieManager.addRating(rating);
                 } catch (CommandException commandException) {
-                    commandException.printStackTrace();
+                    ErrorManager.error(request, response, commandException.getMessage());
                 }
             }
             case "add" -> {
@@ -47,7 +48,7 @@ public class MovieServlet extends HttpServlet {
                     WatchListItem watchListItem = new WatchListItem(movieId, UserManager.getLoggedInUser().getEmail());
                     UserManager.addToWatchList(watchListItem);
                 } catch (CommandException commandException) {
-                    commandException.printStackTrace();
+                    ErrorManager.error(request, response, commandException.getMessage());
                 }
 
             }
@@ -58,7 +59,7 @@ public class MovieServlet extends HttpServlet {
                     Comment comment = new Comment(UserManager.getLoggedInUser().getEmail(), movieId, commentText);
                     MovieManager.addComment(comment);
                 } catch (CommandException commandException) {
-                    commandException.printStackTrace();
+                    ErrorManager.error(request, response, commandException.getMessage());
                 }
             }
             case "like" -> {
@@ -67,7 +68,7 @@ public class MovieServlet extends HttpServlet {
                     Vote vote = new Vote(UserManager.getLoggedInUser().getEmail(), commentId, 1);
                     UserManager.addVote(vote);
                 } catch (CommandException commandException) {
-                    commandException.printStackTrace();
+                    ErrorManager.error(request, response, commandException.getMessage());
                 }
             }
             case "dislike" -> {
@@ -76,7 +77,7 @@ public class MovieServlet extends HttpServlet {
                     Vote vote = new Vote(UserManager.getLoggedInUser().getEmail(), commentId, -1);
                     UserManager.addVote(vote);
                 } catch (CommandException commandException) {
-                    commandException.printStackTrace();
+                    ErrorManager.error(request, response, commandException.getMessage());
                 }
             }
         }

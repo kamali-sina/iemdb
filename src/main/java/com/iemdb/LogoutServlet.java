@@ -1,6 +1,7 @@
 package com.iemdb;
 
 import main.User;
+import manager.ErrorManager;
 import manager.UserManager;
 
 import javax.servlet.*;
@@ -13,7 +14,7 @@ public class LogoutServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         if (UserManager.getLoggedInUser() == null) {
-            request.getRequestDispatcher("/jsps/error.jsp").forward(request, response);
+            ErrorManager.error(request, response, "You need to have logged in before logging out");
         } else {
             UserManager.logOutUser();
             response.sendRedirect("/");
