@@ -120,6 +120,41 @@ public class Movie {
         return writers;
     }
 
+    public String getWritersPretty() {
+        return getListPretty(this.getWriters());
+    }
+
+    public String getGenresPretty() {
+        return getListPretty(this.getGenres());
+    }
+
+    public String getCastPretty() {
+        try {
+            String cast = "";
+            String delimiter = "";
+            for (Integer actorId : this.getCast()) {
+                cast += delimiter;
+                cast += ActorManager.getActor(actorId).getName();
+                delimiter = ", ";
+            }
+
+            return cast;
+        } catch (CommandException  commandException) {
+            return commandException.getMessage();
+        }
+    }
+
+    public static String getListPretty(ArrayList<String> list) {
+        String prettyList = "";
+        String delimiter = "";
+        for (String item : list) {
+            prettyList += delimiter;
+            prettyList += item;
+            delimiter = ", ";
+        }
+        return prettyList;
+    }
+
     public void setWriters(ArrayList<String> writers) {
         this.writers = writers;
     }
