@@ -193,4 +193,17 @@ public class MovieManager {
     public static ArrayList<Movie> getSearchMoviesResultSorted(String input, String filter) {
         return sortMovies(searchMovies(input), filter);
     }
+
+    public static Integer countNumberOfSameGenres(Movie movie_1, Movie movie_2) {
+        Integer count = 0;
+        for (String genre_1 : movie_1.getGenres()) {
+            for (String genre_2 : movie_2.getGenres()) {
+                if (genre_1.equals(genre_2)) {
+                    count += 1;
+                    break;
+                }
+            }
+        }
+        return count;
+    }
 }
