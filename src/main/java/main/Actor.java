@@ -9,6 +9,9 @@ import exception.ErrorType;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
 
 public class Actor {
 
@@ -89,5 +92,11 @@ public class Actor {
         jsonGenerator.writeEndObject();
         jsonGenerator.close();
         return jsonObjectWriter.toString();
+    }
+
+    public Integer getAge() {
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate birthDate = LocalDate.parse(this.getBirthDate(), format);
+        return Period.between(birthDate, LocalDate.now()).getYears();
     }
 }
