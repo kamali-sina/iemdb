@@ -2,6 +2,7 @@ package com.iemdb;
 
 import exception.CommandException;
 import main.*;
+import manager.ActorManager;
 import manager.ErrorManager;
 import manager.MovieManager;
 import manager.UserManager;
@@ -17,17 +18,31 @@ import java.util.Objects;
 public class MovieServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String pathInfo = request.getPathInfo(); // /{value}/test
+        if (UserManager.getLoggedInUser() == null) {
+            response.sendRedirect("/login");
+            return;
+        }
+        String pathInfo = request.getPathInfo();
         String[] pathParts = pathInfo.split("/");
-        String movieId = pathParts[1]; // {value}
+        String movieId = pathParts[1];
+        try {
+            MovieManager.getMovie(Integer.valueOf(movieId));
+        } catch (CommandException commandException) {
+            ErrorManager.error(request, response, commandException.getMessage());
+        } catch (Exception exception) {
+            ErrorManager.error(request, response, "Invalid value for movie_id");
+        }
         request.getRequestDispatcher("/jsps/movie.jsp?movieId=" + movieId).forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String pathInfo = request.getPathInfo(); // /{value}/test
+        if (UserManager.getLoggedInUser() == null) {
+            response.sendRedirect("/login");
+            return;
+        }
+        String pathInfo = request.getPathInfo();
         String[] pathParts = pathInfo.split("/");
-//        String movieId = pathParts[1]; // {value}
 
         String action = request.getParameter("action");
 
