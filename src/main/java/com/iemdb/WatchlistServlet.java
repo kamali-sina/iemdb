@@ -16,11 +16,19 @@ import java.io.IOException;
 public class WatchlistServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        if (UserManager.getLoggedInUser() == null) {
+            response.sendRedirect("/login");
+            return;
+        }
         request.getRequestDispatcher("/jsps/watchlist.jsp").forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        if (UserManager.getLoggedInUser() == null) {
+            response.sendRedirect("/login");
+            return;
+        }
         String movie_id_string = request.getParameter("movie_id");
         try {
             Integer movie_id = Integer.valueOf(movie_id_string);
