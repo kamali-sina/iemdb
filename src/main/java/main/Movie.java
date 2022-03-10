@@ -32,6 +32,7 @@ public class Movie {
     private Integer ratingCount = 0;
     private HashMap<String, ArrayList<Comment>> comments = new HashMap<>();
     private Double averageRating;
+    private Double recommendationScore;
 
     @JsonCreator
     public Movie(@JsonProperty("id") Integer id,
@@ -126,6 +127,14 @@ public class Movie {
 
     public String getGenresPretty() {
         return getListPretty(this.getGenres());
+    }
+
+    public Double getRecommendationScore() {
+        return recommendationScore;
+    }
+
+    public void setRecommendationScore(Double recommendationScore) {
+        this.recommendationScore = recommendationScore;
     }
 
     public String getCastPretty() {
