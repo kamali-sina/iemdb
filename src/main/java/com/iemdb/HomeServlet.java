@@ -11,15 +11,13 @@ import java.io.IOException;
 @WebServlet(name = "HomeServlet", value = "")
 public class HomeServlet extends HttpServlet {
     private static final String externalServicesUrl = "http://138.197.181.131:5000";
-    private static boolean isDataLoaded = false;
+
+    public void init() throws ServletException {
+        DataReader.readDataFromUrl(externalServicesUrl);
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        if (!isDataLoaded) {
-            DataReader.readDataFromUrl(externalServicesUrl);
-            isDataLoaded = true;
-        }
-
         if (UserManager.getLoggedInUser() == null) {
             response.sendRedirect("/login");
         }
