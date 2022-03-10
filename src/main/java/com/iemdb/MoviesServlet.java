@@ -1,6 +1,7 @@
 package com.iemdb;
 
 import manager.MovieManager;
+import manager.UserManager;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -11,11 +12,19 @@ import java.io.IOException;
 public class MoviesServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        if (UserManager.getLoggedInUser() == null) {
+            response.sendRedirect("/login");
+            return;
+        }
         request.getRequestDispatcher("/jsps/movies.jsp").forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        if (UserManager.getLoggedInUser() == null) {
+            response.sendRedirect("/login");
+            return;
+        }
         String action = request.getParameter("action");
 
         switch (action) {
