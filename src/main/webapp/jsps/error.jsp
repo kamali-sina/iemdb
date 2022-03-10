@@ -1,3 +1,4 @@
+<%@ page import="manager.ErrorManager" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,7 +17,7 @@
 </h1>
 <br>
 <h3>
-    Your error message in here
+    <%=ErrorManager.getError_message()%>
 </h3>
 </body>
 </html>
