@@ -7,10 +7,7 @@ import exception.ErrorType;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import main.*;
 import input.*;
@@ -143,5 +140,30 @@ public class MovieManager {
         }
 
         return movies;
+    }
+
+    public static ArrayList<Movie> searchMovies(String input) {
+        ArrayList<Movie> movies = new ArrayList<>();
+        for (Movie movie : MovieManager.movies.values()) {
+            if (movie.getName().contains(input)) {
+                movies.add(movie);
+            }
+        }
+
+        return movies;
+    }
+
+    public static ArrayList<Movie> sortMovies(ArrayList<Movie> movies, String filter) {
+        if (filter.equals("sortByImdb")) {
+            movies.sort(Comparator.comparing(Movie::getImdbRate).reversed());
+        } else if (filter.equals("sortByDate")) {
+            movies.sort(Comparator.comparing(Movie::getLocalReleaseDate).reversed());
+        }
+
+        return movies;
+    }
+
+    public static ArrayList<Movie> getSearchMoviesResultSorted(String input, String filter) {
+        return sortMovies(searchMovies(input), filter);
     }
 }
