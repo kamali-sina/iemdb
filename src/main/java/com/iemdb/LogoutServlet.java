@@ -17,7 +17,7 @@ public class LogoutServlet extends HttpServlet {
             ErrorManager.error(request, response, "You need to have logged in before logging out");
         } else {
             UserManager.logOutUser();
-            response.sendRedirect("/");
+            response.sendRedirect("/login");
         }
     }
 
