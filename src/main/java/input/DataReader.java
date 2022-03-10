@@ -23,45 +23,65 @@ public class DataReader {
 
     public static void readDataFromUrl(String url) {
         try {
-            readUsers(url);
-            readActors(url);
-            readMovies(url);
-            readComments(url);
+            while (!readUsers(url));
+            while (!readActors(url));
+            while (!readMovies(url));
+            while (!readComments(url));
             System.out.println("All data loaded successfully!");
         } catch (Exception exception) {
             System.out.println(exception.getMessage());
         }
     }
 
-    private static void readUsers(String url) throws IOException, CommandException {
-        Document doc = Jsoup.connect(url + USERSENDPOINT).ignoreContentType(true).get();
-        List<User> users = null;
-        ObjectMapper objectMapper = new ObjectMapper();
-        users = objectMapper.readValue(doc.wholeText(), objectMapper.getTypeFactory().constructCollectionType(List.class, User.class));
-        System.out.println(UserManager.addUsers(users));
+    private static boolean readUsers(String url) {
+        try {
+            Document doc = Jsoup.connect(url + USERSENDPOINT).ignoreContentType(true).get();
+            List<User> users = null;
+            ObjectMapper objectMapper = new ObjectMapper();
+            users = objectMapper.readValue(doc.wholeText(), objectMapper.getTypeFactory().constructCollectionType(List.class, User.class));
+            System.out.println(UserManager.addUsers(users));
+            return true;
+        } catch (Exception exception) {
+            return false;
+        }
     }
 
-    private static void readActors(String url) throws IOException, CommandException {
-        Document doc = Jsoup.connect(url + ACTORSENDPOINT).ignoreContentType(true).get();
-        List<Actor> actors = null;
-        ObjectMapper objectMapper = new ObjectMapper();
-        actors = objectMapper.readValue(doc.wholeText(), objectMapper.getTypeFactory().constructCollectionType(List.class, Actor.class));
-        System.out.println(ActorManager.addActors(actors));
+    private static boolean readActors(String url) {
+        try {
+            Document doc = Jsoup.connect(url + ACTORSENDPOINT).ignoreContentType(true).get();
+            List<Actor> actors = null;
+            ObjectMapper objectMapper = new ObjectMapper();
+            actors = objectMapper.readValue(doc.wholeText(), objectMapper.getTypeFactory().constructCollectionType(List.class, Actor.class));
+            System.out.println(ActorManager.addActors(actors));
+            return true;
+        } catch (Exception exception) {
+            return false;
+        }
     }
 
-    private static void readMovies(String url) throws IOException, CommandException {
-        Document doc = Jsoup.connect(url + MOVIESENDPOINT).ignoreContentType(true).get();
-        List<Movie> movies = null;
-        ObjectMapper objectMapper = new ObjectMapper();
-        movies = objectMapper.readValue(doc.wholeText(), objectMapper.getTypeFactory().constructCollectionType(List.class, Movie.class));
-        System.out.println(MovieManager.addMovies(movies));
+    private static boolean readMovies(String url) {
+        try {
+            Document doc = Jsoup.connect(url + MOVIESENDPOINT).ignoreContentType(true).get();
+            List<Movie> movies = null;
+            ObjectMapper objectMapper = new ObjectMapper();
+            movies = objectMapper.readValue(doc.wholeText(), objectMapper.getTypeFactory().constructCollectionType(List.class, Movie.class));
+            System.out.println(MovieManager.addMovies(movies));
+            return true;
+        } catch (Exception exception) {
+            return false;
+        }
     }
 
-    private static void readComments(String url) throws IOException, CommandException {
-        Document doc = Jsoup.connect(url + COMMENTSENDPOINT).ignoreContentType(true).get();
-        List<Comment> comments = null;
-        ObjectMapper objectMapper = new ObjectMapper();
-        comments = objectMapper.readValue(doc.wholeText(), objectMapper.getTypeFactory().constructCollectionType(List.class, Comment.class));
-        System.out.println(MovieManager.addComments(comments));
+    private static boolean readComments(String url) {
+        try {
+            Document doc = Jsoup.connect(url + COMMENTSENDPOINT).ignoreContentType(true).get();
+            List<Comment> comments = null;
+            ObjectMapper objectMapper = new ObjectMapper();
+            comments = objectMapper.readValue(doc.wholeText(), objectMapper.getTypeFactory().constructCollectionType(List.class, Comment.class));
+            System.out.println(MovieManager.addComments(comments));
+            return true;
+        } catch (Exception exception) {
+            return false;
+        }
     }
 }
