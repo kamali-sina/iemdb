@@ -14,6 +14,33 @@ import input.*;
 
 public class MovieManager {
     public static final HashMap<Integer, Movie> movies = new HashMap<>();
+    public static final ArrayList<String> filters = new ArrayList<>(Arrays.asList("sortByImdb", "sortByDate"));
+
+    public static String query = "";
+    public static String filter = "sortByImdb";
+
+
+    public static String getQuery() {
+        return query;
+    }
+
+    public static void setQuery(String inputQuery) {
+        query = inputQuery;
+    }
+
+    public static void clearQuery() {
+        query = "";
+    }
+
+    public static String getFilter() {
+        return filter;
+    }
+
+    public static void setFilter(String inputFilter) {
+        if (filters.contains(inputFilter)) {
+            filter = inputFilter;
+        }
+    }
 
     public static Movie getMovie(Integer movieId) throws CommandException {
         Movie movie = MovieManager.movies.get(movieId);
