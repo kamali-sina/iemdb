@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Courses</title>
+    <title>Login</title>
 </head>
 <body>
 <form class="search_form" action="" method="POST">
