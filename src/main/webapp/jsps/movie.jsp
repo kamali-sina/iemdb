@@ -49,7 +49,7 @@
   <tr>
     <td><%=actor.getName()%></td>
     <td><%=actor.getAge()%></td>
-    <td><a href="actors/<%=actor.getId()%>">Link</a></td>
+    <td><a href="/actors/<%=actor.getId()%>">Link</a></td>
   </tr>
   <% } %>
 </table>
