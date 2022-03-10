@@ -355,6 +355,11 @@ public class Movie {
         return null;
     }
 
+    public LocalDate getLocalReleaseDate() {
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        return LocalDate.parse(this.getReleaseDate(), format);
+    }
+
     public Integer getReleaseYear() {
         DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate date = LocalDate.parse(this.getReleaseDate(), format);
