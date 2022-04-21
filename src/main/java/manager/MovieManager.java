@@ -1,17 +1,12 @@
 package manager;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonGenerator;
 import exception.CommandException;
 import exception.ErrorType;
-import input.GetMovieByIdInput;
 import input.GetMoviesByGenreInput;
 import main.Comment;
 import main.Movie;
 import main.Rating;
 
-import java.io.IOException;
-import java.io.StringWriter;
 import java.util.*;
 
 public class MovieManager {
@@ -95,44 +90,6 @@ public class MovieManager {
 
         movie.addRating(rating);
         return "\"movie rated successfully\"";
-    }
-
-    public static String getMoviesList() throws IOException {
-        JsonFactory factory = new JsonFactory();
-        StringWriter jsonObjectWriter = new StringWriter();
-        JsonGenerator jsonGenerator = factory.createGenerator(jsonObjectWriter);
-
-        jsonGenerator.writeStartObject();
-        jsonGenerator.writeArrayFieldStart("MoviesList");
-        Collection<Movie> allMovies = MovieManager.movies.values();
-        for (Movie movie : allMovies) {
-            jsonGenerator.writeRawValue(movie.getSerializedMovieSummary());
-        }
-        jsonGenerator.writeEndArray();
-        jsonGenerator.writeEndObject();
-        jsonGenerator.close();
-        return jsonObjectWriter.toString();
-    }
-
-    public static String getMovieById(GetMovieByIdInput getMovieByIdInput) throws IOException, CommandException {
-        Integer movieId = getMovieByIdInput.getMovieId();
-        return MovieManager.getMovie(movieId).getSerializedMovieWithDetails();
-    }
-
-    public static String serializeMoviesListByGenre(ArrayList<Movie> movies) throws IOException {
-        JsonFactory factory = new JsonFactory();
-        StringWriter jsonObjectWriter = new StringWriter();
-        JsonGenerator jsonGenerator = factory.createGenerator(jsonObjectWriter);
-
-        jsonGenerator.writeStartObject();
-        jsonGenerator.writeArrayFieldStart("MoviesListByGenre");
-        for (Movie movie : movies) {
-            jsonGenerator.writeRawValue(movie.getSerializedMovieSummary());
-        }
-        jsonGenerator.writeEndArray();
-        jsonGenerator.writeEndObject();
-        jsonGenerator.close();
-        return jsonObjectWriter.toString();
     }
 
     public static ArrayList<Movie> getMoviesByGenre(GetMoviesByGenreInput getMoviesByGenreInput) {

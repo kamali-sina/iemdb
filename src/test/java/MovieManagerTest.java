@@ -52,18 +52,6 @@ class MovieManagerTest {
         UserManager.addUser(old_user);
     }
 
-    @ParameterizedTest(name = "find movie(s) by {0} genre")
-    @MethodSource("provideMovies")
-    @DisplayName("Should return movies by genre")
-    public void shouldReturnMoviesByGenre(String genre, ArrayList<Movie> movies) throws IOException, CommandException {
-        GetMoviesByGenreInput getMoviesByGenreInput = new GetMoviesByGenreInput(genre);
-
-        ArrayList<Movie> moviesByGenre = MovieManager.getMoviesByGenre(getMoviesByGenreInput);
-        String moviesListByGenre = MovieManager.serializeMoviesListByGenre(moviesByGenre);
-
-        assertEquals(MovieManager.serializeMoviesListByGenre(movies), moviesListByGenre);
-    }
-
     public static Collection<Object[]> provideMovies() throws CommandException {
         ArrayList<Movie> superheroMovies = new ArrayList<>();
         ArrayList<Movie> fantasyMovies = new ArrayList<>();
@@ -96,19 +84,6 @@ class MovieManagerTest {
 
         return Arrays.asList(new Object[][]{{"Superhero", superheroMovies},
                 {"Fantasy", fantasyMovies}, {"Action", actionMovies}});
-    }
-
-    @Test
-    @DisplayName("Should return movies in drama genre when no movies exist in that genre")
-    public void shouldReturnMoviesInDramaGenreWhenNoMoviesExistInThatGenre() throws IOException, CommandException {
-        GetMoviesByGenreInput getMoviesByGenreInput = new GetMoviesByGenreInput("drama");
-
-        ArrayList<Movie> moviesByGenre = MovieManager.getMoviesByGenre(getMoviesByGenreInput);
-        String movies = MovieManager.serializeMoviesListByGenre(moviesByGenre);
-
-        String expectedMoviesInAdventureGenre = "{\"MoviesListByGenre\":[]}";
-
-        assertEquals(expectedMoviesInAdventureGenre, movies);
     }
 
     @Test
