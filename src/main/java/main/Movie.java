@@ -125,49 +125,6 @@ public class Movie {
         return writers;
     }
 
-    public String getWritersPretty() {
-        return getListPretty(this.getWriters());
-    }
-
-    public String getGenresPretty() {
-        return getListPretty(this.getGenres());
-    }
-
-    public Double getRecommendationScore() {
-        return recommendationScore;
-    }
-
-    public void setRecommendationScore(Double recommendationScore) {
-        this.recommendationScore = recommendationScore;
-    }
-
-    public String getCastPretty() {
-        try {
-            String cast = "";
-            String delimiter = "";
-            for (Integer actorId : this.getCast()) {
-                cast += delimiter;
-                cast += ActorManager.getActor(actorId).getName();
-                delimiter = ", ";
-            }
-
-            return cast;
-        } catch (CommandException  commandException) {
-            return commandException.getMessage();
-        }
-    }
-
-    public static String getListPretty(ArrayList<String> list) {
-        String prettyList = "";
-        String delimiter = "";
-        for (String item : list) {
-            prettyList += delimiter;
-            prettyList += item;
-            delimiter = ", ";
-        }
-        return prettyList;
-    }
-
     public void setWriters(ArrayList<String> writers) {
         this.writers = writers;
     }
@@ -220,20 +177,79 @@ public class Movie {
         this.ratings = ratings;
     }
 
-    public Integer getRatingCount() {
-        return ratingCount;
-    }
-
-    public void setRatingCount(Integer ratingCount) {
-        this.ratingCount = ratingCount;
-    }
-
     public HashMap<String, ArrayList<Comment>> getComments() {
         return comments;
     }
 
     public void setComments(HashMap<String, ArrayList<Comment>> comments) {
         this.comments = comments;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public String getCoverImage() {
+        return coverImage;
+    }
+
+    public void setCoverImage(String coverImage) {
+        this.coverImage = coverImage;
+    }
+
+    public Double getRecommendationScore() {
+        return recommendationScore;
+    }
+
+    public void setRecommendationScore(Double recommendationScore) {
+        this.recommendationScore = recommendationScore;
+    }
+
+    public String getWritersPretty() {
+        return getListPretty(this.getWriters());
+    }
+
+    public String getGenresPretty() {
+        return getListPretty(this.getGenres());
+    }
+
+    public String getCastPretty() {
+        try {
+            String cast = "";
+            String delimiter = "";
+            for (Integer actorId : this.getCast()) {
+                cast += delimiter;
+                cast += ActorManager.getActor(actorId).getName();
+                delimiter = ", ";
+            }
+
+            return cast;
+        } catch (CommandException  commandException) {
+            return commandException.getMessage();
+        }
+    }
+
+    public static String getListPretty(ArrayList<String> list) {
+        String prettyList = "";
+        String delimiter = "";
+        for (String item : list) {
+            prettyList += delimiter;
+            prettyList += item;
+            delimiter = ", ";
+        }
+        return prettyList;
+    }
+
+    public Integer getRatingCount() {
+        return ratingCount;
+    }
+
+    public void setRatingCount(Integer ratingCount) {
+        this.ratingCount = ratingCount;
     }
 
     public Double getAverageRatingRate() {
@@ -300,13 +316,16 @@ public class Movie {
         return null;
     }
 
-    public LocalDate getLocalReleaseDate() {
-        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    public LocalDate calculateLocalReleaseDate() {
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy/MM/dd");
         return LocalDate.parse(this.getReleaseDate(), format);
     }
 
-    public Integer getReleaseYear() {
-        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    public Integer calculateReleaseYear() {
+        if (this.getReleaseDate().equals("-")) {
+            return -1;
+        }
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy/MM/dd");
         LocalDate date = LocalDate.parse(this.getReleaseDate(), format);
         return date.getYear();
     }
@@ -317,21 +336,5 @@ public class Movie {
             actors.add(ActorManager.getActor(actorId));
         }
         return actors;
-    }
-
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
-
-    public String getCoverImage() {
-        return coverImage;
-    }
-
-    public void setCoverImage(String coverImage) {
-        this.coverImage = coverImage;
     }
 }
