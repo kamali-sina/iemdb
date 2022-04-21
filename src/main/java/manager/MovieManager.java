@@ -4,13 +4,15 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import exception.CommandException;
 import exception.ErrorType;
+import input.GetMovieByIdInput;
+import input.GetMoviesByGenreInput;
+import main.Comment;
+import main.Movie;
+import main.Rating;
 
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.*;
-
-import main.*;
-import input.*;
 
 public class MovieManager {
     public static final HashMap<Integer, Movie> movies = new HashMap<>();

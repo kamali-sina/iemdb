@@ -28,6 +28,8 @@ public class Movie {
     private Double imdbRate;
     private Integer duration;
     private Integer ageLimit;
+    private String image;
+    private String coverImage;
     private HashMap<String, Rating> ratings = new HashMap<>();
     private Integer ratingCount = 0;
     private HashMap<String, ArrayList<Comment>> comments = new HashMap<>();
@@ -45,7 +47,9 @@ public class Movie {
                  @JsonProperty("cast") ArrayList<Integer> cast,
                  @JsonProperty("imdbRate") Double imdbRate,
                  @JsonProperty("duration") Integer duration,
-                 @JsonProperty("ageLimit") Integer ageLimit) throws CommandException {
+                 @JsonProperty("ageLimit") Integer ageLimit,
+                 @JsonProperty("image") String image,
+                 @JsonProperty("coverImage") String coverImage) throws CommandException {
         if (id == null ||
                 name == null ||
                 summary == null ||
@@ -56,7 +60,9 @@ public class Movie {
                 cast == null ||
                 imdbRate == null ||
                 duration == null ||
-                ageLimit == null) {
+                ageLimit == null ||
+                image == null ||
+                coverImage == null) {
             throw new CommandException(ErrorType.InvalidCommand);
         }
         this.id = id;
@@ -70,6 +76,8 @@ public class Movie {
         this.imdbRate = imdbRate;
         this.duration = duration;
         this.ageLimit = ageLimit;
+        this.image = image;
+        this.coverImage = coverImage;
     }
 
     private static double round(double value, int precision) {
@@ -381,5 +389,21 @@ public class Movie {
             actors.add(ActorManager.getActor(actorId));
         }
         return actors;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public String getCoverImage() {
+        return coverImage;
+    }
+
+    public void setCoverImage(String coverImage) {
+        this.coverImage = coverImage;
     }
 }

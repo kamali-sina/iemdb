@@ -7,16 +7,17 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.*;
+import java.util.ArrayList;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class MovieTest {
     private static void createMovie(Integer movieId, String movieName) throws CommandException {
         Movie movie = new Movie(movieId, movieName,
                 "", "2010-01-01",
                 "", new ArrayList<>(), new ArrayList<>(),
-                new ArrayList<>(), 8.2, 150, 10);
+                new ArrayList<>(), 8.2, 150, 10, "", "");
         MovieManager.addMovie(movie);
     }
 

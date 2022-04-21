@@ -2,12 +2,10 @@ package manager;
 
 import exception.CommandException;
 import exception.ErrorType;
+import main.Actor;
 
 import java.util.HashMap;
 import java.util.List;
-
-import main.Actor;
-import main.User;
 
 public class ActorManager {
     public static final HashMap<Integer, Actor> actors = new HashMap<>();

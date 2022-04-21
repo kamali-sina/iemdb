@@ -23,21 +23,26 @@ public class Actor {
 
     private String nationality;
 
+    private String image;
+
     @JsonCreator
     public Actor(@JsonProperty("id") Integer id,
                  @JsonProperty("name") String name,
                  @JsonProperty("birthDate") String birthDate,
-                 @JsonProperty("nationality") String nationality) throws CommandException {
+                 @JsonProperty("nationality") String nationality,
+                 @JsonProperty("image") String image) throws CommandException {
         if (id == null ||
                 name == null ||
                 birthDate == null ||
-                nationality == null) {
+                nationality == null ||
+                image == null) {
             throw new CommandException(ErrorType.InvalidCommand);
         }
         this.id = id;
         this.name = name;
         this.birthDate = birthDate;
         this.nationality = nationality;
+        this.image = image;
     }
 
     public Integer getId() {
@@ -70,6 +75,14 @@ public class Actor {
 
     public void setNationality(String nationality) {
         this.nationality = nationality;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public void printData() {

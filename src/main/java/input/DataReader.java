@@ -1,7 +1,6 @@
 package input;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import exception.CommandException;
 import main.Actor;
 import main.Comment;
 import main.Movie;
@@ -12,12 +11,11 @@ import manager.UserManager;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
-import java.io.IOException;
 import java.util.List;
 
 public class DataReader {
-    static final String MOVIESENDPOINT = "/api/movies";
-    static final String ACTORSENDPOINT = "/api/actors";
+    static final String MOVIESENDPOINT = "/api/v2/movies";
+    static final String ACTORSENDPOINT = "/api/v2/actors";
     static final String USERSENDPOINT = "/api/users";
     static final String COMMENTSENDPOINT = "/api/comments";
 

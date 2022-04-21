@@ -2,13 +2,12 @@ package manager;
 
 import exception.CommandException;
 import exception.ErrorType;
+import input.GetWatchListInput;
+import main.*;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
-
-import main.*;
-import input.*;
 
 public class UserManager {
     public static final HashMap<String, User> users = new HashMap<>();
