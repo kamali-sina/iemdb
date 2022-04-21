@@ -2,10 +2,8 @@ package manager;
 
 import exception.CommandException;
 import exception.ErrorType;
-import input.GetWatchListInput;
 import main.*;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -79,10 +77,5 @@ public class UserManager {
             }
         }
         throw new CommandException(ErrorType.CommentNotFound);
-    }
-
-    public static String getWatchList(GetWatchListInput showWatchListInput) throws CommandException, IOException {
-        User user = UserManager.getUser(showWatchListInput.getUserEmail());
-        return user.getSerializedWatchlist();
     }
 }
