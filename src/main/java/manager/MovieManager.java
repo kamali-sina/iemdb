@@ -165,4 +165,14 @@ public class MovieManager {
         }
         return count;
     }
+
+    public static Comment findComment(Integer commentId) {
+        for (Movie movie: MovieManager.movies.values()) {
+            Comment foundComment = movie.findComment(commentId);
+            if (foundComment != null) {
+                return foundComment;
+            }
+        }
+        return null;
+    }
 }
