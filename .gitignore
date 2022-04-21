@@ -28,6 +28,8 @@ target/
 hs_err_pid*
 replay_pid*
 
+/apache-*
+
 # Apple Desktop Services Store
 .DS_Store
 
