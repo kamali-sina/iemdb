@@ -2,14 +2,10 @@ package main;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonGenerator;
 import exception.CommandException;
 import exception.ErrorType;
 import manager.ActorManager;
 
-import java.io.IOException;
-import java.io.StringWriter;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -291,74 +287,6 @@ public class Movie {
         averageRating /= this.ratings.values().size();
         this.averageRating = round(averageRating, 1);
         return this.averageRating;
-    }
-
-    public String getSerializedMovieSummary() throws IOException {
-        JsonFactory factory = new JsonFactory();
-        StringWriter jsonObjectWriter = new StringWriter();
-        JsonGenerator jsonGenerator = factory.createGenerator(jsonObjectWriter);
-
-        jsonGenerator.writeStartObject();
-
-        jsonGenerator.writeNumberField("movieId", this.getId());
-        jsonGenerator.writeStringField("name", this.getName());
-        jsonGenerator.writeStringField("director", this.getDirector());
-        jsonGenerator.writeFieldName("genres");
-        jsonGenerator.writeArray(this.getGenres().toArray(new String[0]), 0, this.getGenres().size());
-        if (this.ratingCount == 0) {
-            jsonGenerator.writeNullField("rating");
-        } else {
-            jsonGenerator.writeNumberField("rating", this.calculateAverageRating());
-        }
-
-        jsonGenerator.writeEndObject();
-        jsonGenerator.close();
-        return jsonObjectWriter.toString();
-    }
-
-    public String getSerializedMovieWithDetails() throws IOException, CommandException {
-        JsonFactory factory = new JsonFactory();
-        StringWriter jsonObjectWriter = new StringWriter();
-        JsonGenerator jsonGenerator = factory.createGenerator(jsonObjectWriter);
-
-        jsonGenerator.writeStartObject();
-
-        jsonGenerator.writeNumberField("movieId", this.getId());
-        jsonGenerator.writeStringField("name", this.getName());
-        jsonGenerator.writeStringField("summary", this.getSummary());
-        jsonGenerator.writeStringField("releaseDate", this.getReleaseDate());
-        jsonGenerator.writeStringField("director", this.getDirector());
-        jsonGenerator.writeFieldName("writers");
-        jsonGenerator.writeArray(this.getWriters().toArray(new String[0]), 0, this.getWriters().size());
-        jsonGenerator.writeFieldName("genres");
-        jsonGenerator.writeArray(this.getGenres().toArray(new String[0]), 0, this.getGenres().size());
-
-        jsonGenerator.writeArrayFieldStart("cast");
-        for (Integer actorId : this.getCast()) {
-            jsonGenerator.writeRawValue(ActorManager.getActor(actorId).getSerializedActorSummary());
-        }
-        jsonGenerator.writeEndArray();
-
-        if (this.ratingCount == 0) {
-            jsonGenerator.writeNullField("rating");
-        } else {
-            jsonGenerator.writeNumberField("rating", this.calculateAverageRating());
-        }
-
-        jsonGenerator.writeNumberField("duration", this.getDuration());
-        jsonGenerator.writeNumberField("ageLimit", this.getAgeLimit());
-
-        jsonGenerator.writeArrayFieldStart("comments");
-        for (ArrayList<Comment> userComments : this.getComments().values()) {
-            for (Comment comment : userComments) {
-                jsonGenerator.writeRawValue(comment.getSerializedCommentWithDetails());
-            }
-        }
-        jsonGenerator.writeEndArray();
-
-        jsonGenerator.writeEndObject();
-        jsonGenerator.close();
-        return jsonObjectWriter.toString();
     }
 
     public Comment findComment(Integer commentId) {
