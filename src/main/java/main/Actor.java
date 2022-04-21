@@ -2,16 +2,8 @@ package main;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonGenerator;
 import exception.CommandException;
 import exception.ErrorType;
-
-import java.io.IOException;
-import java.io.StringWriter;
-import java.time.LocalDate;
-import java.time.Period;
-import java.time.format.DateTimeFormatter;
 
 public class Actor {
 
@@ -83,33 +75,5 @@ public class Actor {
 
     public void setImage(String image) {
         this.image = image;
-    }
-
-    public void printData() {
-        System.out.println(this.id);
-        System.out.println(this.name);
-        System.out.println(this.birthDate);
-        System.out.println(this.nationality);
-    }
-
-    public String getSerializedActorSummary() throws IOException {
-        JsonFactory factory = new JsonFactory();
-        StringWriter jsonObjectWriter = new StringWriter();
-        JsonGenerator jsonGenerator = factory.createGenerator(jsonObjectWriter);
-
-        jsonGenerator.writeStartObject();
-
-        jsonGenerator.writeNumberField("actorId", this.getId());
-        jsonGenerator.writeStringField("name", this.getName());
-
-        jsonGenerator.writeEndObject();
-        jsonGenerator.close();
-        return jsonObjectWriter.toString();
-    }
-
-    public Integer getAge() {
-        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate birthDate = LocalDate.parse(this.getBirthDate(), format);
-        return Period.between(birthDate, LocalDate.now()).getYears();
     }
 }
