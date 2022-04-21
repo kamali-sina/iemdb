@@ -2,7 +2,6 @@ package manager;
 
 import exception.CommandException;
 import exception.ErrorType;
-import input.GetMoviesByGenreInput;
 import main.Comment;
 import main.Movie;
 import main.Rating;
@@ -92,8 +91,7 @@ public class MovieManager {
         return "\"movie rated successfully\"";
     }
 
-    public static ArrayList<Movie> getMoviesByGenre(GetMoviesByGenreInput getMoviesByGenreInput) {
-        String genre = getMoviesByGenreInput.getGenre();
+    public static ArrayList<Movie> getMoviesByGenre(String genre) {
 
         ArrayList<Movie> moviesByGenre = new ArrayList<>();
         for (Movie movie : MovieManager.movies.values()) {
@@ -108,7 +106,10 @@ public class MovieManager {
     public static ArrayList<Movie> getMoviesByReleaseYear(Integer startYear, Integer endYear) {
         ArrayList<Movie> movies = new ArrayList<>();
         for (Movie movie : MovieManager.movies.values()) {
-            Integer year = movie.getReleaseYear();
+            Integer year = movie.calculateReleaseYear();
+            if (year == -1) {
+                continue;
+            }
             if (startYear <= year && year <= endYear) {
                 movies.add(movie);
             }
@@ -143,7 +144,7 @@ public class MovieManager {
         if (filter.equals("sortByImdb")) {
             movies.sort(Comparator.comparing(Movie::getImdbRate).reversed());
         } else if (filter.equals("sortByDate")) {
-            movies.sort(Comparator.comparing(Movie::getLocalReleaseDate).reversed());
+            movies.sort(Comparator.comparing(Movie::calculateLocalReleaseDate).reversed());
         }
 
         return movies;
