@@ -9,15 +9,17 @@ import manager.UserManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import output.Output;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("/users")
 public class UserController {
 
     @PostMapping("/login")
-    public ResponseEntity<?> loginUser(HttpServletRequest request) {
+    public Output loginUser(HttpServletRequest request, HttpServletResponse response) throws CommandException {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
         try {
@@ -27,62 +29,70 @@ public class UserController {
             }
             UserManager.logInUser(user);
         } catch (Exception e) {
-            return new ResponseEntity<>("username and password combination is wrong", HttpStatus.UNAUTHORIZED);
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return new Output(HttpStatus.BAD_REQUEST.value(), "username and password combination is wrong.");
         }
-        return new ResponseEntity<>("user logged in successfully", HttpStatus.OK);
+        return new Output(HttpStatus.OK.value(), "user logged in successfully");
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<?> logoutUser() throws CommandException {
+    public Output logoutUser(HttpServletResponse response) throws CommandException {
         if (UserManager.loggedInUser == null) {
-            return new ResponseEntity<>("no logged in user found, please login first", HttpStatus.BAD_REQUEST);
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            return new Output(HttpStatus.UNAUTHORIZED.value(), "no logged in user found, please login first.");
         }
         UserManager.logOutUser();
-        return new ResponseEntity<>("user logged out successfully", HttpStatus.OK);
+        return new Output(HttpStatus.OK.value(), "user logged out successfully");
     }
 
     @GetMapping("/watchlist")
-    public ResponseEntity<?> getWatchlist() throws CommandException {
+    public Output getWatchlist(HttpServletResponse response) throws CommandException {
         if (UserManager.loggedInUser == null) {
-            return new ResponseEntity<>("no logged in user found, please login first", HttpStatus.BAD_REQUEST);
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            return new Output(HttpStatus.UNAUTHORIZED.value(), "no logged in user found, please login first.");
         }
-        return new ResponseEntity<>(UserManager.loggedInUser.getWatchList().values(), HttpStatus.OK);
+        return new Output(HttpStatus.OK.value(), UserManager.loggedInUser.getWatchList().values());
     }
 
     @PostMapping("/watchlist")
-    public ResponseEntity<?> addToWatchlist(HttpServletRequest request) throws CommandException {
+    public Output addToWatchlist(HttpServletRequest request, HttpServletResponse response) throws CommandException {
         if (UserManager.loggedInUser == null) {
-            return new ResponseEntity<>("no logged in user found, please login first", HttpStatus.BAD_REQUEST);
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            return new Output(HttpStatus.UNAUTHORIZED.value(), "no logged in user found, please login first.");
         }
         try {
             Integer movieId = Integer.valueOf(request.getParameter("movieId"));
             Movie movie = MovieManager.getMovie(movieId);
             UserManager.loggedInUser.addToWatchList(movie);
         } catch (CommandException ce) {
-            return new ResponseEntity<>(ce.getMessage(), HttpStatus.BAD_REQUEST);
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return new Output(HttpStatus.BAD_REQUEST.value(), ce.getMessage());
         } catch (Exception e) {
-            return new ResponseEntity<>("movieId was incorrect", HttpStatus.BAD_REQUEST);
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return new Output(HttpStatus.BAD_REQUEST.value(), "movieId was incorrect");
         }
-
-        return new ResponseEntity<>("movie added to watchlist successfully", HttpStatus.OK);
+        return new Output(HttpStatus.OK.value(), "movie added to watchlist successfully");
     }
 
     @DeleteMapping("/watchlist")
-    public ResponseEntity<?> removeFromWatchlist(HttpServletRequest request) throws CommandException {
+    public Output removeFromWatchlist(HttpServletRequest request, HttpServletResponse response) throws CommandException {
         if (UserManager.loggedInUser == null) {
-            return new ResponseEntity<>("no logged in user found, please login first", HttpStatus.BAD_REQUEST);
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            return new Output(HttpStatus.UNAUTHORIZED.value(), "no logged in user found, please login first.");
         }
         try {
             Integer movieId = Integer.valueOf(request.getParameter("movieId"));
             Movie movie = MovieManager.getMovie(movieId);
             UserManager.loggedInUser.removeFromWatchList(movie);
         } catch (CommandException ce) {
-            return new ResponseEntity<>(ce.getMessage(), HttpStatus.BAD_REQUEST);
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return new Output(HttpStatus.BAD_REQUEST.value(), ce.getMessage());
         } catch (Exception e) {
-            return new ResponseEntity<>("movieId was incorrect", HttpStatus.BAD_REQUEST);
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return new Output(HttpStatus.BAD_REQUEST.value(), "movieId was incorrect");
         }
 
-        return new ResponseEntity<>("movie removed from watchlist successfully", HttpStatus.OK);
+        return new Output(HttpStatus.OK.value(), "movie removed from watchlist successfully");
     }
 
 }
