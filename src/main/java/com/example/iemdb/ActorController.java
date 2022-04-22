@@ -3,7 +3,9 @@ package com.example.iemdb;
 import exception.CommandException;
 import main.Actor;
 import manager.ActorManager;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import output.Output;
 
 import java.util.Collection;
 
@@ -13,12 +15,17 @@ import java.util.Collection;
 public class ActorController {
 
     @RequestMapping("/")
-    public Collection<Actor> getActors() {
-        return ActorManager.actors.values();
+    public Output getActors() throws CommandException {
+        return new Output(HttpStatus.OK.value(), ActorManager.actors.values());
     }
 
     @GetMapping("/{id}")
-    public Actor getActor(@PathVariable Integer id) throws CommandException {
-        return ActorManager.getActor(id);
+    public Output getActor(@PathVariable Integer id) throws CommandException {
+        try {
+            Actor actor = ActorManager.getActor(id);
+            return new Output(HttpStatus.OK.value(), actor);
+        } catch (Exception e) {
+            return new Output(HttpStatus.NOT_FOUND.value(), "actor does not exist");
+        }
     }
 }
