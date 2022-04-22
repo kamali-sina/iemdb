@@ -4,6 +4,7 @@ import exception.CommandException;
 import exception.ErrorType;
 import main.Comment;
 import main.Rating;
+import manager.ActorManager;
 import manager.MovieManager;
 import manager.UserManager;
 import org.springframework.http.HttpStatus;
@@ -18,7 +19,7 @@ import java.util.*;
 @RequestMapping("/movies")
 public class MovieController {
 
-    @RequestMapping("/")
+    @GetMapping("/")
     public Output getMovies(HttpServletResponse response) throws CommandException {
         try {
             return new Output(HttpStatus.OK.value(), MovieManager.movies.values());
@@ -118,6 +119,22 @@ public class MovieController {
         } catch (CommandException commandException) {
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
             return new Output(HttpStatus.INTERNAL_SERVER_ERROR.value(), "The server has encountered a situation it does not know how to handle.");
+        }
+    }
+
+    @GetMapping("/actors/{id}")
+    public Output getActorMovies(HttpServletResponse response, @PathVariable Integer id) throws CommandException {
+        try {
+            ActorManager.getActor(id);
+            return new Output(HttpStatus.OK.value(), MovieManager.getActorMovies(id));
+        } catch (CommandException commandException) {
+            if (commandException.getErrorType().equals(ErrorType.ActorNotFound)) {
+                response.setStatus(HttpStatus.NOT_FOUND.value());
+                return new Output(HttpStatus.NOT_FOUND.value(), "The server can not find the movie.");
+            } else {
+                response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+                return new Output(HttpStatus.INTERNAL_SERVER_ERROR.value(), "The server has encountered a situation it does not know how to handle.");
+            }
         }
     }
 }
