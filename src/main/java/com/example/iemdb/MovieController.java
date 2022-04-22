@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/movies")
 public class MovieController {
 
