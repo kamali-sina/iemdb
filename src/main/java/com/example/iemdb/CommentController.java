@@ -11,17 +11,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import output.Output;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("/comments")
 public class CommentController {
 
     @RequestMapping("/{id}/vote")
-    public ResponseEntity<?> voteComment(HttpServletRequest request, @PathVariable Integer id) {
+    public Output voteComment(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer id) throws CommandException {
         if (UserManager.loggedInUser == null) {
-            return new ResponseEntity<>("no logged in user found, please login first", HttpStatus.BAD_REQUEST);
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            return new Output(HttpStatus.UNAUTHORIZED.value(), "no logged in user found, please login first.");
         }
         try {
             Integer vote = Integer.valueOf(request.getParameter("vote"));
@@ -31,10 +34,13 @@ public class CommentController {
             }
             comment.addVote(new Vote(UserManager.loggedInUser.getEmail(), id, vote));
         } catch (CommandException ce) {
-            return new ResponseEntity<>(ce.getMessage(), HttpStatus.BAD_REQUEST);
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return new Output(HttpStatus.BAD_REQUEST.value(), ce.getMessage());
         } catch (Exception e) {
-            return new ResponseEntity<>("commentId was incorrect", HttpStatus.BAD_REQUEST);
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return new Output(HttpStatus.BAD_REQUEST.value(), "commentId was incorrect");
         }
-        return new ResponseEntity<>("voted comment successfully", HttpStatus.OK);
+        return new Output(HttpStatus.OK.value(), "voted comment successfully");
+
     }
 }
