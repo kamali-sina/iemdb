@@ -14,7 +14,7 @@ import java.util.Collection;
 @RequestMapping("/actors")
 public class ActorController {
 
-    @RequestMapping("/")
+    @GetMapping("/")
     public Output getActors() throws CommandException {
         return new Output(HttpStatus.OK.value(), ActorManager.actors.values());
     }
