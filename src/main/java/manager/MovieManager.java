@@ -2,6 +2,7 @@ package manager;
 
 import exception.CommandException;
 import exception.ErrorType;
+import main.Actor;
 import main.Comment;
 import main.Movie;
 import main.Rating;
@@ -175,5 +176,26 @@ public class MovieManager {
             }
         }
         return null;
+    }
+
+    public static ArrayList<Actor> getMovieActors(Integer movieId) throws CommandException {
+        Movie movie = MovieManager.getMovie(movieId);
+
+        ArrayList<Actor> actors = new ArrayList<>();
+        for (Integer actorId : movie.getCast()) {
+            actors.add(ActorManager.getActor(actorId));
+        }
+        return actors;
+    }
+
+    public static ArrayList<Comment> getMovieComments(Integer movieId) throws CommandException {
+        Movie movie = MovieManager.getMovie(movieId);
+
+        HashMap<String, ArrayList<Comment>> comments = movie.getComments();
+        ArrayList<Comment> movieComments = new ArrayList<>();
+        for (String key : comments.keySet()) {
+            movieComments.addAll(comments.get(key));
+        }
+        return movieComments;
     }
 }
