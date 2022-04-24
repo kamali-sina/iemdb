@@ -152,4 +152,19 @@ public class MovieController {
             }
         }
     }
+
+    @GetMapping("/{id}/comments")
+    public Output getMovieComments(HttpServletResponse response, @PathVariable Integer id) throws CommandException {
+        try {
+            return new Output(HttpStatus.OK.value(), MovieManager.getMovieComments(id));
+        } catch (CommandException commandException) {
+            if (commandException.getErrorType().equals(ErrorType.MovieNotFound)) {
+                response.setStatus(HttpStatus.NOT_FOUND.value());
+                return new Output(HttpStatus.NOT_FOUND.value(), "The server can not find the movie.");
+            } else {
+                response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+                return new Output(HttpStatus.INTERNAL_SERVER_ERROR.value(), "The server has encountered a situation it does not know how to handle.");
+            }
+        }
+    }
 }
