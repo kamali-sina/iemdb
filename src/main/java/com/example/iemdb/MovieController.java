@@ -51,14 +51,14 @@ public class MovieController {
         try {
             switch (filter) {
                 case "name" -> {
-                    return new Output(HttpStatus.OK.value(), MovieManager.searchMovies(allParams.get("name")));
+                    return new Output(HttpStatus.OK.value(), MovieManager.searchMovies(allParams.get("searchValue")));
                 }
                 case "releaseYear" -> {
-                    return new Output(HttpStatus.OK.value(), MovieManager.getMoviesByReleaseYear(Integer.valueOf(allParams.get("startYear")),
-                            Integer.valueOf(allParams.get("endYear"))));
+                    return new Output(HttpStatus.OK.value(), MovieManager.getMoviesByReleaseYear(Integer.valueOf(allParams.get("searchValue")),
+                            Integer.valueOf(allParams.get("searchValue"))));
                 }
                 case "genre" -> {
-                    return new Output(HttpStatus.OK.value(), MovieManager.getMoviesByGenre(allParams.get("genre")));
+                    return new Output(HttpStatus.OK.value(), MovieManager.getMoviesByGenre(allParams.get("searchValue")));
                 }
                 default -> {
                     response.setStatus(HttpStatus.BAD_REQUEST.value());
