@@ -329,12 +329,4 @@ public class Movie {
         LocalDate date = LocalDate.parse(this.getReleaseDate(), format);
         return date.getYear();
     }
-
-    public ArrayList<Actor> getActors() throws CommandException {
-        ArrayList<Actor> actors = new ArrayList<>();
-        for (Integer actorId : this.getCast()) {
-            actors.add(ActorManager.getActor(actorId));
-        }
-        return actors;
-    }
 }
