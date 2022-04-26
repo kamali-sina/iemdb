@@ -24,7 +24,7 @@ public class Comment {
     private HashMap<String, Vote> votes = new HashMap<>();
     private Integer numberOfLikes = 0;
     private Integer numberOfDislikes = 0;
-    private String name;
+    private String nickname;
 
     @JsonCreator
     public Comment(@JsonProperty("userEmail") String userEmail,
@@ -38,7 +38,7 @@ public class Comment {
         this.userEmail = userEmail;
         this.movieId = movieId;
         this.text = text;
-        this.name = UserManager.getUser(userEmail).getName();
+        this.nickname = UserManager.getUser(userEmail).getNickname();
     }
 
     public static Integer getCount() {
@@ -163,7 +163,7 @@ public class Comment {
         return jsonObjectWriter.toString();
     }
 
-    public String getName() {
-        return name;
+    public String getNickname() {
+        return nickname;
     }
 }
