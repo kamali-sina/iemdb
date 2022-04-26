@@ -13,6 +13,7 @@ import output.Output;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
@@ -20,9 +21,9 @@ import javax.servlet.http.HttpServletResponse;
 public class UserController {
 
     @PostMapping("/login")
-    public Output loginUser(HttpServletRequest request, HttpServletResponse response) throws CommandException {
-        String email = request.getParameter("email");
-        String password = request.getParameter("password");
+    public Output loginUser(@RequestBody Map<String, String> body, HttpServletResponse response) throws CommandException {
+        String email = body.get("email");
+        String password = body.get("password");
         try {
             User user = UserManager.getUser(email);
             if (!user.getPassword().equals(password)) {
@@ -56,13 +57,13 @@ public class UserController {
     }
 
     @PostMapping("/watchlist")
-    public Output addToWatchlist(HttpServletRequest request, HttpServletResponse response) throws CommandException {
+    public Output addToWatchlist(@RequestBody Map<String, String> body, HttpServletResponse response) throws CommandException {
         if (UserManager.loggedInUser == null) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             return new Output(HttpStatus.UNAUTHORIZED.value(), "no logged in user found, please login first.");
         }
         try {
-            Integer movieId = Integer.valueOf(request.getParameter("movieId"));
+            Integer movieId = Integer.valueOf(body.get("movieId"));
             Movie movie = MovieManager.getMovie(movieId);
             UserManager.loggedInUser.addToWatchList(movie);
         } catch (CommandException ce) {
@@ -76,13 +77,13 @@ public class UserController {
     }
 
     @DeleteMapping("/watchlist")
-    public Output removeFromWatchlist(HttpServletRequest request, HttpServletResponse response) throws CommandException {
+    public Output removeFromWatchlist(@RequestBody Map<String, String> body, HttpServletResponse response) throws CommandException {
         if (UserManager.loggedInUser == null) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             return new Output(HttpStatus.UNAUTHORIZED.value(), "no logged in user found, please login first.");
         }
         try {
-            Integer movieId = Integer.valueOf(request.getParameter("movieId"));
+            Integer movieId = Integer.valueOf(body.get("movieId"));
             Movie movie = MovieManager.getMovie(movieId);
             UserManager.loggedInUser.removeFromWatchList(movie);
         } catch (CommandException ce) {
