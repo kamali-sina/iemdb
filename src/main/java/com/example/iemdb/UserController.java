@@ -56,7 +56,7 @@ public class UserController {
         return new Output(HttpStatus.OK.value(), UserManager.loggedInUser.getWatchList().values());
     }
 
-    @PostMapping("/watchlist")
+    @RequestMapping(value = "/watchlist" , method = RequestMethod.POST, consumes = { "multipart/form-data" })
     public Output addToWatchlist(@RequestBody Map<String, String> body, HttpServletResponse response) throws CommandException {
         if (UserManager.loggedInUser == null) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
