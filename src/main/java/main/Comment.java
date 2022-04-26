@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import exception.CommandException;
 import exception.ErrorType;
+import manager.UserManager;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -23,6 +24,7 @@ public class Comment {
     private HashMap<String, Vote> votes = new HashMap<>();
     private Integer numberOfLikes = 0;
     private Integer numberOfDislikes = 0;
+    private String nickname;
 
     @JsonCreator
     public Comment(@JsonProperty("userEmail") String userEmail,
@@ -36,6 +38,7 @@ public class Comment {
         this.userEmail = userEmail;
         this.movieId = movieId;
         this.text = text;
+        this.nickname = UserManager.getUser(userEmail).getNickname();
     }
 
     public static Integer getCount() {
@@ -158,5 +161,9 @@ public class Comment {
         jsonGenerator.writeEndObject();
         jsonGenerator.close();
         return jsonObjectWriter.toString();
+    }
+
+    public String getNickname() {
+        return nickname;
     }
 }
