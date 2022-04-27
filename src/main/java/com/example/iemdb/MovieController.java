@@ -118,14 +118,14 @@ public class MovieController {
 
     @PostMapping("/{id}/comment")
     @ResponseBody
-    public Output commentOnMovie(HttpServletResponse response, @PathVariable Integer id, @RequestParam Map<String,String> allParams) throws CommandException {
+    public Output commentOnMovie(@RequestBody Map<String, String> body, HttpServletResponse response, @PathVariable Integer id) throws CommandException {
         try {
             if (UserManager.loggedInUser == null) {
                 response.setStatus(HttpStatus.BAD_REQUEST.value());
                 return new Output(HttpStatus.BAD_REQUEST.value(), "No logged in user found, please login first\"");
             }
             String userEmail = UserManager.getLoggedInUser().getEmail();
-            Comment userComment = new Comment(userEmail, id, allParams.get("comment"));
+            Comment userComment = new Comment(userEmail, id, body.get("comment"));
             return new Output(HttpStatus.OK.value(), MovieManager.addComment(userComment));
         } catch (CommandException commandException) {
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
