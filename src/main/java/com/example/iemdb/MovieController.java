@@ -26,7 +26,7 @@ public class MovieController {
             return new Output(HttpStatus.OK.value(), MovieManager.movies.values());
         } catch (CommandException commandException) {
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            return new Output(HttpStatus.INTERNAL_SERVER_ERROR.value(), "The server has encountered a situation it does not know how to handle.");
+            return new Output(HttpStatus.INTERNAL_SERVER_ERROR.value(), commandException.getMessage());
         }
     }
 
@@ -40,7 +40,7 @@ public class MovieController {
                 return new Output(HttpStatus.NOT_FOUND.value(), "The server can not find the movie.");
             } else {
                 response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-                return new Output(HttpStatus.INTERNAL_SERVER_ERROR.value(), "The server has encountered a situation it does not know how to handle.");
+                return new Output(HttpStatus.INTERNAL_SERVER_ERROR.value(), commandException.getMessage());
             }
         }
     }
@@ -78,7 +78,7 @@ public class MovieController {
             }
         } catch (CommandException commandException) {
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            return new Output(HttpStatus.INTERNAL_SERVER_ERROR.value(), "The server has encountered a situation it does not know how to handle.");
+            return new Output(HttpStatus.INTERNAL_SERVER_ERROR.value(), commandException.getMessage());
         }
     }
 
@@ -92,7 +92,7 @@ public class MovieController {
             return new Output(HttpStatus.OK.value(), UserManager.getLoggedInUser().getWatchlistRecommendations());
         } catch (CommandException commandException) {
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            return new Output(HttpStatus.INTERNAL_SERVER_ERROR.value(), "The server has encountered a situation it does not know how to handle.");
+            return new Output(HttpStatus.INTERNAL_SERVER_ERROR.value(), commandException.getMessage());
         }
 
     }
@@ -111,7 +111,7 @@ public class MovieController {
             return new Output(HttpStatus.OK.value(), MovieManager.addRating(userRating));
         } catch (CommandException commandException) {
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            return new Output(HttpStatus.INTERNAL_SERVER_ERROR.value(), "The server has encountered a situation it does not know how to handle.");
+            return new Output(HttpStatus.INTERNAL_SERVER_ERROR.value(), commandException.getMessage());
         }
 
     }
@@ -129,7 +129,7 @@ public class MovieController {
             return new Output(HttpStatus.OK.value(), MovieManager.addComment(userComment));
         } catch (CommandException commandException) {
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            return new Output(HttpStatus.INTERNAL_SERVER_ERROR.value(), "The server has encountered a situation it does not know how to handle.");
+            return new Output(HttpStatus.INTERNAL_SERVER_ERROR.value(), commandException.getMessage());
         }
     }
 
@@ -144,7 +144,7 @@ public class MovieController {
                 return new Output(HttpStatus.NOT_FOUND.value(), "The server can not find the movie.");
             } else {
                 response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-                return new Output(HttpStatus.INTERNAL_SERVER_ERROR.value(), "The server has encountered a situation it does not know how to handle.");
+                return new Output(HttpStatus.INTERNAL_SERVER_ERROR.value(), commandException.getMessage());
             }
         }
     }
@@ -159,7 +159,7 @@ public class MovieController {
                 return new Output(HttpStatus.NOT_FOUND.value(), "The server can not find the movie.");
             } else {
                 response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-                return new Output(HttpStatus.INTERNAL_SERVER_ERROR.value(), "The server has encountered a situation it does not know how to handle.");
+                return new Output(HttpStatus.INTERNAL_SERVER_ERROR.value(), commandException.getMessage());
             }
         }
     }
@@ -174,7 +174,7 @@ public class MovieController {
                 return new Output(HttpStatus.NOT_FOUND.value(), "The server can not find the movie.");
             } else {
                 response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-                return new Output(HttpStatus.INTERNAL_SERVER_ERROR.value(), "The server has encountered a situation it does not know how to handle.");
+                return new Output(HttpStatus.INTERNAL_SERVER_ERROR.value(), commandException.getMessage());
             }
         }
     }
