@@ -56,7 +56,7 @@ public class UserController {
         return new Output(HttpStatus.OK.value(), UserManager.loggedInUser.getWatchList().values());
     }
 
-    @RequestMapping(value = "/watchlist" , method = RequestMethod.POST, consumes = { "multipart/form-data" })
+    @PostMapping("/watchlist")
     public Output addToWatchlist(@RequestBody Map<String, String> body, HttpServletResponse response) throws CommandException {
         if (UserManager.loggedInUser == null) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
@@ -97,4 +97,8 @@ public class UserController {
         return new Output(HttpStatus.OK.value(), "movie removed from watchlist successfully");
     }
 
+    @GetMapping("/loggedInUser")
+    public Output getLoggedInUser(HttpServletResponse response) throws CommandException {
+        return new Output(HttpStatus.OK.value(), UserManager.loggedInUser);
+    }
 }

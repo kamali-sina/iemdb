@@ -12,8 +12,7 @@ public class Output {
     @JsonCreator
     public Output(@JsonProperty("status") Integer status,
                  @JsonProperty("data") Object data) throws CommandException {
-        if (status == null ||
-                data == null) {
+        if (status == null) {
             throw new CommandException(ErrorType.InvalidCommand);
         }
         this.status = status;
