@@ -124,8 +124,13 @@ public class MovieController {
                 response.setStatus(HttpStatus.UNAUTHORIZED.value());
                 return new Output(HttpStatus.UNAUTHORIZED.value(), "No logged in user found, please login first\"");
             }
+            String comment = body.get("comment");
+            if (comment.equals("")) {
+                response.setStatus(HttpStatus.BAD_REQUEST.value());
+                return new Output(HttpStatus.BAD_REQUEST.value(), "Comment can not be empty.");
+            }
             String userEmail = UserManager.getLoggedInUser().getEmail();
-            Comment userComment = new Comment(userEmail, id, body.get("comment"));
+            Comment userComment = new Comment(userEmail, id, comment);
             return new Output(HttpStatus.OK.value(), MovieManager.addComment(userComment));
         } catch (CommandException commandException) {
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
