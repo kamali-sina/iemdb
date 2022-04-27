@@ -98,8 +98,7 @@ public class MovieController {
     }
 
     @PostMapping("/{id}/rate")
-    @ResponseBody
-    public Output rateMovie(HttpServletResponse response, @PathVariable Integer id, @RequestParam Map<String,String> allParams) throws CommandException {
+    public Output rateMovie(@RequestBody Map<String, String> body, HttpServletResponse response, @PathVariable Integer id) throws CommandException {
         try {
             if (UserManager.loggedInUser == null) {
                 response.setStatus(HttpStatus.UNAUTHORIZED.value());
@@ -107,7 +106,7 @@ public class MovieController {
             }
 
             String userEmail = UserManager.getLoggedInUser().getEmail();
-            Rating userRating = new Rating(userEmail, id, Integer.valueOf(allParams.get("rating")));
+            Rating userRating = new Rating(userEmail, id, Integer.valueOf(body.get("rate")));
             return new Output(HttpStatus.OK.value(), MovieManager.addRating(userRating));
         } catch (CommandException commandException) {
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
