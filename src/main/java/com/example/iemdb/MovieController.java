@@ -86,8 +86,8 @@ public class MovieController {
     public Output getRecommendedMovies(HttpServletResponse response) throws CommandException {
         try {
             if (UserManager.loggedInUser == null) {
-                response.setStatus(HttpStatus.BAD_REQUEST.value());
-                return new Output(HttpStatus.BAD_REQUEST.value(), "No logged in user found, please login first");
+                response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                return new Output(HttpStatus.UNAUTHORIZED.value(), "No logged in user found, please login first");
             }
             return new Output(HttpStatus.OK.value(), UserManager.getLoggedInUser().getWatchlistRecommendations());
         } catch (CommandException commandException) {
@@ -102,8 +102,8 @@ public class MovieController {
     public Output rateMovie(HttpServletResponse response, @PathVariable Integer id, @RequestParam Map<String,String> allParams) throws CommandException {
         try {
             if (UserManager.loggedInUser == null) {
-                response.setStatus(HttpStatus.BAD_REQUEST.value());
-                return new Output(HttpStatus.BAD_REQUEST.value(), "No logged in user found, please login first\"");
+                response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                return new Output(HttpStatus.UNAUTHORIZED.value(), "No logged in user found, please login first\"");
             }
 
             String userEmail = UserManager.getLoggedInUser().getEmail();
@@ -121,8 +121,8 @@ public class MovieController {
     public Output commentOnMovie(@RequestBody Map<String, String> body, HttpServletResponse response, @PathVariable Integer id) throws CommandException {
         try {
             if (UserManager.loggedInUser == null) {
-                response.setStatus(HttpStatus.BAD_REQUEST.value());
-                return new Output(HttpStatus.BAD_REQUEST.value(), "No logged in user found, please login first\"");
+                response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                return new Output(HttpStatus.UNAUTHORIZED.value(), "No logged in user found, please login first\"");
             }
             String userEmail = UserManager.getLoggedInUser().getEmail();
             Comment userComment = new Comment(userEmail, id, body.get("comment"));
