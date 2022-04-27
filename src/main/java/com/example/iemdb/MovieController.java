@@ -3,6 +3,7 @@ package com.example.iemdb;
 import exception.CommandException;
 import exception.ErrorType;
 import main.Comment;
+import main.Movie;
 import main.Rating;
 import manager.ActorManager;
 import manager.MovieManager;
@@ -48,17 +49,27 @@ public class MovieController {
     @ResponseBody
     public Output getSearchResult(HttpServletResponse response, @RequestParam Map<String,String> allParams) throws CommandException {
         String filter = allParams.get("filter");
+        String sortedBy = allParams.getOrDefault("sortedBy", "sortByImdb"); // sortByDate or sortByImdb
+
+        if (!MovieManager.sortedBySet.contains(sortedBy)) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return new Output(HttpStatus.BAD_REQUEST.value(), "Please provide a correct sortedBy argument");
+        }
         try {
             switch (filter) {
                 case "name" -> {
-                    return new Output(HttpStatus.OK.value(), MovieManager.searchMovies(allParams.get("searchValue")));
+                    String searchValue = allParams.getOrDefault("searchValue", "");
+                    ArrayList <Movie> movies = MovieManager.searchMovies(searchValue);
+                    return new Output(HttpStatus.OK.value(), MovieManager.sortMovies(movies, sortedBy));
                 }
                 case "releaseYear" -> {
-                    return new Output(HttpStatus.OK.value(), MovieManager.getMoviesByReleaseYear(Integer.valueOf(allParams.get("searchValue")),
-                            Integer.valueOf(allParams.get("searchValue"))));
+                    ArrayList <Movie> movies = MovieManager.getMoviesByReleaseYear(Integer.valueOf(allParams.get("searchValue")), Integer.valueOf(allParams.get("searchValue")));
+                    return new Output(HttpStatus.OK.value(), MovieManager.sortMovies(movies, sortedBy));
                 }
                 case "genre" -> {
-                    return new Output(HttpStatus.OK.value(), MovieManager.getMoviesByGenre(allParams.get("searchValue")));
+                    String searchValue = allParams.getOrDefault("searchValue", "");
+                    ArrayList <Movie> movies =MovieManager.getMoviesByGenre(searchValue);
+                    return new Output(HttpStatus.OK.value(), MovieManager.sortMovies(movies, sortedBy));
                 }
                 default -> {
                     response.setStatus(HttpStatus.BAD_REQUEST.value());

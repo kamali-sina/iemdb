@@ -16,6 +16,8 @@ public class MovieManager {
     public static String query = "";
     public static String filter = "sortByImdb";
 
+    public static Set<String> sortedBySet = new HashSet<>(Arrays.asList("sortByDate", "sortByImdb"));
+
 
     public static String getQuery() {
         return query;
