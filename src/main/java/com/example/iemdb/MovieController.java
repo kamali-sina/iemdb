@@ -47,7 +47,8 @@ public class MovieController {
 
     @GetMapping("/search")
     @ResponseBody
-    public Output getSearchResult(HttpServletResponse response, @RequestParam Map<String,String> allParams) throws CommandException {
+    public Output getSearchResult(HttpServletResponse response, @RequestParam Map<String,String> allParams) throws CommandException, InterruptedException {
+        Thread.sleep(1000);
         String filter = allParams.get("filter");
         String sortedBy = allParams.getOrDefault("sortedBy", "sortByImdb"); // sortByDate or sortByImdb
 
