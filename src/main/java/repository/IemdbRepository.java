@@ -53,6 +53,14 @@ public class IemdbRepository {
                 "    birthDate VARCHAR(100),\n" +
                 "    PRIMARY KEY(email)\n" +
                 ");");
+        stmt.addBatch("CREATE TABLE IF NOT EXISTS Ratings(\n" +
+                "    userEmail VARCHAR(100),\n" +
+                "    movieId INT,\n" +
+                "    rate INT,\n" +
+                "    PRIMARY KEY(userEmail, movieId),\n" +
+                "    FOREIGN KEY (movieId) REFERENCES Movies(id),\n" +
+                "    FOREIGN KEY (userEmail) REFERENCES Users(email)\n" +
+                ");");
         int[] updateCounts = stmt.executeBatch();
         stmt.close();
         con.close();
