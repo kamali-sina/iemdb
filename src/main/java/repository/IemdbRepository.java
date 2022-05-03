@@ -23,10 +23,14 @@ public class IemdbRepository {
         Connection con = ConnectionPool.getConnection();
         con.setAutoCommit(false);
         Statement stmt = con.createStatement();
-//        TODO: complete table creation
-        stmt.addBatch("");
-        stmt.addBatch("");
-        stmt.addBatch("");
+        stmt.addBatch("CREATE TABLE IF NOT EXISTS Actors (\n" +
+                "    id INT,\n" +
+                "    name VARCHAR(100),\n" +
+                "    birthDate VARCHAR(100),\n" +
+                "    nationality VARCHAR(100),\n" +
+                "    image VARCHAR(500),\n" +
+                "    PRIMARY KEY(id)\n" +
+                ");");
         int[] updateCounts = stmt.executeBatch();
         stmt.close();
         con.close();
