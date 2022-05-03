@@ -31,6 +31,20 @@ public class IemdbRepository {
                 "    image VARCHAR(500),\n" +
                 "    PRIMARY KEY(id)\n" +
                 ");");
+        stmt.addBatch("CREATE TABLE IF NOT EXISTS Movies (\n" +
+                "    id INT,\n" +
+                "    name VARCHAR(100),\n" +
+                "    summery VARCHAR(1000),\n" +
+                "    releaseDate VARCHAR(100),\n" +
+                "    director VARCHAR(100),\n" +
+                "    writers VARCHAR(100),\n" +
+                "    imdbRate FLOAT,\n" +
+                "    duration INT,\n" +
+                "    ageLimit INT,\n" +
+                "    image VARCHAR(500),\n" +
+                "    coverImage VARCHAR(500),\n" +
+                "    PRIMARY KEY(id)\n" +
+                ");");
         int[] updateCounts = stmt.executeBatch();
         stmt.close();
         con.close();
