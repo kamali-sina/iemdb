@@ -92,6 +92,10 @@ public class IemdbRepository {
                 "    FOREIGN KEY (movieId) REFERENCES Movies(id),\n" +
                 "    FOREIGN KEY (actorId) REFERENCES Actors(id)\n" +
                 ");");
+        stmt.addBatch("CREATE TABLE IF NOT EXISTS Genres (\n" +
+                "    name VARCHAR(100),\n" +
+                "    PRIMARY KEY(name)\n" +
+                ");");
         int[] updateCounts = stmt.executeBatch();
         stmt.close();
         con.close();
