@@ -45,6 +45,14 @@ public class IemdbRepository {
                 "    coverImage VARCHAR(500),\n" +
                 "    PRIMARY KEY(id)\n" +
                 ");");
+        stmt.addBatch("CREATE TABLE IF NOT EXISTS Users(\n" +
+                "    email VARCHAR(100),\n" +
+                "    password VARCHAR(100),\n" +
+                "    name VARCHAR(100),\n" +
+                "    nickname VARCHAR(100),\n" +
+                "    birthDate VARCHAR(100),\n" +
+                "    PRIMARY KEY(email)\n" +
+                ");");
         int[] updateCounts = stmt.executeBatch();
         stmt.close();
         con.close();
