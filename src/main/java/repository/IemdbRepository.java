@@ -45,7 +45,7 @@ public class IemdbRepository {
                 "    coverImage VARCHAR(500),\n" +
                 "    PRIMARY KEY(id)\n" +
                 ");");
-        stmt.addBatch("CREATE TABLE IF NOT EXISTS Users(\n" +
+        stmt.addBatch("CREATE TABLE IF NOT EXISTS Users (\n" +
                 "    email VARCHAR(100),\n" +
                 "    password VARCHAR(100),\n" +
                 "    name VARCHAR(100),\n" +
@@ -53,7 +53,7 @@ public class IemdbRepository {
                 "    birthDate VARCHAR(100),\n" +
                 "    PRIMARY KEY(email)\n" +
                 ");");
-        stmt.addBatch("CREATE TABLE IF NOT EXISTS Ratings(\n" +
+        stmt.addBatch("CREATE TABLE IF NOT EXISTS Ratings (\n" +
                 "    userEmail VARCHAR(100),\n" +
                 "    movieId INT,\n" +
                 "    rate INT,\n" +
