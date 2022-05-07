@@ -1,8 +1,16 @@
 package repository;
 
+import input.DataReader;
+import main.Actor;
+import main.Comment;
+import main.Movie;
+import main.User;
+
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 
 public class IemdbRepository {
     private static IemdbRepository instance;
@@ -62,14 +70,14 @@ public class IemdbRepository {
                 "    FOREIGN KEY (userEmail) REFERENCES Users(email)\n" +
                 ");");
         stmt.addBatch("CREATE TABLE IF NOT EXISTS Comments (\n" +
-                "    commentId INT,\n" +
+                "    commentId INT auto_increment,\n" +
                 "    userEmail VARCHAR(100),\n" +
                 "    movieId INT,\n" +
                 "    text VARCHAR(500),\n" +
                 "    PRIMARY KEY(commentId),\n" +
                 "    FOREIGN KEY (movieId) REFERENCES Movies(id),\n" +
                 "    FOREIGN KEY (userEmail) REFERENCES Users(email)\n" +
-                ");");
+                ") AUTO_INCREMENT=1;");
         stmt.addBatch("CREATE TABLE IF NOT EXISTS Votes (\n" +
                 "    commentId INT,\n" +
                 "    userEmail VARCHAR(100),\n" +
@@ -107,6 +115,139 @@ public class IemdbRepository {
         stmt.close();
         con.close();
 //        TODO: Complete this
-//        fillTables();
+        fillTables();
+    }
+
+    private void fillTables() throws SQLException {
+        fillActors();
+        fillUsers();
+        fillMovies();
+        fillComments();
+    }
+
+    private void fillComments() throws SQLException {
+        List<Comment> comments = null;
+        try {
+            comments = DataReader.readComments();
+        }
+        catch (Exception e) {
+        }
+        Connection con = ConnectionPool.getConnection();
+        PreparedStatement stmt1 = con.prepareStatement("INSERT INTO Comments (userEmail, movieId, text) VALUES (?, ?, ?) on duplicate key update commentId = commentId");
+        assert comments != null;
+        comments.forEach(comment -> {
+            try {
+                stmt1.setString(1, comment.getUserEmail());
+                stmt1.setInt(2, comment.getMovieId());
+                stmt1.setString(3, comment.getText());
+                stmt1.addBatch();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        });
+        int[] result1 = stmt1.executeBatch();
+        stmt1.close();
+        con.close();
+    }
+    private void fillMovies() throws SQLException {
+        List<Movie> movies = null;
+        try {
+            movies = DataReader.readMovies();
+        }
+        catch (Exception e) {
+        }
+
+        Connection con = ConnectionPool.getConnection();
+        PreparedStatement stmt1 = con.prepareStatement("INSERT INTO Movies VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) on duplicate key update id = id");
+        PreparedStatement stmt2 = con.prepareStatement("INSERT INTO ActorMovies VALUES (?, ?) on duplicate key update actorId = actorId, movieId = movieId");
+        assert movies != null;
+        movies.forEach(movie -> {
+            try {
+                stmt1.setInt(1, movie.getId());
+                stmt1.setString(2, movie.getName());
+                stmt1.setString(3, movie.getSummary());
+                stmt1.setString(4, movie.getReleaseDate());
+                stmt1.setString(5, movie.getDirector());
+                stmt1.setString(6, movie.getWritersPretty());
+                stmt1.setFloat(7, movie.getImdbRate());
+                stmt1.setInt(8, movie.getDuration());
+                stmt1.setInt(9, movie.getAgeLimit());
+                stmt1.setString(10, movie.getImage());
+                stmt1.setString(11, movie.getCoverImage());
+                stmt1.addBatch();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+            movie.getCast().forEach( actorId -> {
+                try {
+                    stmt2.setInt(1, actorId);
+                    stmt2.setInt(2, movie.getId());
+                    stmt2.addBatch();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            });
+        });
+        int[] result1 = stmt1.executeBatch();
+        int[] result2 = stmt2.executeBatch();
+        stmt1.close();
+        stmt2.close();
+        con.close();
+    }
+
+    private void fillUsers() throws SQLException {
+        List<User> users = null;
+        try {
+            users = DataReader.readUsers();
+        }
+        catch (Exception e) {
+        }
+
+        Connection con = ConnectionPool.getConnection();
+        PreparedStatement stmt1 = con.prepareStatement("INSERT INTO Users VALUES (?, ?, ?, ?, ?) on duplicate key update email = email");
+        assert users != null;
+        users.forEach(user -> {
+            try {
+                stmt1.setString(1, user.getEmail());
+                stmt1.setString(2, user.getPassword());
+                stmt1.setString(3, user.getName());
+                stmt1.setString(4, user.getNickname());
+                stmt1.setString(5, user.getBirthDate());
+                stmt1.addBatch();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        });
+        int[] result1 = stmt1.executeBatch();
+        stmt1.close();
+        con.close();
+    }
+
+    private void fillActors() throws SQLException {
+        List<Actor> actors = null;
+        try {
+            actors = DataReader.readActors();
+        }
+        catch (Exception e) {
+        }
+
+        Connection con = ConnectionPool.getConnection();
+        PreparedStatement stmt1 = con.prepareStatement("INSERT INTO Actors VALUES (?, ?, ?, ?, ?) on duplicate key update id = id");
+        assert actors != null;
+        actors.forEach(actor -> {
+            try {
+                stmt1.setInt(1, actor.getId());
+                stmt1.setString(2, actor.getName());
+                stmt1.setString(3, actor.getBirthDate());
+                stmt1.setString(4, actor.getNationality());
+                stmt1.setString(5, actor.getImage());
+                stmt1.addBatch();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        });
+        int[] result1 = stmt1.executeBatch();
+        stmt1.close();
+        con.close();
     }
 }
