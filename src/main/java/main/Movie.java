@@ -21,7 +21,7 @@ public class Movie {
     private ArrayList<String> writers;
     private ArrayList<String> genres;
     private ArrayList<Integer> cast;
-    private Double imdbRate;
+    private Float imdbRate;
     private Integer duration;
     private Integer ageLimit;
     private String image;
@@ -29,8 +29,8 @@ public class Movie {
     private HashMap<String, Rating> ratings = new HashMap<>();
     private Integer ratingCount = 0;
     private HashMap<String, ArrayList<Comment>> comments = new HashMap<>();
-    private Double averageRating;
-    private Double recommendationScore;
+    private Float averageRating;
+    private Float recommendationScore;
 
     @JsonCreator
     public Movie(@JsonProperty("id") Integer id,
@@ -41,7 +41,7 @@ public class Movie {
                  @JsonProperty("writers") ArrayList<String> writers,
                  @JsonProperty("genres") ArrayList<String> genres,
                  @JsonProperty("cast") ArrayList<Integer> cast,
-                 @JsonProperty("imdbRate") Double imdbRate,
+                 @JsonProperty("imdbRate") Float imdbRate,
                  @JsonProperty("duration") Integer duration,
                  @JsonProperty("ageLimit") Integer ageLimit,
                  @JsonProperty("image") String image,
@@ -76,9 +76,9 @@ public class Movie {
         this.coverImage = coverImage;
     }
 
-    private static double round(double value, int precision) {
+    private static Float round(Float value, int precision) {
         int scale = (int) Math.pow(10, precision);
-        return (double) Math.round(value * scale) / scale;
+        return (float) Math.round(value * scale) / scale;
     }
 
     public Integer getId() {
@@ -145,11 +145,11 @@ public class Movie {
         this.cast = cast;
     }
 
-    public Double getImdbRate() {
+    public Float getImdbRate() {
         return imdbRate;
     }
 
-    public void setImdbRate(Double imdbRate) {
+    public void setImdbRate(Float imdbRate) {
         this.imdbRate = imdbRate;
     }
 
@@ -201,11 +201,11 @@ public class Movie {
         this.coverImage = coverImage;
     }
 
-    public Double getRecommendationScore() {
+    public Float getRecommendationScore() {
         return recommendationScore;
     }
 
-    public void setRecommendationScore(Double recommendationScore) {
+    public void setRecommendationScore(Float recommendationScore) {
         this.recommendationScore = recommendationScore;
     }
 
@@ -252,11 +252,11 @@ public class Movie {
         this.ratingCount = ratingCount;
     }
 
-    public Double getAverageRatingRate() {
+    public Float getAverageRatingRate() {
         return averageRating;
     }
 
-    public void setAverageRating(Double averageRating) {
+    public void setAverageRating(Float averageRating) {
         this.averageRating = averageRating;
     }
 
@@ -295,8 +295,8 @@ public class Movie {
         this.calculateAverageRating();
     }
 
-    public Double calculateAverageRating() {
-        Double averageRating = 0.0;
+    public Float calculateAverageRating() {
+        Float averageRating = 0.0f;
         for (Rating rating : this.ratings.values()) {
             averageRating += rating.getScore();
         }

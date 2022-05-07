@@ -118,16 +118,16 @@ public class User {
         watchList.remove(movie.getId());
     }
 
-    private Double getMovieGenreSimilarity(Movie movie) {
-        Double score = movie.getImdbRate();
+    private Float getMovieGenreSimilarity(Movie movie) {
+        Float score = movie.getImdbRate();
         for (Movie watchlist_movie : watchList.values()) {
             score += MovieManager.countNumberOfSameGenres(movie, watchlist_movie);
         }
         return score;
     }
 
-    private Double getMovieRecommendationScore(Movie movie) {
-        Double score = movie.getImdbRate();
+    private Float getMovieRecommendationScore(Movie movie) {
+        Float score = movie.getImdbRate();
         if (movie.getAverageRatingRate() != null) {
             score += movie.getAverageRatingRate();
         }
