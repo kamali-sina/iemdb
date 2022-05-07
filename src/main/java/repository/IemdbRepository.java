@@ -114,7 +114,6 @@ public class IemdbRepository {
         int[] updateCounts = stmt.executeBatch();
         stmt.close();
         con.close();
-//        TODO: Complete this
         fillTables();
     }
 
@@ -160,6 +159,8 @@ public class IemdbRepository {
         Connection con = ConnectionPool.getConnection();
         PreparedStatement stmt1 = con.prepareStatement("INSERT INTO Movies VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) on duplicate key update id = id");
         PreparedStatement stmt2 = con.prepareStatement("INSERT INTO ActorMovies VALUES (?, ?) on duplicate key update actorId = actorId, movieId = movieId");
+        PreparedStatement stmt3 = con.prepareStatement("INSERT INTO Genres VALUES (?) on duplicate key update name = name");
+        PreparedStatement stmt4 = con.prepareStatement("INSERT INTO MovieGenres VALUES (?, ?) on duplicate key update genre = genre, movieId = movieId");
         assert movies != null;
         movies.forEach(movie -> {
             try {
@@ -187,11 +188,27 @@ public class IemdbRepository {
                     throwables.printStackTrace();
                 }
             });
+            movie.getGenres().forEach( genre -> {
+                try {
+                    stmt3.setString(1, genre);
+                    stmt3.addBatch();
+
+                    stmt4.setString(1, genre);
+                    stmt4.setInt(2, movie.getId());
+                    stmt4.addBatch();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            });
         });
         int[] result1 = stmt1.executeBatch();
         int[] result2 = stmt2.executeBatch();
+        int[] result3 = stmt3.executeBatch();
+        int[] result4 = stmt4.executeBatch();
         stmt1.close();
         stmt2.close();
+        stmt3.close();
+        stmt4.close();
         con.close();
     }
 
