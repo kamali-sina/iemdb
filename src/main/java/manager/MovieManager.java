@@ -92,7 +92,7 @@ public class MovieManager {
         try {
             Connection con = ConnectionPool.getConnection();
             Statement stmt = con.createStatement();
-            ResultSet result = stmt.executeQuery("select * from movies");
+            ResultSet result = stmt.executeQuery("select * from Movies");
 
             ArrayList<Movie> movies = new ArrayList<>();
             while (result.next()) {
@@ -228,18 +228,47 @@ public class MovieManager {
     }
 
     public static ArrayList<Movie> getMoviesByReleaseYear(Integer startYear, Integer endYear) {
-        ArrayList<Movie> movies = new ArrayList<>();
-        for (Movie movie : MovieManager.movies.values()) {
-            Integer year = movie.calculateReleaseYear();
-            if (year == -1) {
-                continue;
-            }
-            if (startYear <= year && year <= endYear) {
+        try {
+            Connection con = ConnectionPool.getConnection();
+            Statement stmt = con.createStatement();
+
+            ResultSet result = stmt.executeQuery("select * from Movies where releaseDate >= "+startYear+" and releaseDate <= "+endYear);
+
+            ArrayList<Movie> movies = new ArrayList<>();
+            while (result.next()) {
+                Integer movieId = result.getInt("id");
+                ArrayList<String> writers = new ArrayList<>(Arrays.asList(result.getString("writers").split("\\s*,\\s*")));
+                ArrayList<String> genres = getGenres(movieId);
+                ArrayList<Integer> cast = getCast(movieId);
+
+                Movie movie = new Movie(
+                        result.getInt("id"),
+                        result.getString("name"),
+                        result.getString("summery"),
+                        result.getString("releaseDate"),
+                        result.getString("director"),
+                        writers,
+                        genres,
+                        cast,
+                        result.getFloat("imdbRate"),
+                        result.getInt("duration"),
+                        result.getInt("ageLimit"),
+                        result.getString("image"),
+                        result.getString("coverImage")
+                );
+
                 movies.add(movie);
             }
-        }
+            result.close();
+            stmt.close();
+            con.close();
 
-        return movies;
+            return movies;
+        }
+        catch (SQLException | CommandException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public static ArrayList<Movie> getActorMovies(Integer actorId) {
