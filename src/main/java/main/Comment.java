@@ -38,7 +38,7 @@ public class Comment {
         this.userEmail = userEmail;
         this.movieId = movieId;
         this.text = text;
-        this.nickname = UserManager.getUser(userEmail).getNickname();
+//        TODO: GET USER NICKNAME from db
     }
 
     public static Integer getCount() {
