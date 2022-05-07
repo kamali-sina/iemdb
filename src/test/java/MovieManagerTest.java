@@ -24,7 +24,7 @@ class MovieManagerTest {
         Movie movie = new Movie(movieId, movieName,
                 "", releaseYear.toString() + "-01-01",
                 "", new ArrayList<>(), genres,
-                new ArrayList<>(), 8.2, 150, 10, "", "");
+                new ArrayList<>(), 8.2f, 150, 10, "", "");
         MovieManager.addMovie(movie);
     }
 

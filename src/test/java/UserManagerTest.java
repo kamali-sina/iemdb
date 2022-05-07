@@ -36,7 +36,7 @@ class UserManagerTest {
         Movie avengers = new Movie(1, "Avengers",
                 "", "2010-01-01",
                 "", new ArrayList<>(), new ArrayList<>(),
-                new ArrayList<>(), 8.2, 150, 5, "", "");
+                new ArrayList<>(), 8.2f, 150, 5, "", "");
         avengers.setComments(new HashMap<>());
         avengers.addComment(comment1);
         avengers.addComment(comment2);
@@ -45,7 +45,7 @@ class UserManagerTest {
         Movie lordOfTheRings = new Movie(2, "Lord of The Rings",
                 "", "2010-01-01",
                 "", new ArrayList<>(), new ArrayList<>(),
-                new ArrayList<>(), 8.2, 150, 18, "", "");
+                new ArrayList<>(), 8.2f, 150, 18, "", "");
         lordOfTheRings.setComments(new HashMap<>());
         lordOfTheRings.addComment(comment3);
         MovieManager.addMovie(lordOfTheRings);

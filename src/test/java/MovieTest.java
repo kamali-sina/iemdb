@@ -17,7 +17,7 @@ class MovieTest {
         Movie movie = new Movie(movieId, movieName,
                 "", "2010-01-01",
                 "", new ArrayList<>(), new ArrayList<>(),
-                new ArrayList<>(), 8.2, 150, 10, "", "");
+                new ArrayList<>(), 8.2f, 150, 10, "", "");
         MovieManager.addMovie(movie);
     }
 
