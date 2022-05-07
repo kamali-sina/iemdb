@@ -6,8 +6,15 @@ import manager.ActorManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import output.Output;
+import repository.ConnectionPool;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
@@ -16,7 +23,7 @@ public class ActorController {
 
     @GetMapping("/")
     public Output getActors() throws CommandException {
-        return new Output(HttpStatus.OK.value(), ActorManager.actors.values());
+        return new Output(HttpStatus.OK.value(), ActorManager.getActors());
     }
 
     @GetMapping("/{id}")
