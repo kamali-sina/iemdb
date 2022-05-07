@@ -9,9 +9,9 @@ import java.sql.Statement;
 
 public class ConnectionPool {
     private static BasicDataSource ds = new BasicDataSource();
-    private final static String dbURL = "jdbc:mysql://localhost:3306/IemdbDatabase";
+    private final static String dbURL = "jdbc:mysql://localhost:3306/iemdb";
     private final static String dbUserName = "root";
-    private final static String dbPassword = "password";
+    private final static String dbPassword = "sina1234";
 
     static {
         try {
@@ -36,7 +36,7 @@ public class ConnectionPool {
         try {
             Connection connection = getConnection();
             Statement statement = connection.createStatement();
-            statement.execute("ALTER DATABASE IemdbDatabase CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+            statement.execute("ALTER DATABASE iemdb CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
             connection.close();
             statement.close();
         }
