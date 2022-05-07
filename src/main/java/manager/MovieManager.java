@@ -1,12 +1,15 @@
 package manager;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import exception.CommandException;
 import exception.ErrorType;
 import main.Actor;
 import main.Comment;
 import main.Movie;
 import main.Rating;
+import repository.ConnectionPool;
 
+import java.sql.*;
 import java.util.*;
 
 public class MovieManager {
@@ -39,6 +42,93 @@ public class MovieManager {
         if (filters.contains(inputFilter)) {
             filter = inputFilter;
         }
+    }
+
+    public static ArrayList<String> getGenres(Integer movieId) {
+        try {
+            Connection con = ConnectionPool.getConnection();
+            Statement stmt = con.createStatement();
+            ResultSet result = stmt.executeQuery("select * from MovieGenres where movieId = \"" + movieId + "\"");
+
+            ArrayList<String> Genres = new ArrayList<>();
+            while (result.next()) {
+                Genres.add(result.getString("genre"));
+            }
+            result.close();
+            stmt.close();
+            con.close();
+
+            return Genres;
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static ArrayList<Integer> getCast(Integer movieId) {
+        try {
+            Connection con = ConnectionPool.getConnection();
+            Statement stmt = con.createStatement();
+            ResultSet result = stmt.executeQuery("select * from ActorMovies where movieId = \"" + movieId + "\"");
+
+            ArrayList<Integer> cast = new ArrayList<>();
+            while (result.next()) {
+                cast.add(result.getInt("actorId"));
+            }
+            result.close();
+            stmt.close();
+            con.close();
+
+            return cast;
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static ArrayList<Movie> getMovies() {
+        try {
+            Connection con = ConnectionPool.getConnection();
+            Statement stmt = con.createStatement();
+            ResultSet result = stmt.executeQuery("select * from movies");
+
+            ArrayList<Movie> movies = new ArrayList<>();
+            while (result.next()) {
+                Integer movieId = result.getInt("id");
+                ArrayList<String> writers = new ArrayList<>(Arrays.asList(result.getString("writers").split("\\s*,\\s*")));
+                ArrayList<String> genres = getGenres(movieId);
+                ArrayList<Integer> cast = getCast(movieId);
+
+                Movie movie = new Movie(
+                        result.getInt("id"),
+                        result.getString("name"),
+                        result.getString("summery"),
+                        result.getString("releaseDate"),
+                        result.getString("director"),
+                        writers,
+                        genres,
+                        cast,
+                        result.getFloat("imdbRate"),
+                        result.getInt("duration"),
+                        result.getInt("ageLimit"),
+                        result.getString("image"),
+                        result.getString("coverImage")
+                );
+
+                movies.add(movie);
+            }
+            result.close();
+            stmt.close();
+            con.close();
+
+            return movies;
+        }
+        catch (SQLException | CommandException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public static Movie getMovie(Integer movieId) throws CommandException {
