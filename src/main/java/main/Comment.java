@@ -73,7 +73,7 @@ public class Comment {
         try {
             Connection con = ConnectionPool.getConnection();
             Statement stmt = con.createStatement();
-            ResultSet result = stmt.executeQuery("select nickName from Users inner join Comments on Users.email = Comments.userEmail");
+            ResultSet result = stmt.executeQuery("select nickName from Users inner join Comments on Users.email = Comments.userEmail AND Users.email = \""+this.userEmail+"\"");
 
             String nickName = "";
 
