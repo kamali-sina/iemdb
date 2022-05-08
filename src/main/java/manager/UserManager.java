@@ -9,8 +9,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.HashMap;
-import java.util.List;
 
 public class UserManager {
     public static User loggedInUser = null;
@@ -95,17 +93,5 @@ public class UserManager {
 
         user.removeFromWatchList(movie.getId());
         return "\"movie removed from watchlist successfully\"";
-    }
-
-    public static String addVote(Vote vote) throws CommandException {
-        UserManager.getUser(vote.getUserEmail());
-
-        for (Movie movie : MovieManager.movies.values()) {
-            Comment comment = movie.findComment(vote.getCommentId());
-            if (comment != null) {
-                return comment.addVote(vote);
-            }
-        }
-        throw new CommandException(ErrorType.CommentNotFound);
     }
 }

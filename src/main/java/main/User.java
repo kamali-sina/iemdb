@@ -213,7 +213,7 @@ public class User {
         for (Movie movie : movies_not_in_watchlist) {
             movie.setRecommendationScore(getMovieRecommendationScore(movie));
         }
-        movies_not_in_watchlist.sort(Comparator.comparing(Movie::getRecommendationScore).reversed());
+        movies_not_in_watchlist.sort(Comparator.comparing(Movie::_getRecommendationScore).reversed());
         if (movies_not_in_watchlist.size() < RECOMMENDATION_COUNT) {
             return  movies_not_in_watchlist;
         }
