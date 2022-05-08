@@ -195,8 +195,23 @@ public class MovieManager {
         UserManager.getUser(comment.getUserEmail());
         Movie movie = getMovie(comment.getMovieId());
 
-        Integer commentId = movie.addComment(comment);
-        return "\"comment with id " + commentId.toString() + " added successfully\"";
+        try {
+            Connection con = ConnectionPool.getConnection();
+            PreparedStatement stmt = con.prepareStatement("INSERT INTO Comments (userEmail, movieId, text) VALUES (?, ?, ?)");
+
+            stmt.setString(1, comment.getUserEmail());
+            stmt.setInt(2, comment.getMovieId());
+            stmt.setString(3, comment.getText());
+
+            stmt.addBatch();
+            stmt.executeBatch();
+            stmt.close();
+            con.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return "\"comment added successfully\"";
     }
 
     public static String addComments(List<Comment> comments) throws CommandException {
@@ -212,7 +227,7 @@ public class MovieManager {
 
         try {
             Connection con = ConnectionPool.getConnection();
-            PreparedStatement stmt = con.prepareStatement("INSERT INTO Ratings VALUES (?, ?, ?)");
+            PreparedStatement stmt = con.prepareStatement("insert into Ratings VALUES (?, ?, ?) on duplicate key update rate = rate");
             stmt.setString(1, rating.getUserEmail());
             stmt.setInt(2, rating.getMovieId());
             stmt.setInt(3,rating.getScore());
