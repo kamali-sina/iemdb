@@ -461,13 +461,32 @@ public class MovieManager {
     }
 
     public static ArrayList<Comment> getMovieComments(Integer movieId) throws CommandException {
-        Movie movie = MovieManager.getMovie(movieId);
+        try {
+            Connection con = ConnectionPool.getConnection();
+            Statement stmt = con.createStatement();
 
-        HashMap<String, ArrayList<Comment>> comments = movie.getComments();
-        ArrayList<Comment> movieComments = new ArrayList<>();
-        for (String key : comments.keySet()) {
-            movieComments.addAll(comments.get(key));
+            ResultSet result = stmt.executeQuery("select * from Comments where Comments.movieId = \""+movieId+"\"");
+
+            ArrayList<Comment> comments = new ArrayList<>();
+            while (result.next()) {
+
+                Comment comment = new Comment(
+                        result.getString("userEmail"),
+                        result.getInt("movieId"),
+                        result.getString("text")
+                );
+
+                comments.add(comment);
+            }
+            result.close();
+            stmt.close();
+            con.close();
+
+            return comments;
         }
-        return movieComments;
+        catch (SQLException | CommandException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
