@@ -20,7 +20,6 @@ public class User {
     private String nickname;
     private String name;
     private String birthDate;
-    private HashMap<Integer, Movie> watchList = new HashMap<>();
 
     @JsonCreator
     public User(@JsonProperty("email") String email,
@@ -96,9 +95,9 @@ public class User {
                         result.getString("summery"),
                         result.getString("releaseDate"),
                         result.getString("director"),
-                        null,
-                        null,
-                        null,
+                        new ArrayList<>(),
+                        new ArrayList<>(),
+                        new ArrayList<>(),
                         result.getFloat("imdbRate"),
                         result.getInt("duration"),
                         result.getInt("ageLimit"),
@@ -118,16 +117,40 @@ public class User {
         }
     }
 
-    public void setWatchList(HashMap<Integer, Movie> watchList) {
-        this.watchList = watchList;
-    }
+    public ArrayList<Movie> getMoviesNotInWatchlist() {
+        ArrayList<Movie> movies_not_in_watchlist = new ArrayList<>();
+        try {
+            Connection con = ConnectionPool.getConnection();
+            Statement stmt = con.createStatement();
+            ResultSet result = stmt.executeQuery("select * from Movies inner join WatchlistItems on Movies.id = WatchlistItems.movieId and WatchlistItems.userEmail != \"" + UserManager.loggedInUser.getEmail() + "\"");
 
-    public void printData() {
-        System.out.println(this.email);
-        System.out.println(this.password);
-        System.out.println(this.nickname);
-        System.out.println(this.name);
-        System.out.println(this.birthDate);
+            while (result.next()) {
+                Movie movie = new Movie(
+                        result.getInt("id"),
+                        result.getString("name"),
+                        result.getString("summery"),
+                        result.getString("releaseDate"),
+                        result.getString("director"),
+                        new ArrayList<>(),
+                        new ArrayList<>(),
+                        new ArrayList<>(),
+                        result.getFloat("imdbRate"),
+                        result.getInt("duration"),
+                        result.getInt("ageLimit"),
+                        result.getString("image"),
+                        result.getString("coverImage")
+                );
+                movies_not_in_watchlist.add(movie);
+            }
+            result.close();
+            stmt.close();
+            con.close();
+            return movies_not_in_watchlist;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (CommandException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public int getAge() {
@@ -148,8 +171,8 @@ public class User {
         }
         Connection con = ConnectionPool.getConnection();
         PreparedStatement stmt = con.prepareStatement("INSERT INTO WatchlistItems VALUES (?, ?) on duplicate key update movieId = movieId, userEmail = userEmail");
-        stmt.setInt(1, movieId);
-        stmt.setString(2, UserManager.loggedInUser.getEmail());
+        stmt.setString(1, UserManager.loggedInUser.getEmail());
+        stmt.setInt(2, movieId);
         stmt.addBatch();
         int[] result = stmt.executeBatch();
         stmt.close();
@@ -170,7 +193,7 @@ public class User {
 
     private Float getMovieGenreSimilarity(Movie movie) {
         Float score = movie.getImdbRate();
-        for (Movie watchlist_movie : watchList.values()) {
+        for (Movie watchlist_movie : getWatchList()) {
             score += MovieManager.countNumberOfSameGenres(movie, watchlist_movie);
         }
         return score;
@@ -186,12 +209,7 @@ public class User {
     }
 
     public List<Movie> getWatchlistRecommendations() {
-        ArrayList<Movie> movies_not_in_watchlist = new ArrayList<>();
-        for (Movie movie : MovieManager.movies.values()) {
-            if (!watchList.containsValue(movie)) {
-                movies_not_in_watchlist.add(movie);
-            }
-        }
+        ArrayList<Movie> movies_not_in_watchlist = getMoviesNotInWatchlist();
         for (Movie movie : movies_not_in_watchlist) {
             movie.setRecommendationScore(getMovieRecommendationScore(movie));
         }
