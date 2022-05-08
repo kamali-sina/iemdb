@@ -32,7 +32,7 @@ public class CommentController {
             if (comment == null) {
                 throw new CommandException(ErrorType.CommentNotFound);
             }
-            comment.addVote(new Vote(UserManager.loggedInUser.getEmail(), id, vote));
+            UserManager.loggedInUser.addVoteToComment(id, vote);
         } catch (CommandException ce) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             return new Output(HttpStatus.BAD_REQUEST.value(), ce.getMessage());
