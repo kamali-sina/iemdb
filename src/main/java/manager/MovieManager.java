@@ -303,14 +303,47 @@ public class MovieManager {
     }
 
     public static ArrayList<Movie> getActorMovies(Integer actorId) {
-        ArrayList<Movie> movies = new ArrayList<>();
-        for (Movie movie : MovieManager.movies.values()) {
-            if (movie.getCast().contains(actorId)) {
+        try {
+            Connection con = ConnectionPool.getConnection();
+            Statement stmt = con.createStatement();
+
+            ResultSet result = stmt.executeQuery("select * from ActorMovies inner join Movies on ActorMovies.movieId = Movies.id");
+
+            ArrayList<Movie> movies = new ArrayList<>();
+            while (result.next()) {
+                Integer movieId = result.getInt("movieId");
+                ArrayList<String> writers = new ArrayList<>(Arrays.asList(result.getString("writers").split("\\s*,\\s*")));
+                ArrayList<String> genres = getGenres(movieId);
+                ArrayList<Integer> cast = getCast(movieId);
+
+                Movie movie = new Movie(
+                        result.getInt("id"),
+                        result.getString("name"),
+                        result.getString("summery"),
+                        result.getString("releaseDate"),
+                        result.getString("director"),
+                        writers,
+                        genres,
+                        cast,
+                        result.getFloat("imdbRate"),
+                        result.getInt("duration"),
+                        result.getInt("ageLimit"),
+                        result.getString("image"),
+                        result.getString("coverImage")
+                );
+
                 movies.add(movie);
             }
-        }
+            result.close();
+            stmt.close();
+            con.close();
 
-        return movies;
+            return movies;
+        }
+        catch (SQLException | CommandException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public static ArrayList<Movie> searchMovies(String input, String sortedBy) {
