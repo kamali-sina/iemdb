@@ -122,7 +122,7 @@ public class User {
         try {
             Connection con = ConnectionPool.getConnection();
             Statement stmt = con.createStatement();
-            ResultSet result = stmt.executeQuery("select * from Movies inner join WatchlistItems on Movies.id = WatchlistItems.movieId and WatchlistItems.userEmail != \"" + UserManager.loggedInUser.getEmail() + "\"");
+            ResultSet result = stmt.executeQuery("select * from Movies m where m.id not in (select movieId from WatchlistItems wi where wi.userEmail = \"" + UserManager.loggedInUser.getEmail() + "\") ");
 
             while (result.next()) {
                 Movie movie = new Movie(
@@ -223,7 +223,7 @@ public class User {
     public void addVoteToComment(Integer commentId, Integer vote) throws CommandException {
         try {
             Connection con = ConnectionPool.getConnection();
-            PreparedStatement stmt = con.prepareStatement("INSERT INTO Votes VALUES (?, ?, ?) on duplicate key update vote = vote");
+            PreparedStatement stmt = con.prepareStatement("INSERT INTO Votes VALUES (?, ?, ?) on duplicate key update vote = VALUES(vote)");
             stmt.setInt(1, commentId);
             stmt.setString(2, UserManager.loggedInUser.getEmail());
             stmt.setInt(3, vote);
