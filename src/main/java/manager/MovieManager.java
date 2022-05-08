@@ -336,7 +336,7 @@ public class MovieManager {
             Connection con = ConnectionPool.getConnection();
             Statement stmt = con.createStatement();
 
-            ResultSet result = stmt.executeQuery("select * from ActorMovies inner join Movies on ActorMovies.movieId = Movies.id");
+            ResultSet result = stmt.executeQuery("select * from ActorMovies inner join Movies on ActorMovies.movieId = Movies.id And ActorMovies.actorId = \""+actorId+"\"");
 
             ArrayList<Movie> movies = new ArrayList<>();
             while (result.next()) {
