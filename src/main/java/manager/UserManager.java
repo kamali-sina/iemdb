@@ -81,11 +81,11 @@ public class UserManager {
         }
     }
 
-    public static String addToWatchList(WatchListItem watchListItem) throws CommandException {
+    public static String addToWatchList(WatchListItem watchListItem) throws CommandException, SQLException {
         User user = getUser(watchListItem.getUserEmail());
         Movie movie = MovieManager.getMovie(watchListItem.getMovieId());
 
-        user.addToWatchList(movie);
+        user.addToWatchList(movie.getId());
         return "\"movie added to watchlist successfully\"";
     }
 
@@ -93,7 +93,7 @@ public class UserManager {
         User user = getUser(watchListItem.getUserEmail());
         Movie movie = MovieManager.getMovie(watchListItem.getMovieId());
 
-        user.removeFromWatchList(movie);
+        user.removeFromWatchList(movie.getId());
         return "\"movie removed from watchlist successfully\"";
     }
 
