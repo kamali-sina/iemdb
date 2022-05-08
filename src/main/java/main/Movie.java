@@ -5,7 +5,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import exception.CommandException;
 import exception.ErrorType;
 import manager.ActorManager;
+import repository.ConnectionPool;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -166,16 +171,8 @@ public class Movie {
         this.ageLimit = ageLimit;
     }
 
-    public HashMap<String, Rating> getRatings() {
-        return ratings;
-    }
-
     public void setRatings(HashMap<String, Rating> ratings) {
         this.ratings = ratings;
-    }
-
-    public HashMap<String, ArrayList<Comment>> getComments() {
-        return comments;
     }
 
     public void setComments(HashMap<String, ArrayList<Comment>> comments) {
@@ -198,7 +195,7 @@ public class Movie {
         this.coverImage = coverImage;
     }
 
-    public Float getRecommendationScore() {
+    public Float _getRecommendationScore() {
         return recommendationScore;
     }
 
@@ -242,7 +239,27 @@ public class Movie {
     }
 
     public Integer getRatingCount() {
-        return ratingCount;
+        try {
+            Connection con = ConnectionPool.getConnection();
+            Statement stmt = con.createStatement();
+            ResultSet result = stmt.executeQuery("select count(*) as ratingCount from Ratings where movieId = \"" + this.getId() + "\"");
+
+            Integer ratingCount = 0;
+
+            ArrayList<Rating> ratings = new ArrayList<>();
+            if (result.next()) {
+                ratingCount = result.getInt("ratingCount");
+            }
+            result.close();
+            stmt.close();
+            con.close();
+
+            return ratingCount;
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public void setRatingCount(Integer ratingCount) {
@@ -250,7 +267,27 @@ public class Movie {
     }
 
     public Float getAverageRatingRate() {
-        return averageRating;
+        try {
+            Connection con = ConnectionPool.getConnection();
+            Statement stmt = con.createStatement();
+            ResultSet result = stmt.executeQuery("select AVG(rate) as averageRating from Ratings where movieId = \"" + this.getId() + "\"");
+
+            Float averageRatingRate = 0.0f;
+
+            ArrayList<Rating> ratings = new ArrayList<>();
+            if (result.next()) {
+                averageRatingRate = result.getFloat("averageRating");
+            }
+            result.close();
+            stmt.close();
+            con.close();
+
+            return averageRatingRate;
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public void setAverageRating(Float averageRating) {
@@ -259,7 +296,6 @@ public class Movie {
 
     public Integer addComment(Comment comment) {
         comment.setId(Comment.getCount());
-        comment.setDate(LocalDate.now());
 
         ArrayList<Comment> userComments;
         // Retrieve user comments
@@ -300,17 +336,6 @@ public class Movie {
         averageRating /= this.ratings.values().size();
         this.averageRating = round(averageRating, 1);
         return this.averageRating;
-    }
-
-    public Comment findComment(Integer commentId) {
-        for (ArrayList<Comment> userComments : this.getComments().values()) {
-            for (Comment comment : userComments) {
-                if (Objects.equals(comment.getId(), commentId)) {
-                    return comment;
-                }
-            }
-        }
-        return null;
     }
 
     public LocalDate calculateLocalReleaseDate() {
