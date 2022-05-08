@@ -2,15 +2,13 @@ package main;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonGenerator;
 import exception.CommandException;
 import exception.ErrorType;
-import manager.UserManager;
-
-import java.io.IOException;
-import java.io.StringWriter;
-import java.time.LocalDate;
+import repository.ConnectionPool;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.HashMap;
 
 public class Comment {
@@ -19,8 +17,7 @@ public class Comment {
     private String userEmail;
     private Integer movieId;
     private String text;
-    private Integer id;
-    private LocalDate date;
+    private Integer commentId;
     private HashMap<String, Vote> votes = new HashMap<>();
     private Integer numberOfLikes = 0;
     private Integer numberOfDislikes = 0;
@@ -38,7 +35,6 @@ public class Comment {
         this.userEmail = userEmail;
         this.movieId = movieId;
         this.text = text;
-//        TODO: GET USER NICKNAME from db
     }
 
     public static Integer getCount() {
@@ -73,6 +69,29 @@ public class Comment {
         this.text = text;
     }
 
+    public String getNickname() {
+        try {
+            Connection con = ConnectionPool.getConnection();
+            Statement stmt = con.createStatement();
+            ResultSet result = stmt.executeQuery("select nickName from Users inner join Comments on Users.email = Comments.userEmail");
+
+            String nickName = "";
+
+            if (result.next()) {
+                nickName = result.getString("nickName");
+            }
+            result.close();
+            stmt.close();
+            con.close();
+
+            return nickName;
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public String print() {
         String value = "";
         value += this.userEmail;
@@ -82,19 +101,11 @@ public class Comment {
     }
 
     public Integer getId() {
-        return id;
+        return this.commentId;
     }
 
     public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDate date) {
-        this.date = date;
+        this.commentId = id;
     }
 
     public Integer getNumberOfLikes() {
@@ -143,27 +154,5 @@ public class Comment {
                 numberOfDislikes -= newValue;
             }
         }
-    }
-
-    public String getSerializedCommentWithDetails() throws IOException {
-        JsonFactory factory = new JsonFactory();
-        StringWriter jsonObjectWriter = new StringWriter();
-        JsonGenerator jsonGenerator = factory.createGenerator(jsonObjectWriter);
-
-        jsonGenerator.writeStartObject();
-
-        jsonGenerator.writeNumberField("commentId", this.getId());
-        jsonGenerator.writeStringField("userEmail", this.getUserEmail());
-        jsonGenerator.writeStringField("text", this.getText());
-        jsonGenerator.writeNumberField("like", this.getNumberOfLikes());
-        jsonGenerator.writeNumberField("dislike", this.getNumberOfDislikes());
-
-        jsonGenerator.writeEndObject();
-        jsonGenerator.close();
-        return jsonObjectWriter.toString();
-    }
-
-    public String getNickname() {
-        return nickname;
     }
 }
