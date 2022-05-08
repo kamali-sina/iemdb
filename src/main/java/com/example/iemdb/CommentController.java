@@ -28,10 +28,6 @@ public class CommentController {
         }
         try {
             Integer vote = Integer.valueOf(body.get("vote"));
-            Comment comment = MovieManager.findComment(id);
-            if (comment == null) {
-                throw new CommandException(ErrorType.CommentNotFound);
-            }
             UserManager.loggedInUser.addVoteToComment(id, vote);
         } catch (CommandException ce) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
