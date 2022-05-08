@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Comment {
@@ -109,7 +110,26 @@ public class Comment {
     }
 
     public Integer getNumberOfLikes() {
-        return numberOfLikes;
+        try {
+            Connection con = ConnectionPool.getConnection();
+            Statement stmt = con.createStatement();
+            ResultSet result = stmt.executeQuery("select Count(*) as numberOfLikes from Votes where commentId = \"" + this.getId() + "\" and vote = \"1\"");
+
+            Integer numberOfLikes = 0;
+
+            if (result.next()) {
+                numberOfLikes = result.getInt("numberOfLikes");
+            }
+            result.close();
+            stmt.close();
+            con.close();
+
+            return numberOfLikes;
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public void setNumberOfLikes(Integer numberOfLikes) {
@@ -117,7 +137,26 @@ public class Comment {
     }
 
     public Integer getNumberOfDislikes() {
-        return numberOfDislikes;
+        try {
+            Connection con = ConnectionPool.getConnection();
+            Statement stmt = con.createStatement();
+            ResultSet result = stmt.executeQuery("select Count(*) as numberOfDislikes from Votes where commentId = \"" + this.getId() + "\" and vote = \"-1\"");
+
+            Integer numberOfDislikes = 0;
+
+            if (result.next()) {
+                numberOfDislikes = result.getInt("numberOfDislikes");
+            }
+            result.close();
+            stmt.close();
+            con.close();
+
+            return numberOfDislikes;
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public void setNumberOfDislikes(Integer numberOfDislikes) {
