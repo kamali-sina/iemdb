@@ -433,7 +433,7 @@ public class MovieManager {
             Connection con = ConnectionPool.getConnection();
             Statement stmt = con.createStatement();
 
-            ResultSet result = stmt.executeQuery("select * from ActorMovies inner join Actors on ActorMovies.actorId = Actors.id AND ActorMovies.movieId = "+movieId);
+            ResultSet result = stmt.executeQuery("select * from ActorMovies inner join Actors on ActorMovies.actorId = Actors.id AND ActorMovies.movieId = \""+movieId+"\"");
 
             ArrayList<Actor> actors = new ArrayList<>();
             while (result.next()) {
@@ -469,13 +469,13 @@ public class MovieManager {
 
             ArrayList<Comment> comments = new ArrayList<>();
             while (result.next()) {
-
                 Comment comment = new Comment(
                         result.getString("userEmail"),
                         result.getInt("movieId"),
                         result.getString("text")
                 );
 
+                comment.setId(result.getInt("commentId"));
                 comments.add(comment);
             }
             result.close();
