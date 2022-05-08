@@ -227,7 +227,7 @@ public class MovieManager {
 
         try {
             Connection con = ConnectionPool.getConnection();
-            PreparedStatement stmt = con.prepareStatement("INSERT INTO Ratings VALUES (?, ?, ?)");
+            PreparedStatement stmt = con.prepareStatement("insert into Ratings VALUES (?, ?, ?) on duplicate key update rate = rate");
             stmt.setString(1, rating.getUserEmail());
             stmt.setInt(2, rating.getMovieId());
             stmt.setInt(3,rating.getScore());
