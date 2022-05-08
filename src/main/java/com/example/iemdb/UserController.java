@@ -61,8 +61,7 @@ public class UserController {
         }
         try {
             Integer movieId = Integer.valueOf(body.get("movieId"));
-            Movie movie = MovieManager.getMovie(movieId);
-            UserManager.loggedInUser.addToWatchList(movie);
+            UserManager.loggedInUser.addToWatchList(movieId);
         } catch (CommandException ce) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             return new Output(HttpStatus.BAD_REQUEST.value(), ce.getMessage());
@@ -81,8 +80,7 @@ public class UserController {
         }
         try {
             Integer movieId = Integer.valueOf(body.get("movieId"));
-            Movie movie = MovieManager.getMovie(movieId);
-            UserManager.loggedInUser.removeFromWatchList(movie);
+            UserManager.loggedInUser.removeFromWatchList(movieId);
         } catch (CommandException ce) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             return new Output(HttpStatus.BAD_REQUEST.value(), ce.getMessage());
