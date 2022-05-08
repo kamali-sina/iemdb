@@ -429,13 +429,35 @@ public class MovieManager {
     }
 
     public static ArrayList<Actor> getMovieActors(Integer movieId) throws CommandException {
-        Movie movie = MovieManager.getMovie(movieId);
+        try {
+            Connection con = ConnectionPool.getConnection();
+            Statement stmt = con.createStatement();
 
-        ArrayList<Actor> actors = new ArrayList<>();
-        for (Integer actorId : movie.getCast()) {
-            actors.add(ActorManager.getActor(actorId));
+            ResultSet result = stmt.executeQuery("select * from ActorMovies inner join Actors on ActorMovies.actorId = Actors.id AND ActorMovies.movieId = "+movieId);
+
+            ArrayList<Actor> actors = new ArrayList<>();
+            while (result.next()) {
+
+                Actor actor = new Actor(
+                        result.getInt("id"),
+                        result.getString("name"),
+                        result.getString("birthDate"),
+                        result.getString("nationality"),
+                        result.getString("image")
+                );
+
+                actors.add(actor);
+            }
+            result.close();
+            stmt.close();
+            con.close();
+
+            return actors;
         }
-        return actors;
+        catch (SQLException | CommandException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public static ArrayList<Comment> getMovieComments(Integer movieId) throws CommandException {
