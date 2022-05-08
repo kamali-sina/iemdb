@@ -208,9 +208,23 @@ public class MovieManager {
 
     public static String addRating(Rating rating) throws CommandException {
         UserManager.getUser(rating.getUserEmail());
-        Movie movie = getMovie(rating.getMovieId());
+        getMovie(rating.getMovieId());
 
-        movie.addRating(rating);
+        try {
+            Connection con = ConnectionPool.getConnection();
+            PreparedStatement stmt = con.prepareStatement("INSERT INTO Ratings VALUES (?, ?, ?)");
+            stmt.setString(1, rating.getUserEmail());
+            stmt.setInt(2, rating.getMovieId());
+            stmt.setInt(3,rating.getScore());
+
+            stmt.addBatch();
+            stmt.executeBatch();
+            stmt.close();
+            con.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
         return "\"movie rated successfully\"";
     }
 
