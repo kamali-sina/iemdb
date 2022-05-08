@@ -5,12 +5,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import exception.CommandException;
 import exception.ErrorType;
 import manager.MovieManager;
+import manager.UserManager;
 import repository.ConnectionPool;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.*;
@@ -89,18 +87,24 @@ public class User {
         try {
             Connection con = ConnectionPool.getConnection();
             Statement stmt = con.createStatement();
-            ResultSet result = stmt.executeQuery("select * from Movies where ");
+            ResultSet result = stmt.executeQuery("select * from Movies inner join WatchlistItems on Movies.id = WatchlistItems.movieId and WatchlistItems.userEmail = \"" + UserManager.loggedInUser.getEmail() + "\"");
 
             while (result.next()) {
-//                Movie movie = new Movie(
-//                        result.getInt("id"),
-//                        result.getString("name"),
-//                        result.getString("birthDate"),
-//                        result.getString("nationality"),
-//                        result.getString("image")
-//                );
-                Movie movie = null;
-
+                Movie movie = new Movie(
+                        result.getInt("id"),
+                        result.getString("name"),
+                        result.getString("summery"),
+                        result.getString("releaseDate"),
+                        result.getString("director"),
+                        null,
+                        null,
+                        null,
+                        result.getFloat("imdbRate"),
+                        result.getInt("duration"),
+                        result.getInt("ageLimit"),
+                        result.getString("image"),
+                        result.getString("coverImage")
+                );
                 watchlist.add(movie);
             }
             result.close();
@@ -108,6 +112,8 @@ public class User {
             con.close();
             return watchlist;
         } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (CommandException e) {
             throw new RuntimeException(e);
         }
     }
@@ -130,21 +136,36 @@ public class User {
         return Period.between(dateOfBirth, currentDate).getYears();
     }
 
-    public void addToWatchList(Movie movie) throws CommandException {
-        if (getAge() < movie.getAgeLimit()) {
+    public void addToWatchList(Integer movieId) throws CommandException, SQLException {
+        Movie movie = MovieManager.getMovie(movieId);
+        if (UserManager.loggedInUser.getAge() < movie.getAgeLimit()) {
             throw new CommandException(ErrorType.AgeLimitError);
         }
-        if (watchList.containsKey(movie.getId())) {
-            throw new CommandException(ErrorType.MovieAlreadyExists);
+        for (Movie watchlistMovie : UserManager.loggedInUser.getWatchList()) {
+            if (watchlistMovie.getId() == movieId) {
+                throw new CommandException(ErrorType.MovieAlreadyExists);
+            }
         }
-        watchList.put(movie.getId(), movie);
+        Connection con = ConnectionPool.getConnection();
+        PreparedStatement stmt = con.prepareStatement("INSERT INTO WatchlistItems VALUES (?, ?) on duplicate key update movieId = movieId, userEmail = userEmail");
+        stmt.setInt(1, movieId);
+        stmt.setString(2, UserManager.loggedInUser.getEmail());
+        stmt.addBatch();
+        int[] result = stmt.executeBatch();
+        stmt.close();
     }
 
-    public void removeFromWatchList(Movie movie) throws CommandException {
-        if (!watchList.containsKey(movie.getId())) {
+    public void removeFromWatchList(Integer movieId) throws CommandException {
+        try {
+            Connection con = ConnectionPool.getConnection();
+            Statement stmt = con.createStatement();
+            stmt.executeUpdate("delete from WatchlistItems where movieId = \"" + movieId + "\" and userEmail = \"" + UserManager.getLoggedInUser().getEmail() + "\"");
+            stmt.close();
+            con.close();
+        }
+        catch (SQLException e) {
             throw new CommandException(ErrorType.MovieNotFound);
         }
-        watchList.remove(movie.getId());
     }
 
     private Float getMovieGenreSimilarity(Movie movie) {
