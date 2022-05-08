@@ -51,9 +51,6 @@ public class Movie {
                 summary == null ||
                 releaseDate == null ||
                 director == null ||
-                writers == null ||
-                genres == null ||
-                cast == null ||
                 imdbRate == null ||
                 duration == null ||
                 ageLimit == null ||
