@@ -3,12 +3,16 @@ package manager;
 import exception.CommandException;
 import exception.ErrorType;
 import main.*;
+import repository.ConnectionPool;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.HashMap;
 import java.util.List;
 
 public class UserManager {
-    public static final HashMap<String, User> users = new HashMap<>();
     public static User loggedInUser = null;
 
     public static User getLoggedInUser() {
@@ -23,32 +27,58 @@ public class UserManager {
         loggedInUser = null;
     }
 
-    public static User getUser(String userEmail) throws CommandException {
-        User user = UserManager.users.get(userEmail);
-        if (user == null) {
-            throw new CommandException(ErrorType.UserNotFound);
+    public static User getUser(String email) throws CommandException {
+        User user = null;
+        try {
+            Connection con = ConnectionPool.getConnection();
+            Statement stmt = con.createStatement();
+            ResultSet result = stmt.executeQuery("select * from Users where email = \"" + email + "\"");
+            while (result.next()) {
+                user = new User(
+                        result.getString("email"),
+                        result.getString("password"),
+                        result.getString("nickname"),
+                        result.getString("name"),
+                        result.getString("birthDate")
+                );
+            }
+            result.close();
+            stmt.close();
+            con.close();
+            if (user == null) {
+                throw new CommandException(ErrorType.UserNotFound);
+            }
+            return user;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-        return user;
     }
 
-    public static boolean doesUserExist(String userEmail) {
-        return UserManager.users.containsKey(userEmail);
-    }
-
-    public static String addUser(User user) throws CommandException {
-        if (UserManager.doesUserExist(user.getEmail())) {
-            throw new CommandException(ErrorType.UserAlreadyExists);
+    public static User getUser(String email, String password) throws CommandException {
+        User user = null;
+        try {
+            Connection con = ConnectionPool.getConnection();
+            Statement stmt = con.createStatement();
+            ResultSet result = stmt.executeQuery("select * from Users where email = \"" + email + "\" and password = \"" + password + "\"");
+            while (result.next()) {
+                user = new User(
+                        result.getString("email"),
+                        result.getString("password"),
+                        result.getString("nickname"),
+                        result.getString("name"),
+                        result.getString("birthDate")
+                );
+            }
+            result.close();
+            stmt.close();
+            con.close();
+            if (user == null) {
+                throw new CommandException(ErrorType.UserNotFound);
+            }
+            return user;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-
-        UserManager.users.put(user.getEmail(), user);
-        return "\"user added successfully\"";
-    }
-
-    public static String addUsers(List<User> users) throws CommandException {
-        for (User user : users) {
-            UserManager.addUser(user);
-        }
-        return "\"users added successfully\"";
     }
 
     public static String addToWatchList(WatchListItem watchListItem) throws CommandException {
