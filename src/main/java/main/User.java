@@ -219,4 +219,19 @@ public class User {
         }
         return movies_not_in_watchlist.subList(0, RECOMMENDATION_COUNT);
     }
+
+    public void addVoteToComment(Integer commentId, Integer vote) throws CommandException {
+        try {
+            Connection con = ConnectionPool.getConnection();
+            PreparedStatement stmt = con.prepareStatement("INSERT INTO Votes VALUES (?, ?, ?) on duplicate key update vote = vote");
+            stmt.setInt(1, commentId);
+            stmt.setString(2, UserManager.loggedInUser.getEmail());
+            stmt.setInt(3, vote);
+            stmt.addBatch();
+            int[] result = stmt.executeBatch();
+            stmt.close();
+        } catch (Exception e) {
+            throw new CommandException(ErrorType.CommentNotFound);
+        }
+    }
 }
