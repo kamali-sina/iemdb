@@ -19,8 +19,7 @@ public class MovieManager {
     public static String query = "";
     public static String filter = "sortByImdb";
 
-    public static Set<String> sortedBySet = new HashSet<>(Arrays.asList("sortByDate", "sortByImdb"));
-
+    public static Set<String> sortedBySet = new HashSet<>(Arrays.asList("releaseDate", "imdbRate"));
 
     public static String getQuery() {
         return query;
@@ -215,12 +214,12 @@ public class MovieManager {
         return "\"movie rated successfully\"";
     }
 
-    public static ArrayList<Movie> getMoviesByGenre(String genre) {
+    public static ArrayList<Movie> getMoviesByGenre(String genre, String sortedBy) {
         try {
             Connection con = ConnectionPool.getConnection();
             Statement stmt = con.createStatement();
 
-            ResultSet result = stmt.executeQuery("select * from MovieGenres inner join Movies on MovieGenres.movieId = Movies.id AND MovieGenres.genre = \""+genre+"\"");
+            ResultSet result = stmt.executeQuery("select * from MovieGenres inner join Movies on MovieGenres.movieId = Movies.id AND MovieGenres.genre = \""+genre+"\" order by "+sortedBy+" DESC");
 
             ArrayList<Movie> movies = new ArrayList<>();
             while (result.next()) {
@@ -259,12 +258,12 @@ public class MovieManager {
         return null;
     }
 
-    public static ArrayList<Movie> getMoviesByReleaseYear(Integer startYear, Integer endYear) {
+    public static ArrayList<Movie> getMoviesByReleaseYear(Integer startYear, Integer endYear, String sortedBy) {
         try {
             Connection con = ConnectionPool.getConnection();
             Statement stmt = con.createStatement();
 
-            ResultSet result = stmt.executeQuery("select * from Movies where releaseDate >= "+startYear+" and releaseDate <= "+endYear);
+            ResultSet result = stmt.executeQuery("select * from Movies where releaseDate >= "+startYear+" and releaseDate <= "+endYear+" order by "+sortedBy+" DESC");
 
             ArrayList<Movie> movies = new ArrayList<>();
             while (result.next()) {
@@ -304,21 +303,56 @@ public class MovieManager {
     }
 
     public static ArrayList<Movie> getActorMovies(Integer actorId) {
-        ArrayList<Movie> movies = new ArrayList<>();
-        for (Movie movie : MovieManager.movies.values()) {
-            if (movie.getCast().contains(actorId)) {
-                movies.add(movie);
-            }
-        }
-
-        return movies;
-    }
-
-    public static ArrayList<Movie> searchMovies(String input) {
         try {
             Connection con = ConnectionPool.getConnection();
             Statement stmt = con.createStatement();
-            ResultSet result = stmt.executeQuery("select * from Movies where name like '%" + input + "%'");
+
+            ResultSet result = stmt.executeQuery("select * from ActorMovies inner join Movies on ActorMovies.movieId = Movies.id");
+
+            ArrayList<Movie> movies = new ArrayList<>();
+            while (result.next()) {
+                Integer movieId = result.getInt("movieId");
+                ArrayList<String> writers = new ArrayList<>(Arrays.asList(result.getString("writers").split("\\s*,\\s*")));
+                ArrayList<String> genres = getGenres(movieId);
+                ArrayList<Integer> cast = getCast(movieId);
+
+                Movie movie = new Movie(
+                        result.getInt("id"),
+                        result.getString("name"),
+                        result.getString("summery"),
+                        result.getString("releaseDate"),
+                        result.getString("director"),
+                        writers,
+                        genres,
+                        cast,
+                        result.getFloat("imdbRate"),
+                        result.getInt("duration"),
+                        result.getInt("ageLimit"),
+                        result.getString("image"),
+                        result.getString("coverImage")
+                );
+
+                movies.add(movie);
+            }
+            result.close();
+            stmt.close();
+            con.close();
+
+            return movies;
+        }
+        catch (SQLException | CommandException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static ArrayList<Movie> searchMovies(String input, String sortedBy) {
+        try {
+            Connection con = ConnectionPool.getConnection();
+            Statement stmt = con.createStatement();
+
+            ResultSet result = stmt.executeQuery("select * from Movies where name like '%" + input + "%' order by "+sortedBy+" DESC");
+//            ORDER BY column1, column2, ... ASC|DESC;
 
             ArrayList<Movie> movies = new ArrayList<>();
             while (result.next()) {
@@ -368,7 +402,7 @@ public class MovieManager {
     }
 
     public static ArrayList<Movie> getSearchMoviesResultSorted(String input, String filter) {
-        return sortMovies(searchMovies(input), filter);
+        return sortMovies(searchMovies(input, ""), filter);
     }
 
     public static Integer countNumberOfSameGenres(Movie movie_1, Movie movie_2) {
@@ -395,23 +429,64 @@ public class MovieManager {
     }
 
     public static ArrayList<Actor> getMovieActors(Integer movieId) throws CommandException {
-        Movie movie = MovieManager.getMovie(movieId);
+        try {
+            Connection con = ConnectionPool.getConnection();
+            Statement stmt = con.createStatement();
 
-        ArrayList<Actor> actors = new ArrayList<>();
-        for (Integer actorId : movie.getCast()) {
-            actors.add(ActorManager.getActor(actorId));
+            ResultSet result = stmt.executeQuery("select * from ActorMovies inner join Actors on ActorMovies.actorId = Actors.id AND ActorMovies.movieId = "+movieId);
+
+            ArrayList<Actor> actors = new ArrayList<>();
+            while (result.next()) {
+
+                Actor actor = new Actor(
+                        result.getInt("id"),
+                        result.getString("name"),
+                        result.getString("birthDate"),
+                        result.getString("nationality"),
+                        result.getString("image")
+                );
+
+                actors.add(actor);
+            }
+            result.close();
+            stmt.close();
+            con.close();
+
+            return actors;
         }
-        return actors;
+        catch (SQLException | CommandException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public static ArrayList<Comment> getMovieComments(Integer movieId) throws CommandException {
-        Movie movie = MovieManager.getMovie(movieId);
+        try {
+            Connection con = ConnectionPool.getConnection();
+            Statement stmt = con.createStatement();
 
-        HashMap<String, ArrayList<Comment>> comments = movie.getComments();
-        ArrayList<Comment> movieComments = new ArrayList<>();
-        for (String key : comments.keySet()) {
-            movieComments.addAll(comments.get(key));
+            ResultSet result = stmt.executeQuery("select * from Comments where Comments.movieId = \""+movieId+"\"");
+
+            ArrayList<Comment> comments = new ArrayList<>();
+            while (result.next()) {
+
+                Comment comment = new Comment(
+                        result.getString("userEmail"),
+                        result.getInt("movieId"),
+                        result.getString("text")
+                );
+
+                comments.add(comment);
+            }
+            result.close();
+            stmt.close();
+            con.close();
+
+            return comments;
         }
-        return movieComments;
+        catch (SQLException | CommandException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
