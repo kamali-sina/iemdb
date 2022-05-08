@@ -25,10 +25,7 @@ public class UserController {
         String email = body.get("email");
         String password = body.get("password");
         try {
-            User user = UserManager.getUser(email);
-            if (!user.getPassword().equals(password)) {
-                throw new CommandException(ErrorType.UserNotFound);
-            }
+            User user = UserManager.getUser(email, password);
             UserManager.logInUser(user);
         } catch (Exception e) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
@@ -53,7 +50,7 @@ public class UserController {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             return new Output(HttpStatus.UNAUTHORIZED.value(), "no logged in user found, please login first.");
         }
-        return new Output(HttpStatus.OK.value(), UserManager.loggedInUser.getWatchList().values());
+        return new Output(HttpStatus.OK.value(), UserManager.loggedInUser.getWatchList());
     }
 
     @PostMapping("/watchlist")
