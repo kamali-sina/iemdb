@@ -5,7 +5,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import exception.CommandException;
 import exception.ErrorType;
 import manager.MovieManager;
+import repository.ConnectionPool;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.*;
@@ -79,8 +84,32 @@ public class User {
         this.birthDate = birthDate;
     }
 
-    public HashMap<Integer, Movie> getWatchList() {
-        return watchList;
+    public ArrayList<Movie> getWatchList() {
+        ArrayList<Movie> watchlist = new ArrayList<>();
+        try {
+            Connection con = ConnectionPool.getConnection();
+            Statement stmt = con.createStatement();
+            ResultSet result = stmt.executeQuery("select * from Movies where ");
+
+            while (result.next()) {
+//                Movie movie = new Movie(
+//                        result.getInt("id"),
+//                        result.getString("name"),
+//                        result.getString("birthDate"),
+//                        result.getString("nationality"),
+//                        result.getString("image")
+//                );
+                Movie movie = null;
+
+                watchlist.add(movie);
+            }
+            result.close();
+            stmt.close();
+            con.close();
+            return watchlist;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void setWatchList(HashMap<Integer, Movie> watchList) {
