@@ -195,8 +195,23 @@ public class MovieManager {
         UserManager.getUser(comment.getUserEmail());
         Movie movie = getMovie(comment.getMovieId());
 
-        Integer commentId = movie.addComment(comment);
-        return "\"comment with id " + commentId.toString() + " added successfully\"";
+        try {
+            Connection con = ConnectionPool.getConnection();
+            PreparedStatement stmt = con.prepareStatement("INSERT INTO Comments (userEmail, movieId, text) VALUES (?, ?, ?)");
+
+            stmt.setString(1, comment.getUserEmail());
+            stmt.setInt(2, comment.getMovieId());
+            stmt.setString(3, comment.getText());
+
+            stmt.addBatch();
+            stmt.executeBatch();
+            stmt.close();
+            con.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return "\"comment added successfully\"";
     }
 
     public static String addComments(List<Comment> comments) throws CommandException {
