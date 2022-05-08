@@ -23,8 +23,9 @@ public class MovieController {
     @GetMapping("/")
     public Output getMovies(HttpServletResponse response) throws CommandException {
         try {
-            return new Output(HttpStatus.OK.value(), MovieManager.movies.values());
+            return new Output(HttpStatus.OK.value(), MovieManager.getMovies());
         } catch (CommandException commandException) {
+            System.out.println(commandException.getMessage());
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
             return new Output(HttpStatus.INTERNAL_SERVER_ERROR.value(), commandException.getMessage());
         }
