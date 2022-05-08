@@ -219,9 +219,6 @@ public class MovieManager {
             Connection con = ConnectionPool.getConnection();
             Statement stmt = con.createStatement();
 
-            System.out.println(genre);
-            System.out.println(sortedBy);
-
             ResultSet result = stmt.executeQuery("select * from MovieGenres inner join Movies on MovieGenres.movieId = Movies.id AND MovieGenres.genre = \""+genre+"\" order by "+sortedBy+" DESC");
 
             ArrayList<Movie> movies = new ArrayList<>();
