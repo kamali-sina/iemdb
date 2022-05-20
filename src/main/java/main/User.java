@@ -8,6 +8,8 @@ import manager.MovieManager;
 import manager.UserManager;
 import repository.ConnectionPool;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.Period;
@@ -157,6 +159,20 @@ public class User {
         LocalDate dateOfBirth = LocalDate.parse(getBirthDate());
         LocalDate currentDate = LocalDate.now();
         return Period.between(dateOfBirth, currentDate).getYears();
+    }
+
+    public String getHashedPassword() throws NoSuchAlgorithmException {
+        MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+        messageDigest.update(this.password.getBytes());
+        String passwordHash = new String(messageDigest.digest());
+        return passwordHash;
+    }
+
+    public static String getHash(String password) throws NoSuchAlgorithmException {
+        MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+        messageDigest.update(password.getBytes());
+        String passwordHash = new String(messageDigest.digest());
+        return passwordHash;
     }
 
     public void addToWatchList(Integer movieId) throws CommandException, SQLException {
