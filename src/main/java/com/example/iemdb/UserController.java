@@ -13,6 +13,7 @@ import output.Output;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 
 @RestController
@@ -21,9 +22,9 @@ import java.util.Map;
 public class UserController {
 
     @PostMapping("/login")
-    public Output loginUser(@RequestBody Map<String, String> body, HttpServletResponse response) throws CommandException {
+    public Output loginUser(@RequestBody Map<String, String> body, HttpServletResponse response) throws CommandException, NoSuchAlgorithmException {
         String email = body.get("email");
-        String password = body.get("password");
+        String password = User.getHash(body.get("password"));
         try {
             User user = UserManager.getUser(email, password);
             UserManager.logInUser(user);
@@ -42,6 +43,23 @@ public class UserController {
         }
         UserManager.logOutUser();
         return new Output(HttpStatus.OK.value(), "user logged out successfully");
+    }
+
+    @PostMapping("/signup")
+    public Output signupUser(@RequestBody Map<String, String> body, HttpServletResponse response) throws CommandException {
+        String name = body.get("name");
+        String username = body.get("username");
+        String email = body.get("email");
+        String birthdate = body.get("birthdate");
+        String password = body.get("password");
+        try {
+            User user = new User(email, password, username, name, birthdate);
+            UserManager.addUser(user);
+        } catch (Exception e) {
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return new Output(HttpStatus.BAD_REQUEST.value(), "could not signup user with given info.");
+        }
+        return new Output(HttpStatus.OK.value(), "user signed up successfully");
     }
 
     @GetMapping("/watchlist")
