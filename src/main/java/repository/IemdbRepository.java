@@ -5,6 +5,7 @@ import main.Actor;
 import main.Comment;
 import main.Movie;
 import main.User;
+import manager.UserManager;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -220,24 +221,14 @@ public class IemdbRepository {
         catch (Exception e) {
         }
 
-        Connection con = ConnectionPool.getConnection();
-        PreparedStatement stmt1 = con.prepareStatement("INSERT INTO Users VALUES (?, ?, ?, ?, ?) on duplicate key update email = email");
         assert users != null;
         users.forEach(user -> {
             try {
-                stmt1.setString(1, user.getEmail());
-                stmt1.setString(2, user.getPassword());
-                stmt1.setString(3, user.getName());
-                stmt1.setString(4, user.getNickname());
-                stmt1.setString(5, user.getBirthDate());
-                stmt1.addBatch();
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
+                UserManager.addUser(user);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
             }
         });
-        int[] result1 = stmt1.executeBatch();
-        stmt1.close();
-        con.close();
     }
 
     private void fillActors() throws SQLException {
