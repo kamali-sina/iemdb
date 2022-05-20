@@ -5,10 +5,8 @@ import exception.ErrorType;
 import main.*;
 import repository.ConnectionPool;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.security.NoSuchAlgorithmException;
+import java.sql.*;
 
 public class UserManager {
     public static User loggedInUser = null;
@@ -50,6 +48,28 @@ public class UserManager {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static void addUser(User user) throws SQLException {
+        Connection con = ConnectionPool.getConnection();
+        PreparedStatement stmt1 = con.prepareStatement("INSERT INTO Users VALUES (?, ?, ?, ?, ?) on duplicate key update email = email");
+
+        try {
+            stmt1.setString(1, user.getEmail());
+            stmt1.setString(2, user.getHashedPassword());
+            stmt1.setString(3, user.getName());
+            stmt1.setString(4, user.getNickname());
+            stmt1.setString(5, user.getBirthDate());
+            stmt1.addBatch();
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+
+        int[] result1 = stmt1.executeBatch();
+        stmt1.close();
+        con.close();
     }
 
     public static User getUser(String email, String password) throws CommandException {
