@@ -16,7 +16,7 @@ import java.security.Key;
 import java.util.ArrayList;
 
 @Component
-@Order(1)
+@Order(2)
 public class AuthorizationFilter implements Filter {
 
     @Override
