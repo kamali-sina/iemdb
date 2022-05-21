@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import manager.UserManager;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
@@ -12,6 +13,7 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.DatatypeConverter;
+import java.io.IOException;
 import java.security.Key;
 import java.util.ArrayList;
 
@@ -23,10 +25,12 @@ public class AuthorizationFilter implements Filter {
     public void doFilter(
             ServletRequest request,
             ServletResponse response,
-            FilterChain chain) {
+            FilterChain chain) throws ServletException, IOException {
+
+        HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+        HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+
         try {
-            HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-            HttpServletResponse httpServletResponse = (HttpServletResponse) response;
 
             ArrayList<String> urlsWithoutTokens = new ArrayList<>();
             urlsWithoutTokens.add("http://127.0.0.1:8080/users/login");
@@ -37,25 +41,25 @@ public class AuthorizationFilter implements Filter {
             if (!urlsWithoutTokens.contains(httpServletRequest.getRequestURL().toString())) {
                 String jwtString = httpServletRequest.getHeader("Authorization");
 
-                System.out.println(jwtString);
-
                 String SECRET_KEY = "iemdb1401";
 
                 byte[] keyBytes = DatatypeConverter.parseBase64Binary(SECRET_KEY+SECRET_KEY+SECRET_KEY+SECRET_KEY+SECRET_KEY);
                 Key key = new SecretKeySpec(keyBytes, SignatureAlgorithm.HS256.getJcaName());
 
-                Jws<Claims> jwt = Jwts.parserBuilder()
+                Claims claims = Jwts.parserBuilder()
                         .setSigningKey(key)
                         .build()
-                        .parseClaimsJws(jwtString);
+                        .parseClaimsJws(jwtString)
+                        .getBody();
 
-                System.out.println(jwt);
+                httpServletRequest.setAttribute("user", UserManager.getUser(claims.get("email").toString()));
             }
 
             chain.doFilter(httpServletRequest, httpServletResponse);
 
         } catch (Exception exception) {
             System.out.println(exception.getMessage());
+            httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
     }
 }
