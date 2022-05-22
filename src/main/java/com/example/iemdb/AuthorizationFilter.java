@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import main.User;
+import manager.AuthenticationManager;
 import manager.UserManager;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -37,22 +38,10 @@ public class AuthorizationFilter implements Filter {
             urlsWithoutTokens.add("http://127.0.0.1:8080/users/login");
             urlsWithoutTokens.add("http://127.0.0.1:8080/users/logout");
             urlsWithoutTokens.add("http://127.0.0.1:8080/users/signup");
-            urlsWithoutTokens.add("http://127.0.0.1:8080/users/callback");
-
+            urlsWithoutTokens.add("http://127.0.0.1:8080/callback/");
             if (!urlsWithoutTokens.contains(httpServletRequest.getRequestURL().toString())) {
                 String jwtString = httpServletRequest.getHeader("Authorization");
-
-                String SECRET_KEY = "iemdb1401";
-
-                byte[] keyBytes = DatatypeConverter.parseBase64Binary(SECRET_KEY+SECRET_KEY+SECRET_KEY+SECRET_KEY+SECRET_KEY);
-                Key key = new SecretKeySpec(keyBytes, SignatureAlgorithm.HS256.getJcaName());
-
-                Claims claims = Jwts.parserBuilder()
-                        .setSigningKey(key)
-                        .build()
-                        .parseClaimsJws(jwtString)
-                        .getBody();
-
+                Claims claims = AuthenticationManager.parseJWT(jwtString);
                 httpServletRequest.setAttribute("user", UserManager.getUser(claims.get("email").toString()));
             }
 

@@ -4,6 +4,7 @@ import exception.CommandException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import main.User;
+import manager.AuthenticationManager;
 import manager.UserManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -32,18 +33,7 @@ public class UserController {
         try {
             User user = UserManager.getUser(email, password);
 
-            String SECRET_KEY = "iemdb1401";
-
-            byte[] keyBytes = DatatypeConverter.parseBase64Binary(SECRET_KEY+SECRET_KEY+SECRET_KEY+SECRET_KEY+SECRET_KEY);
-            Key key = new SecretKeySpec(keyBytes, SignatureAlgorithm.HS256.getJcaName());
-
-            String jwtToken = Jwts.builder()
-                    .setIssuer("iemdb")
-                    .setExpiration(Date.from(Instant.now().plus(1, ChronoUnit.DAYS)))
-                    .setIssuedAt(Date.from(Instant.now()))
-                    .claim("email", user.getEmail())
-                    .signWith(key)
-                    .compact();
+            String jwtToken = AuthenticationManager.generateJWT(user);
 
             return new Output(HttpStatus.OK.value(), jwtToken);
         } catch (Exception e) {
