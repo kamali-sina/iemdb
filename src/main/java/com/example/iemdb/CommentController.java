@@ -1,13 +1,8 @@
 package com.example.iemdb;
 
 import exception.CommandException;
-import exception.ErrorType;
-import main.Comment;
-import main.Vote;
-import manager.MovieManager;
-import manager.UserManager;
+import main.User;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import output.Output;
 
@@ -21,14 +16,12 @@ import java.util.Map;
 public class CommentController {
 
     @RequestMapping("/{id}/vote")
-    public Output voteComment(@RequestBody Map<String, String> body, HttpServletResponse response, @PathVariable Integer id) throws CommandException {
-        if (UserManager.loggedInUser == null) {
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            return new Output(HttpStatus.UNAUTHORIZED.value(), "no logged in user found, please login first.");
-        }
+    public Output voteComment(HttpServletRequest httpServletRequest, @RequestBody Map<String, String> body, HttpServletResponse response, @PathVariable Integer id) throws CommandException {
+        User user = (User)httpServletRequest.getAttribute("user");
+
         try {
             Integer vote = Integer.valueOf(body.get("vote"));
-            UserManager.loggedInUser.addVoteToComment(id, vote);
+            user.addVoteToComment(id, vote);
         } catch (CommandException ce) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             return new Output(HttpStatus.BAD_REQUEST.value(), ce.getMessage());
