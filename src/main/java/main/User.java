@@ -198,7 +198,7 @@ public class User {
         try {
             Connection con = ConnectionPool.getConnection();
             Statement stmt = con.createStatement();
-            stmt.executeUpdate("delete from WatchlistItems where movieId = \"" + movieId + "\" and userEmail = \"" + UserManager.getLoggedInUser().getEmail() + "\"");
+            stmt.executeUpdate("delete from WatchlistItems where movieId = \"" + movieId + "\" and userEmail = \"" + this.getEmail() + "\"");
             stmt.close();
             con.close();
         }
