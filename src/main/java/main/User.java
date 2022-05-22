@@ -30,7 +30,6 @@ public class User {
                 @JsonProperty("name") String name,
                 @JsonProperty("birthDate") String birthDate) throws CommandException {
         if (email == null ||
-                password == null ||
                 nickname == null ||
                 name == null ||
                 birthDate == null) {
