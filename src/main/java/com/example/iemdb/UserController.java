@@ -1,15 +1,11 @@
 package com.example.iemdb;
 
 import exception.CommandException;
-import exception.ErrorType;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import main.Movie;
 import main.User;
-import manager.MovieManager;
 import manager.UserManager;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import output.Output;
 
@@ -49,7 +45,6 @@ public class UserController {
                     .signWith(key)
                     .compact();
 
-            UserManager.logInUser(user); // TODO: Delete
             return new Output(HttpStatus.OK.value(), jwtToken);
         } catch (Exception e) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
@@ -58,12 +53,9 @@ public class UserController {
     }
 
     @PostMapping("/logout")
-    public Output logoutUser(HttpServletResponse response) throws CommandException {
-        if (UserManager.loggedInUser == null) {
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            return new Output(HttpStatus.UNAUTHORIZED.value(), "no logged in user found, please login first.");
-        }
-        UserManager.logOutUser();
+    public Output logoutUser(HttpServletRequest httpServletRequest, HttpServletResponse response) throws CommandException {
+        User user = (User)httpServletRequest.getAttribute("user");
+
         return new Output(HttpStatus.OK.value(), "user logged out successfully");
     }
 
@@ -107,14 +99,12 @@ public class UserController {
     }
 
     @DeleteMapping("/watchlist")
-    public Output removeFromWatchlist(@RequestBody Map<String, String> body, HttpServletResponse response) throws CommandException {
-        if (UserManager.loggedInUser == null) {
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            return new Output(HttpStatus.UNAUTHORIZED.value(), "no logged in user found, please login first.");
-        }
+    public Output removeFromWatchlist(HttpServletRequest httpServletRequest, @RequestBody Map<String, String> body, HttpServletResponse response) throws CommandException {
+        User user = (User)httpServletRequest.getAttribute("user");
+
         try {
             Integer movieId = Integer.valueOf(body.get("movieId"));
-            UserManager.loggedInUser.removeFromWatchList(movieId);
+            user.removeFromWatchList(movieId);
         } catch (CommandException ce) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             return new Output(HttpStatus.BAD_REQUEST.value(), ce.getMessage());
@@ -124,10 +114,5 @@ public class UserController {
         }
 
         return new Output(HttpStatus.OK.value(), "movie removed from watchlist successfully");
-    }
-
-    @GetMapping("/loggedInUser")
-    public Output getLoggedInUser(HttpServletResponse response) throws CommandException {
-        return new Output(HttpStatus.OK.value(), UserManager.loggedInUser);
     }
 }
