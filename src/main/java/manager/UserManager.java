@@ -72,6 +72,26 @@ public class UserManager {
         con.close();
     }
 
+    public static void addGitHubUser(User user) throws SQLException {
+        Connection con = ConnectionPool.getConnection();
+        PreparedStatement stmt1 = con.prepareStatement("INSERT INTO Users VALUES (?, ?, ?, ?, ?) on duplicate key update name = VALUES(name), birthDate = VALUES(birthDate), nickname = VALUES(nickname)");
+
+        try {
+            stmt1.setString(1, user.getEmail());
+            stmt1.setString(2, null);
+            stmt1.setString(3, user.getName());
+            stmt1.setString(4, user.getNickname());
+            stmt1.setString(5, user.getBirthDate());
+            stmt1.addBatch();
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        }
+
+        int[] result1 = stmt1.executeBatch();
+        stmt1.close();
+        con.close();
+    }
+
     public static User getUser(String email, String password) throws CommandException {
         User user = null;
         try {
