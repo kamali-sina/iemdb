@@ -101,14 +101,11 @@ public class MovieController {
     }
 
     @PostMapping("/{id}/rate")
-    public Output rateMovie(@RequestBody Map<String, String> body, HttpServletResponse response, @PathVariable Integer id) throws CommandException {
-        try {
-            if (UserManager.loggedInUser == null) {
-                response.setStatus(HttpStatus.UNAUTHORIZED.value());
-                return new Output(HttpStatus.UNAUTHORIZED.value(), "No logged in user found, please login first\"");
-            }
+    public Output rateMovie(HttpServletRequest httpServletRequest, @RequestBody Map<String, String> body, HttpServletResponse response, @PathVariable Integer id) throws CommandException {
+        User user = (User)httpServletRequest.getAttribute("user");
 
-            String userEmail = UserManager.getLoggedInUser().getEmail();
+        try {
+            String userEmail = user.getEmail();
             Rating userRating = new Rating(userEmail, id, Integer.valueOf(body.get("rate")));
             return new Output(HttpStatus.OK.value(), MovieManager.addRating(userRating));
         } catch (CommandException commandException) {
