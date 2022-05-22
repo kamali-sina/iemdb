@@ -8,7 +8,6 @@ import main.Rating;
 import main.User;
 import manager.ActorManager;
 import manager.MovieManager;
-import manager.UserManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import output.Output;
@@ -117,18 +116,16 @@ public class MovieController {
 
     @PostMapping("/{id}/comment")
     @ResponseBody
-    public Output commentOnMovie(@RequestBody Map<String, String> body, HttpServletResponse response, @PathVariable Integer id) throws CommandException {
+    public Output commentOnMovie(HttpServletRequest httpServletRequest, @RequestBody Map<String, String> body, HttpServletResponse response, @PathVariable Integer id) throws CommandException {
+        User user = (User)httpServletRequest.getAttribute("user");
+
         try {
-            if (UserManager.loggedInUser == null) {
-                response.setStatus(HttpStatus.UNAUTHORIZED.value());
-                return new Output(HttpStatus.UNAUTHORIZED.value(), "No logged in user found, please login first\"");
-            }
             String comment = body.get("comment");
             if (comment.equals("")) {
                 response.setStatus(HttpStatus.BAD_REQUEST.value());
                 return new Output(HttpStatus.BAD_REQUEST.value(), "Comment can not be empty.");
             }
-            String userEmail = UserManager.getLoggedInUser().getEmail();
+            String userEmail = user.getEmail();
             Comment userComment = new Comment(userEmail, id, comment);
             return new Output(HttpStatus.OK.value(), MovieManager.addComment(userComment));
         } catch (CommandException commandException) {
