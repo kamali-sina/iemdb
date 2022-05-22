@@ -88,7 +88,7 @@ public class User {
         try {
             Connection con = ConnectionPool.getConnection();
             Statement stmt = con.createStatement();
-            ResultSet result = stmt.executeQuery("select * from Movies inner join WatchlistItems on Movies.id = WatchlistItems.movieId and WatchlistItems.userEmail = \"" + UserManager.loggedInUser.getEmail() + "\"");
+            ResultSet result = stmt.executeQuery("select * from Movies inner join WatchlistItems on Movies.id = WatchlistItems.movieId and WatchlistItems.userEmail = \"" + this.getEmail() + "\"");
 
             while (result.next()) {
                 Movie movie = new Movie(
@@ -124,7 +124,7 @@ public class User {
         try {
             Connection con = ConnectionPool.getConnection();
             Statement stmt = con.createStatement();
-            ResultSet result = stmt.executeQuery("select * from Movies m where m.id not in (select movieId from WatchlistItems wi where wi.userEmail = \"" + UserManager.loggedInUser.getEmail() + "\") ");
+            ResultSet result = stmt.executeQuery("select * from Movies m where m.id not in (select movieId from WatchlistItems wi where wi.userEmail = \"" + this.getEmail() + "\") ");
 
             while (result.next()) {
                 Movie movie = new Movie(
@@ -177,17 +177,17 @@ public class User {
 
     public void addToWatchList(Integer movieId) throws CommandException, SQLException {
         Movie movie = MovieManager.getMovie(movieId);
-        if (UserManager.loggedInUser.getAge() < movie.getAgeLimit()) {
+        if (this.getAge() < movie.getAgeLimit()) {
             throw new CommandException(ErrorType.AgeLimitError);
         }
-        for (Movie watchlistMovie : UserManager.loggedInUser.getWatchList()) {
+        for (Movie watchlistMovie : this.getWatchList()) {
             if (watchlistMovie.getId() == movieId) {
                 throw new CommandException(ErrorType.MovieAlreadyExists);
             }
         }
         Connection con = ConnectionPool.getConnection();
         PreparedStatement stmt = con.prepareStatement("INSERT INTO WatchlistItems VALUES (?, ?) on duplicate key update movieId = movieId, userEmail = userEmail");
-        stmt.setString(1, UserManager.loggedInUser.getEmail());
+        stmt.setString(1, this.getEmail());
         stmt.setInt(2, movieId);
         stmt.addBatch();
         int[] result = stmt.executeBatch();
@@ -241,7 +241,7 @@ public class User {
             Connection con = ConnectionPool.getConnection();
             PreparedStatement stmt = con.prepareStatement("INSERT INTO Votes VALUES (?, ?, ?) on duplicate key update vote = VALUES(vote)");
             stmt.setInt(1, commentId);
-            stmt.setString(2, UserManager.loggedInUser.getEmail());
+            stmt.setString(2, this.getEmail());
             stmt.setInt(3, vote);
             stmt.addBatch();
             int[] result = stmt.executeBatch();

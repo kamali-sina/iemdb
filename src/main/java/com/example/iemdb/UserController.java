@@ -85,23 +85,17 @@ public class UserController {
     }
 
     @GetMapping("/watchlist")
-    public Output getWatchlist(HttpServletResponse response) throws CommandException {
-        if (UserManager.loggedInUser == null) {
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            return new Output(HttpStatus.UNAUTHORIZED.value(), "no logged in user found, please login first.");
-        }
-        return new Output(HttpStatus.OK.value(), UserManager.loggedInUser.getWatchList());
+    public Output getWatchlist(HttpServletResponse response, HttpServletRequest httpServletRequest) throws CommandException {
+        User user = (User)httpServletRequest.getAttribute("user");
+        return new Output(HttpStatus.OK.value(), user.getWatchList());
     }
 
     @PostMapping("/watchlist")
-    public Output addToWatchlist(@RequestBody Map<String, String> body, HttpServletResponse response) throws CommandException {
-        if (UserManager.loggedInUser == null) {
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            return new Output(HttpStatus.UNAUTHORIZED.value(), "no logged in user found, please login first.");
-        }
+    public Output addToWatchlist(@RequestBody Map<String, String> body, HttpServletResponse response, HttpServletRequest httpServletRequest) throws CommandException {
         try {
+            User user = (User)httpServletRequest.getAttribute("user");
             Integer movieId = Integer.valueOf(body.get("movieId"));
-            UserManager.loggedInUser.addToWatchList(movieId);
+            user.addToWatchList(movieId);
         } catch (CommandException ce) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             return new Output(HttpStatus.BAD_REQUEST.value(), ce.getMessage());

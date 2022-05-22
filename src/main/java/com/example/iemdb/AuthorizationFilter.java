@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import main.User;
 import manager.UserManager;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;

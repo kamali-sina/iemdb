@@ -5,6 +5,7 @@ import exception.ErrorType;
 import main.Comment;
 import main.Movie;
 import main.Rating;
+import main.User;
 import manager.ActorManager;
 import manager.MovieManager;
 import manager.UserManager;
@@ -12,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import output.Output;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
@@ -87,13 +89,10 @@ public class MovieController {
     }
 
     @GetMapping("/recommendedMovies")
-    public Output getRecommendedMovies(HttpServletResponse response) throws CommandException {
+    public Output getRecommendedMovies(HttpServletResponse response, HttpServletRequest httpServletRequest) throws CommandException {
         try {
-            if (UserManager.loggedInUser == null) {
-                response.setStatus(HttpStatus.UNAUTHORIZED.value());
-                return new Output(HttpStatus.UNAUTHORIZED.value(), "No logged in user found, please login first");
-            }
-            return new Output(HttpStatus.OK.value(), UserManager.getLoggedInUser().getWatchlistRecommendations());
+            User user = (User)httpServletRequest.getAttribute("user");
+            return new Output(HttpStatus.OK.value(), user.getWatchlistRecommendations());
         } catch (CommandException commandException) {
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
             return new Output(HttpStatus.INTERNAL_SERVER_ERROR.value(), commandException.getMessage());
