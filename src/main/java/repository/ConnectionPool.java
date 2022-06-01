@@ -9,7 +9,7 @@ import java.sql.Statement;
 
 public class ConnectionPool {
     private static BasicDataSource ds = new BasicDataSource();
-    private final static String dbURL = "jdbc:mysql://localhost:3306/iemdb";
+    private final static String dbURL = "jdbc:mysql://host.docker.internal:3306/iemdb";
     private final static String dbUserName = "root";
     private final static String dbPassword = "sina1234";
 
