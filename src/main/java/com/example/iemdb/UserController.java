@@ -57,6 +57,13 @@ public class UserController {
         String birthdate = body.get("birthdate");
         String password = body.get("password");
         try {
+            User user = UserManager.getUser(email);
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            return new Output(HttpStatus.BAD_REQUEST.value(), "User was duplicate!");
+        } catch (Exception exception) {
+            System.out.println("ok!");
+        }
+        try {
             User user = new User(email, password, username, name, birthdate);
             UserManager.addUser(user);
         } catch (Exception e) {
