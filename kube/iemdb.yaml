@@ -1,0 +1,22 @@
+# TODO: add memory and cpu qouta
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: iemdb-deployment
+  labels:
+    app: iemdb
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: iemdb
+  template:
+    metadata:
+      labels:
+        app: iemdb
+    spec:
+      containers:
+      - name: iemdb
+        image: quay.io/papasinku/iemdb
+        ports:
+        - containerPort: 8080
