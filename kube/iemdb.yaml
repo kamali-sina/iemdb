@@ -1,22 +1,56 @@
-# TODO: add memory and cpu qouta
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: apps/v1           # API version
+kind: Deployment              # Type of kubernetes resource
 metadata:
-  name: iemdb-deployment
-  labels:
+  name: iemdb    # Name of the kubernetes resource
+  labels:                     # Labels that will be applied to this resource
+    app: iemdb
+    namespace: amin-baqershahi-ns
+spec:
+  replicas: 2              # No. of replicas/pods to run in this deployment
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+  selector:
+    matchLabels:              # The deployment applies to any pods mayching the specified labels
+      app: iemdb
+  template:                   # Template for creating the pods in this deployment
+    metadata:
+      labels:                 # Labels that will be applied to each Pod in this deployment
+        app: iemdb
+    spec:                     # Spec for the containers that will be run in the Pods
+      containers:
+        - name: iemdb
+          image: quay.io/papasinku/iemdb
+          imagePullPolicy: Always
+          env:
+            - name: "DB_USERNAME"
+              value: "root"
+            - name: "DB_PASSWORD"
+              value: "sina1234"
+          ports:
+            - containerPort: 8080 # The port that the container exposes
+          resources:
+            limits:
+              cpu: "300m"
+              memory: "333Mi"
+            requests:
+              cpu: "300m"
+              memory: "333Mi"
+---
+apiVersion: v1                # API version
+kind: Service                 # Type of the kubernetes resource
+metadata:
+  name: iemdb    # Name of the kubernetes resource
+  labels:                     # Labels that will be applied to this resource
     app: iemdb
 spec:
-  replicas: 2
+  type: NodePort              # The service will be exposed by opening a Port on each node and proxying it.
   selector:
-    matchLabels:
-      app: iemdb
-  template:
-    metadata:
-      labels:
-        app: iemdb
-    spec:
-      containers:
-      - name: iemdb
-        image: quay.io/papasinku/iemdb
-        ports:
-        - containerPort: 8080
+    app: iemdb   # The service exposes Pods with label `app=iemdb`
+  ports:                      # Forward incoming connections on port 8080 to the target port 8080
+    - name: http
+      port: 8080
+      nodePort: 31921
+      targetPort: 8080

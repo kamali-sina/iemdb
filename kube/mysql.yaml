@@ -1,66 +1,69 @@
-# TODO: Fix ClusterIP
 apiVersion: v1
-kind: Service
-metadata:
-  name: iemdb-mysql
+kind: PersistentVolumeClaim        # Create a PersistentVolumeClaim to request a PersistentVolume storage
+metadata:                          # Claim name and labels
+  name: mysql-pvc
   labels:
-    app: iemdb
+    app: iemdb-mysql
+spec:                              # Access mode and resource limits
+  storageClassName: hiops          # Request a certain storage class
+  volumeMode: Filesystem        
+  accessModes:
+    - ReadWriteOnce                # ReadWriteOnce means the volume can be mounted as read-write by a single Node
+  resources:
+    requests:
+      storage: 500Mi
+---
+apiVersion: v1                    # API version
+kind: Service                     # Type of kubernetes resource
+metadata:
+  name: iemdb-mysql         # Name of the resource
+  labels:                         # Labels that will be applied to the resource
+    app: iemdb-mysql
 spec:
   ports:
     - port: 3306
-  selector:
-    app: iemdb
-    tier: mysql
+  selector:                       # Selects any Pod with labels `app=iemdb-mysql`
+    app: iemdb-mysql
   clusterIP: None
 ---
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: mysql-pv-claim
-  labels:
-    app: iemdb
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 20Gi
----
 apiVersion: apps/v1
-kind: Deployment
+kind: Deployment                    # Type of the kubernetes resource
 metadata:
-  name: iemdb-mysql
-  labels:
-    app: iemdb
+  name: iemdb-mysql           # Name of the deployment
+  labels:                           # Labels applied to this deployment
+    app: iemdb-mysql
 spec:
   selector:
-    matchLabels:
-      app: iemdb
+    matchLabels:                    # This deployment applies to the Pods matching the specified labels
+      app: iemdb-mysql
       tier: mysql
   strategy:
     type: Recreate
-  template:
+  template:                         # Template for the Pods in this deployment
     metadata:
-      labels:
-        app: iemdb
+      labels:                       # Labels to be applied to the Pods in this deployment
+        app: iemdb-mysql
         tier: mysql
-    spec:
+    spec:                           # The spec for the containers that will be run inside the Pods in this deployment
       containers:
-      - image: mysql:5.6
-        name: mysql
-        env:
-        - name: MYSQL_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: mysql-pass
-              key: sina1234
-        ports:
-        - containerPort: 3306
+        - image: mysql:8.0.20            # The container image
           name: mysql
-        volumeMounts:
+          env:                        # Environment variables passed to the container
+            - name: "MYSQL_ROOT_PASSWORD"
+              value: "sina1234"
+            - name: "MYSQL_DATABASE"
+              value: "iemdb"
+          ports:
+            - containerPort: 3306        # The port that the container exposes
+              name: mysql
+          resources:
+            limits:
+              cpu: "0.333m"
+              memory: "500M"
+          volumeMounts:
+            - name: mysql-persistent-storage  # This name should match the name specified in `volumes.name`
+              mountPath: /var/lib/mysql
+      volumes:                       # A PersistentVolume is mounted as a volume to the Pod
         - name: mysql-persistent-storage
-          mountPath: /var/lib/mysql
-      volumes:
-      - name: mysql-persistent-storage
-        persistentVolumeClaim:
-          claimName: mysql-pv-claim
+          persistentVolumeClaim:
+            claimName: mysql-pvc
