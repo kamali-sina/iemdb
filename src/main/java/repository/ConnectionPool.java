@@ -18,7 +18,7 @@ public class ConnectionPool {
     static {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conn = DriverManager.getConnection(dbURL + "?user=" + System.getenv("DB_USERNAME" + "&" + "password=" + System.getenv("DB_PASSWORD")));
+            Connection conn = DriverManager.getConnection(dbURL + "?user=" + System.getenv("DB_USERNAME") + "&" + "password=" + System.getenv("DB_PASSWORD"));
             Statement stmt = conn.createStatement();
             stmt.executeUpdate("CREATE DATABASE IF NOT EXISTS " + dbName);
         } catch (ClassNotFoundException | SQLException e) {
