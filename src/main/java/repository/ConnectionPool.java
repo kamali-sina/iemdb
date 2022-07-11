@@ -8,7 +8,6 @@ import java.sql.SQLException;
 import java.sql.DriverManager;
 import java.sql.Statement;
 
-
 public class ConnectionPool {
     private static BasicDataSource ds = new BasicDataSource();
     private final static String dbURL = "jdbc:mysql://iemdb-mysql.sina-sina-ns:3306/";
@@ -19,7 +18,7 @@ public class ConnectionPool {
     static {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conn = DriverManager.getConnection(dbURL + "?user=" + System.getenv("DB_USERNAME") + "&" + "password=" + System.getenv("DB_PASSWORD"));
+            Connection conn = DriverManager.getConnection(System.getenv("DB_URL") + "?user=" + System.getenv("DB_USERNAME") + "&" + "password=" + System.getenv("DB_PASSWORD"));
             Statement stmt = conn.createStatement();
             stmt.executeUpdate("CREATE DATABASE IF NOT EXISTS " + dbName);
         } catch (ClassNotFoundException | SQLException e) {
