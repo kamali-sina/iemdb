@@ -4,7 +4,7 @@ metadata:
   name: iemdb    # Name of the kubernetes resource
   labels:                     # Labels that will be applied to this resource
     app: iemdb
-    namespace: amin-baqershahi-ns
+    namespace: sina-sina-ns
 spec:
   replicas: 2              # No. of replicas/pods to run in this deployment
   strategy:
